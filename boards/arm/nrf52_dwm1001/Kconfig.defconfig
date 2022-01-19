@@ -1,0 +1,21 @@
+# Kconfig - nRF52 DWM1001 board configuration
+#
+# Copyright (c) 2016 Nordic Semiconductor ASA
+# Copyright (c) 2019 RTLOC
+#
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_NRF52_DWM1001
+
+config BOARD
+	default "nrf52_dwm1001"
+
+config I2C_0
+	bool
+	default y
+	depends on I2C
+
+config BT_CTLR
+	default BT
+
+endif # BOARD_NRF52_DWM1001
