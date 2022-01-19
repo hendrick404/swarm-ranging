@@ -7,7 +7,7 @@ find_package(Zephyr)
 project(my_zephyr_app)
 
 file(GLOB application_sources src/antenna/**.c)
-file(GLOB decadriver_sources lib/**.c)
+file(GLOB decadriver_sources lib/decadriver/*.c lib/platform/*.c)
 
 target_sources(app PRIVATE ${application_sources})
 target_sources(app PRIVATE ${decadriver_sources})
