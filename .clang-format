@@ -1,0 +1,6 @@
+BasedOnStyle: Chromium
+UseTab: Never
+IndentWidth: 4
+TabWidth: 4
+ColumnLimit: 120
+SpaceAfterCStyleCast: true
