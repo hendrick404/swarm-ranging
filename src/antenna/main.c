@@ -132,7 +132,7 @@ void check_received_messages() {
         message_info_t info;
         info.mode = rx;
         info.receiver_id = rx_buffer[6] << 8 | rx_buffer[5];
-        info.receiver_id = rx_buffer[8] << 8 | rx_buffer[7];
+        info.sender_id = rx_buffer[8] << 8 | rx_buffer[7];
         info.sequence_number = rx_buffer[2];
         info.timestamp = read_rx_timestamp();
         process_message(info);
