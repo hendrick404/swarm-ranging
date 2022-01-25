@@ -1,3 +1,4 @@
+#include <drivers/uart.h>
 #include <logging/log.h>
 #include <zephyr.h>
 
@@ -10,6 +11,8 @@
 LOG_MODULE_REGISTER(main);
 
 #define PAN_ID 0xDECA
+
+static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
 typedef enum { rx, tx } message_direction_t;
 
@@ -80,8 +83,16 @@ uint16_t get_id() {
 }
 
 void process_message(message_info_t info) {
-    printk("{\"sender id\": %d, \"receiver id\": %d, \"sequence number\": %d, \"timestamp\": %lld}\n", info.sender_id,
+    char message[256];
+    int ret = snprintf(message, 256, "{\"sender id\": %d, \"receiver id\": %d, \"sequence number\": %d, \"timestamp\": %lld}\n", info.sender_id,
            info.receiver_id, info.sequence_number, info.timestamp);
+    if (ret > 256) {
+        LOG_ERR("Buffer too small");
+        return;
+    }
+    for (int i = 0; i < ret; i++) {
+        uart_poll_out(uart_device, message[i]);
+    }
 }
 
 /**
