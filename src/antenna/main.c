@@ -1,3 +1,4 @@
+#include <data/json.h>
 #include <drivers/uart.h>
 #include <logging/log.h>
 #include <zephyr.h>
@@ -11,6 +12,54 @@
 LOG_MODULE_REGISTER(main);
 
 #define PAN_ID 0xDECA
+
+// JSON Definition
+
+struct json_uart_message {
+    struct json_range {
+        int sender_id;
+        int receiver_id;
+        int sequence_number;
+        char* type;
+        struct json_range_timestamps {
+            int tx_poll_ts;
+            int rx_response_ts;
+            int tx_final_ts;
+        } * timestamps;
+    } * range;
+    struct json_set {
+    } * get;
+    struct json_get {
+    } * set;
+    struct json_report {
+    } * report;
+};
+
+struct json_obj_descr timestamp_descriptor[] = {
+    JSON_OBJ_DESCR_PRIM(struct json_range_timestamps, tx_poll_ts, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM(struct json_range_timestamps, rx_response_ts, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM(struct json_range_timestamps, tx_final_ts, JSON_TOK_NUMBER),
+};
+
+struct json_obj_descr range_descriptor[] = {
+    JSON_OBJ_DESCR_PRIM(struct json_range, sender_id, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM(struct json_range, receiver_id, JSON_TOK_NUMBER),
+
+    JSON_OBJ_DESCR_PRIM(struct json_range, sequence_number, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM(struct json_range, type, JSON_TOK_STRING),
+    JSON_OBJ_DESCR_OBJECT(struct json_range, timestamps, timestamp_descriptor),
+};
+
+struct json_obj_descr get_descr[] = {};
+struct json_obj_descr set_descr[] = {};
+struct json_obj_descr report_descr[] = {};
+
+struct json_obj_descr uart_message_descr[] = {
+    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, range, timestamp_descriptor),
+    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, set, get_descr),
+    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, get, set_descr),
+    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, report, report_descr),
+};
 
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
@@ -83,14 +132,31 @@ uint16_t get_id() {
 }
 
 void process_message(message_info_t info) {
-    char message[256];
-    int ret = snprintf(message, 256, "{\"sender id\": %d, \"receiver id\": %d, \"sequence number\": %d, \"timestamp\": %lld}\n", info.sender_id,
-           info.receiver_id, info.sequence_number, info.timestamp);
-    if (ret > 256) {
-        LOG_ERR("Buffer too small");
+    struct json_uart_message msg;
+    struct json_range msg_range;
+    struct json_range_timestamps msg_range_timestamps;
+
+    msg.range = &msg_range;
+    msg.range->timestamps = &msg_range_timestamps;
+    msg.get = NULL;
+    msg.set = NULL;
+    msg.report = NULL;
+
+    msg.range->sender_id = info.sender_id;
+    msg.range->receiver_id = id;
+    msg.range->sequence_number = info.sequence_number;
+    msg.range->timestamps->rx_response_ts = info.timestamp;
+
+    const size_t buffer_size = 256;
+
+    char message[buffer_size];
+    int ret = json_obj_encode_buf(uart_message_descr, 4, &msg, message, buffer_size);
+    if (ret) {
+        LOG_ERR("Failed to encode json");
         return;
     }
-    for (int i = 0; i < ret; i++) {
+
+    for (int i = 0; i < buffer_size && message[i] != '\0'; i++) {
         uart_poll_out(uart_device, message[i]);
     }
 }
