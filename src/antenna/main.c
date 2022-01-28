@@ -15,8 +15,7 @@ LOG_MODULE_REGISTER(main);
 
 #define PAN_ID 0xDECA
 
-// JSON Definition
-
+#define UART_BUFFER_SIZE 512
 
 
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
@@ -102,21 +101,21 @@ void process_message(message_info_t info) {
 
     msg.range->sender_id = info.sender_id;
     msg.range->receiver_id = id;
+    // msg.range->type = "poll";
     msg.range->sequence_number = info.sequence_number;
     msg.range->timestamps->rx_response_ts = info.timestamp;
 
-    const size_t buffer_size = 256;
-
-    char message[buffer_size];
-    int ret = json_obj_encode_buf(uart_message_descr, 4, &msg, message, buffer_size);
+    char message[UART_BUFFER_SIZE];
+    int ret = json_obj_encode_buf(uart_message_descr, 4, &msg, message, UART_BUFFER_SIZE);
     if (ret) {
         LOG_ERR("Failed to encode json");
         return;
     }
 
-    for (int i = 0; i < buffer_size && message[i] != '\0'; i++) {
+    for (int i = 0; i < UART_BUFFER_SIZE && message[i] != '\0'; i++) {
         uart_poll_out(uart_device, message[i]);
     }
+    uart_poll_out(uart_device, '\n');
 }
 
 /**
@@ -213,6 +212,7 @@ int main(void) {
     dwt_setleds(1);
 
     id = get_id();
+    LOG_DBG("Ranging id %d", id);
 
     while (1) {
         check_received_messages();

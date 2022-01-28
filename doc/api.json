@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "range": {
+      "type": "object",
+      "properties": {
+        "sender_id": {
+          "type": "number"
+        },
+        "receiver_id": {
+          "type": "number"
+        },
+        "sequence_number": {
+          "type": "number"
+        },
+        "type": {
+          "enum": ["poll", "response", "final"]
+        },
+        "timestamps": {
+          "type": "object",
+          "properties": {
+            "tx_poll_ts": {
+              "type": "number"
+            },
+            "rx_response_ts": {
+              "type": "number"
+            },
+            "tx_final_ts": {
+              "type": "number"
+            }
+          }
+        },
+        "direction": {
+          "enum": ["rx", "tx"]
+        }
+      }
+    },
+    "set": {
+      "type": "object"
+    },
+    "get": {
+      "type": "object"
+    },
+    "report": {
+      "type": "object"
+    }
+  }
+}
