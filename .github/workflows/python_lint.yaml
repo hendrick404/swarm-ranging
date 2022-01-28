@@ -17,7 +17,10 @@ jobs:
         pip install -r requirements-dev.txt
     - name: "Run pylint"
       run: pylint src/host
+      continue-on-error: true
     - name: "Run flake8"
       run: flake8 src/host
+      continue-on-error: true
     - name: "Run mypy"
       run: mypy src/host
+      continue-on-error: true
