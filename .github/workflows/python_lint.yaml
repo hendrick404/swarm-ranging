@@ -3,35 +3,19 @@ name: "Static analysis"
 on: [ push ]
 
 jobs:
-  initialisation:
+  lint:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - name: "Set up Python"
+      uses: actions/setup-python@v2
       with:
         python-version: '3.9'
-    - run: |
+    - name: "Install dependencies"
+      run: |
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
-  pylint:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      needs: initialisation
-      with:
-        python-version: '3.9'
-    - run: |
-        pylint src/host
-  flake8:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      needs: initialisation
-      with:
-        python-version: '3.9'
-    - run: |
-        flake8 src/host
-  mypy:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      needs: initialisation
-      with:
-        python-version: '3.9'
-    - run: |
-        mypy src/host
+    - name: "Run pylint"
+      run: pylint src/host
+    - name: "Run flake8"
+      run: flake8 src/host
+    - name: "Run mypy"
+      run: mypy src/host
