@@ -10,6 +10,7 @@
 
 #include "json_configuration.h"
 #include "message_definition.h"
+#include "misc.h"
 #include "typedefs.h"
 
 #define LOG_LEVEL 4
@@ -23,8 +24,6 @@ static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console
 
 static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, DWT_BR_6M8, DWT_PHRMODE_STD, (129)};
 
-static timestamp_t last_tx_timestamp = 0;
-
 static sequence_number_t sequence_number = 1;
 
 static uint16_t counter = 0;
@@ -32,6 +31,43 @@ static uint16_t counter = 0;
 static received_message_list_t* received_messages = NULL;
 
 static ranging_id_t id;
+
+// TODO: Initialize
+static tx_timestamp_list_t* tx_timestamps = NULL;
+
+void print_received_message_list() {
+    received_message_list_t* iterator = received_messages;
+    int i = 0;
+    while (iterator != NULL) {
+        LOG_DBG("%d. element: id: %d, seq num: %d, ts %lld", i, iterator->data.sender_id,
+                iterator->data.sequence_number, iterator->data.rx_timestamp);
+        i++;
+        iterator = iterator->next;
+    }
+}
+
+timestamp_t get_tx_timestamp(sequence_number_t sequence_number) {
+    tx_timestamp_list_t* iterator = tx_timestamps;
+    for (int i = 0; i < sequence_number / TX_TIMESTAMP_BLOCKSIZE; i++) {
+        if (iterator == NULL || iterator->next == NULL) {
+            return 0;
+        }
+        iterator = iterator->next;
+    }
+    return iterator->timestamps[sequence_number % TX_TIMESTAMP_BLOCKSIZE];
+}
+
+void set_tx_timestamp(sequence_number_t sequence_number, timestamp_t timestamp) {
+    tx_timestamp_list_t* iterator = tx_timestamps;
+    for (int i = 0; i < sequence_number / TX_TIMESTAMP_BLOCKSIZE; i++) {
+        if (iterator->next == NULL) {
+            iterator->next = k_malloc(sizeof(tx_timestamp_list_t));
+            iterator->next->next = NULL;
+        }
+        iterator = iterator->next;
+    }
+    iterator->timestamps[sequence_number % TX_TIMESTAMP_BLOCKSIZE] = timestamp;
+}
 
 timestamp_t read_rx_timestamp() {
     uint8_t timestamp_buffer[5];
@@ -53,6 +89,21 @@ timestamp_t read_tx_timestamp() {
         timestamp |= timestamp_buffer[i];
     }
     return timestamp;
+}
+
+timestamp_t message_read_timestamp(uint8_t* buffer) {
+    timestamp_t result = 0;
+    for (int i = 0; i < sizeof(timestamp_t); i++) {
+        result <<= 8;
+        result |= buffer[i];
+    }
+    return result;
+}
+
+void message_write_timestamp(uint8_t* buffer, timestamp_t ts) {
+    for (int i = 0; i < sizeof(timestamp_t); i++) {
+        buffer[i] = (ts >> (8 * (sizeof(timestamp_t) - i))) & 0xFF;
+    }
 }
 
 /**
@@ -114,7 +165,7 @@ void process_message(message_info_t info) {
  * @return int 0 on successful transmission.
  */
 int send_message(/*message_data_t data*/) {
-    LOG_INF("Sending message");
+    LOG_DBG("Sending message %d", sequence_number);
     int num_timestamp = 0;
     received_message_list_t* iterator = received_messages;
     while (iterator != NULL) {
@@ -152,7 +203,8 @@ int send_message(/*message_data_t data*/) {
 
     while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS)) {
     };
-    last_tx_timestamp = read_tx_timestamp();
+    timestamp_t tx_timestamp = read_tx_timestamp();
+    set_tx_timestamp(sequence_number, tx_timestamp);
     k_free(message_buffer);
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
     dwt_rxenable(DWT_START_RX_IMMEDIATE);
@@ -166,14 +218,37 @@ int send_message(/*message_data_t data*/) {
 void check_received_messages() {
     uint32_t status = dwt_read32bitreg(SYS_STATUS_ID);
     if (status & SYS_STATUS_RXFCG) {
-        LOG_INF("Received frame");
+        LOG_DBG("Received frame");
         uint32_t frame_length = dwt_read32bitreg(RX_FINFO_ID) & RX_FINFO_RXFL_MASK_1023;
-        LOG_INF("Frame length: %d", frame_length);
+        LOG_DBG("Frame length: %d", frame_length);
         uint8_t* rx_buffer = (uint8_t*) k_malloc(frame_length);
         dwt_readrxdata(rx_buffer, frame_length, 0);
 
+        timestamp_t rx_timestamp = read_rx_timestamp();
+        timestamp_t message_tx_timestamp = message_read_timestamp(rx_buffer + TX_TIMESTAMP_IDX);
+
         ranging_id_t sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
         sequence_number_t sequence_number = rx_buffer[SEQUENCE_NUMBER_IDX_1] | (rx_buffer[SEQUENCE_NUMBER_IDX_2] << 8);
+
+        // TODO: Iterate over message timestamps and find own timestamp
+        for (int i = RX_TIMESTAMP_OFFSET; i < frame_length; i += RX_TIMESTAMP_SIZE) {
+            ranging_id_t current_id = (rx_buffer[i + RX_TIMESTAMP_RANGING_ID_OFFSET] |
+                                       (rx_buffer[i + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8));
+            LOG_DBG("inspection id %d", current_id);
+            if (current_id == id) {
+                LOG_DBG("Found own ts");
+                sequence_number_t rx_sequence_number = rx_buffer[i + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] |
+                                                       (rx_buffer[i + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1] << 8);
+                received_message_list_t* iterator = received_messages;
+
+                // Reference to BA
+                double tof = (double) ((rx_timestamp - get_tx_timestamp(rx_sequence_number)) -
+                                       (message_tx_timestamp - message_read_timestamp(rx_buffer + i + RX_TIMESTAMP_TIMESTAMP_OFFSET))) /
+                             2 * DWT_TIME_UNITS;
+                LOG_INF("Measured TOF: %d ms", (int) (tof / 1000));
+                LOG_INF("Measured distance: %d cm to %d", (int) (tof * SPEED_OF_LIGHT / 100), sender_id);
+            }
+        }
 
         if (received_messages == NULL) {
             received_messages = k_malloc(sizeof(received_message_list_t));
@@ -186,13 +261,13 @@ void check_received_messages() {
             while (1) {
                 if (iterator->data.sender_id == sender_id) {
                     iterator->data.sequence_number = sequence_number;
-                    iterator->data.rx_timestamp = read_rx_timestamp();
+                    iterator->data.rx_timestamp = rx_timestamp;
                     break;
                 } else if (iterator->next == NULL) {
                     iterator->next = k_malloc(sizeof(received_message_list_t));
                     iterator->next->data.sender_id = sender_id;
                     iterator->next->data.sequence_number = sequence_number;
-                    iterator->next->data.rx_timestamp = read_rx_timestamp();
+                    iterator->next->data.rx_timestamp = rx_timestamp;
                     iterator->next->next = NULL;
                     break;
                 }
@@ -211,7 +286,7 @@ void check_received_messages() {
 }
 
 void process_incoming_uart(char* message_buffer, int size) {
-    LOG_INF("Received uart");
+    LOG_DBG("Received uart");
     struct json_uart_message message;
     int ret = json_obj_parse(message_buffer, size, uart_message_descr, 4, &message);
     if (ret) {
@@ -236,6 +311,7 @@ void check_message_to_send() {
     counter++;
     if (counter == 500) {
         send_message();
+        print_received_message_list();
         sequence_number++;
         counter = 0;
     }
@@ -256,6 +332,9 @@ int main(void) {
 
     id = get_id();
     LOG_DBG("Ranging id %d", id);
+
+    tx_timestamps = k_malloc(sizeof(tx_timestamp_list_t));
+    tx_timestamps->next = NULL;
 
     while (1) {
         check_received_messages();

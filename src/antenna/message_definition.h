@@ -24,4 +24,9 @@
 
 #define RX_TIMESTAMP_OFFSET TX_TIMESTAMP_IDX + sizeof(timestamp_t)
 
+#define RX_TIMESTAMP_SIZE sizeof(timestamp_t) + sizeof(ranging_id_t) + sizeof(sequence_number_t)
+#define RX_TIMESTAMP_RANGING_ID_OFFSET 0
+#define RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET sizeof(ranging_id_t)
+#define RX_TIMESTAMP_TIMESTAMP_OFFSET sizeof(ranging_id_t) + sizeof(sequence_number_t)
+
 #endif
