@@ -173,6 +173,7 @@ void check_received_messages() {
         dwt_readrxdata(rx_buffer, frame_length, 0);
 
         ranging_id_t sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
+        sequence_number_t sequence_number = rx_buffer[SEQUENCE_NUMBER_IDX_1] | (rx_buffer[SEQUENCE_NUMBER_IDX_2] << 8);
 
         if (received_messages == NULL) {
             received_messages = k_malloc(sizeof(received_message_list_t));
