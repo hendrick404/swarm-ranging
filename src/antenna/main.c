@@ -32,7 +32,6 @@ static received_message_list_t* received_messages = NULL;
 
 static ranging_id_t id;
 
-// TODO: Initialize
 static tx_timestamp_list_t* tx_timestamps = NULL;
 
 void print_received_message_list() {
@@ -102,7 +101,7 @@ timestamp_t message_read_timestamp(uint8_t* buffer) {
 
 void message_write_timestamp(uint8_t* buffer, timestamp_t ts) {
     for (int i = 0; i < sizeof(timestamp_t); i++) {
-        buffer[i] = (ts >> (8 * (sizeof(timestamp_t) - i))) & 0xFF;
+        buffer[i] = (ts >> (8 * (sizeof(timestamp_t) - i - 1))) & 0xFF;
     }
 }
 
