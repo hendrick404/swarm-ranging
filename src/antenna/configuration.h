@@ -1,0 +1,10 @@
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
+
+#define TX_PROCESSING_DELAY 4000
+
+#define TX_ANTENNA_DELAY 0
+#define RX_ANTENNA_DELAY 0
+
+
+#endif

@@ -8,6 +8,7 @@
 #include "deca_spi.h"
 #include "port.h"
 
+#include "configuration.h"
 #include "json_configuration.h"
 #include "message_definition.h"
 #include "misc.h"
@@ -68,7 +69,19 @@ void set_tx_timestamp(sequence_number_t sequence_number, timestamp_t timestamp) 
     iterator->timestamps[sequence_number % TX_TIMESTAMP_BLOCKSIZE] = timestamp;
 }
 
+timestamp_t read_systemtime() {
+    uint8_t timestamp_buffer[5];
+    dwt_readsystime(timestamp_buffer);
+    timestamp_t timestamp = 0;
+    for (int i = 4; i >= 0; i--) {
+        timestamp <<= 8;
+        timestamp |= timestamp_buffer[i];
+    }
+    return timestamp;
+}
+
 timestamp_t read_rx_timestamp() {
+    uint32_t nrf_time = (uint32_t) ((double) k_uptime_get() / 1000 / DWT_TIME_UNITS);
     uint8_t timestamp_buffer[5];
     dwt_readrxtimestamp(timestamp_buffer);
     timestamp_t timestamp = 0;
@@ -76,10 +89,11 @@ timestamp_t read_rx_timestamp() {
         timestamp <<= 8;
         timestamp |= timestamp_buffer[i];
     }
-    return timestamp;
+    return timestamp;  // | nrf_time << (5 * 8);
 }
 
 timestamp_t read_tx_timestamp() {
+    uint32_t nrf_time = (uint32_t) ((double) k_uptime_get() / 1000 / DWT_TIME_UNITS);
     uint8_t timestamp_buffer[5];
     dwt_readtxtimestamp(timestamp_buffer);
     timestamp_t timestamp = 0;
@@ -87,12 +101,12 @@ timestamp_t read_tx_timestamp() {
         timestamp <<= 8;
         timestamp |= timestamp_buffer[i];
     }
-    return timestamp;
+    return timestamp;  // | nrf_time << (5 * 8);
 }
 
 timestamp_t message_read_timestamp(uint8_t* buffer) {
     timestamp_t result = 0;
-    for (int i = 0; i < sizeof(timestamp_t); i++) {
+    for (int i = 0; i < 8; i++) {
         result <<= 8;
         result |= buffer[i];
     }
@@ -100,8 +114,8 @@ timestamp_t message_read_timestamp(uint8_t* buffer) {
 }
 
 void message_write_timestamp(uint8_t* buffer, timestamp_t ts) {
-    for (int i = 0; i < sizeof(timestamp_t); i++) {
-        buffer[i] = (ts >> (8 * (sizeof(timestamp_t) - i - 1))) & 0xFF;
+    for (int i = 0; i < 8; i++) {
+        buffer[i] = (ts >> (8 * (7 - i))) & 0xFF;
     }
 }
 
@@ -191,18 +205,22 @@ int send_message(/*message_data_t data*/) {
         message_buffer[index + 1] = (iterator->data.sender_id >> 8) & 0xFF;
         message_buffer[index + 2] = iterator->data.sequence_number & 0xFF;
         message_buffer[index + 3] = (iterator->data.sequence_number >> 8) & 0xFF;
-        for (int j = 0; j < sizeof(timestamp_t); j++) {
-            message_buffer[index + 4 + j] = (iterator->data.rx_timestamp >> j) & 0xFF;
-        }
+        message_write_timestamp(message_buffer + index + RX_TIMESTAMP_TIMESTAMP_OFFSET, iterator->data.rx_timestamp);
     }
+
+    uint32_t tx_time = (read_systemtime() + (TX_PROCESSING_DELAY * UUS_TO_DWT_TIME)) >> 8;
+    timestamp_t tx_timestamp = (((uint64) (tx_time & 0xFFFFFFFEUL)) << 8) + TX_ANTENNA_DELAY;
+    dwt_setdelayedtrxtime(tx_time);
+
+    message_write_timestamp(message_buffer + TX_TIMESTAMP_IDX, tx_timestamp);
+
 
     dwt_writetxdata(message_size, message_buffer, 0);
     dwt_writetxfctrl(message_size, 0, 1);
-    dwt_starttx(DWT_START_TX_IMMEDIATE);
+    dwt_starttx(DWT_START_TX_DELAYED);
 
     while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS)) {
     };
-    timestamp_t tx_timestamp = read_tx_timestamp();
     set_tx_timestamp(sequence_number, tx_timestamp);
     k_free(message_buffer);
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
@@ -229,7 +247,6 @@ void check_received_messages() {
         ranging_id_t sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
         sequence_number_t sequence_number = rx_buffer[SEQUENCE_NUMBER_IDX_1] | (rx_buffer[SEQUENCE_NUMBER_IDX_2] << 8);
 
-        // TODO: Iterate over message timestamps and find own timestamp
         for (int i = RX_TIMESTAMP_OFFSET; i < frame_length; i += RX_TIMESTAMP_SIZE) {
             ranging_id_t current_id = (rx_buffer[i + RX_TIMESTAMP_RANGING_ID_OFFSET] |
                                        (rx_buffer[i + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8));
@@ -238,13 +255,32 @@ void check_received_messages() {
                 LOG_DBG("Found own ts");
                 sequence_number_t rx_sequence_number = rx_buffer[i + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] |
                                                        (rx_buffer[i + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1] << 8);
-                received_message_list_t* iterator = received_messages;
 
                 // Reference to BA
-                double tof = (double) ((rx_timestamp - get_tx_timestamp(rx_sequence_number)) -
-                                       (message_tx_timestamp - message_read_timestamp(rx_buffer + i + RX_TIMESTAMP_TIMESTAMP_OFFSET))) /
-                             2 * DWT_TIME_UNITS;
-                LOG_INF("Measured TOF: %d ms", (int) (tof / 1000));
+                LOG_DBG("Timestamps:");
+                LOG_DBG("TX_A: %llu", get_tx_timestamp(rx_sequence_number));
+                LOG_DBG("RX_B: %llu", message_read_timestamp(rx_buffer + i + RX_TIMESTAMP_TIMESTAMP_OFFSET));
+                LOG_DBG("TX_B: %llu", message_tx_timestamp);
+                LOG_DBG("RX_A: %llu", rx_timestamp);
+
+                timestamp_t tx_a = get_tx_timestamp(rx_sequence_number);
+                timestamp_t rx_a = message_read_timestamp(rx_buffer + i + RX_TIMESTAMP_TIMESTAMP_OFFSET);
+                timestamp_t tx_b = message_tx_timestamp;
+                timestamp_t rx_b = rx_timestamp;
+                if (tx_a > rx_a) {
+                    rx_a += 0x10000000000;
+                    LOG_WRN("Timestamp overflow tx_a > rx_a");
+                }
+                if (rx_b > tx_b) {
+                    tx_b += 0x10000000000;
+                    LOG_WRN("Timestamp overflow rx_b > tx_b");
+                }
+                // rx_a = tx_a > rx_a ? 0x10000000000 | rx_a : rx_a;
+                // tx_b = rx_b > tx_b ? 0x10000000000 | tx_b : tx_b;
+                // uint64_t D_a = tx_a < rx_a ? rx_a - tx_a : tx_a - rx_a;
+                // uint64_t D_b = tx_b < rx_b ? rx_b - tx_b : tx_b - rx_b;
+                double tof = ((double) ((rx_a - tx_a) - (tx_b - rx_b)) / 2) * DWT_TIME_UNITS;
+                LOG_INF("Measured TOF: %d ms", (int) (tof * 1000));
                 LOG_INF("Measured distance: %d cm to %d", (int) (tof * SPEED_OF_LIGHT / 100), sender_id);
             }
         }
@@ -308,7 +344,7 @@ void process_incoming_uart(char* message_buffer, int size) {
  */
 void check_message_to_send() {
     counter++;
-    if (counter == 500) {
+    if (counter == 5000) {
         send_message();
         print_received_message_list();
         sequence_number++;
@@ -338,7 +374,7 @@ int main(void) {
     while (1) {
         check_received_messages();
         check_message_to_send();
-        k_msleep(10);
+        k_msleep(1);
     }
     return 0;
 }
