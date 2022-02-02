@@ -3,8 +3,7 @@
 
 #define TX_PROCESSING_DELAY 4000
 
-#define TX_ANTENNA_DELAY 0
-#define RX_ANTENNA_DELAY 0
-
+#define TX_ANTENNA_DELAY 16436
+#define RX_ANTENNA_DELAY 16436
 
 #endif

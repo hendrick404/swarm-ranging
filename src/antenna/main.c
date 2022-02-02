@@ -280,8 +280,8 @@ void check_received_messages() {
                 // uint64_t D_a = tx_a < rx_a ? rx_a - tx_a : tx_a - rx_a;
                 // uint64_t D_b = tx_b < rx_b ? rx_b - tx_b : tx_b - rx_b;
                 double tof = ((double) ((rx_a - tx_a) - (tx_b - rx_b)) / 2) * DWT_TIME_UNITS;
-                LOG_INF("Measured TOF: %d ms", (int) (tof * 1000));
-                LOG_INF("Measured distance: %d cm to %d", (int) (tof * SPEED_OF_LIGHT / 100), sender_id);
+                LOG_INF("Measured TOF: %d ns", (int) (tof * 1000000000));
+                LOG_INF("Measured distance: %d cm to %d", (int) (tof * SPEED_OF_LIGHT * 100), sender_id);
             }
         }
 
@@ -344,7 +344,7 @@ void process_incoming_uart(char* message_buffer, int size) {
  */
 void check_message_to_send() {
     counter++;
-    if (counter == 5000) {
+    if (counter >= 5000) {
         send_message();
         print_received_message_list();
         sequence_number++;
@@ -363,6 +363,8 @@ int main(void) {
     }
     port_set_dw1000_fastrate();
     dwt_configure(&config);
+    dwt_setrxantennadelay(RX_ANTENNA_DELAY);
+    dwt_settxantennadelay(TX_ANTENNA_DELAY);
     dwt_setleds(1);
 
     id = get_id();
