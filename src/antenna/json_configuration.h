@@ -1,50 +1,54 @@
 #ifndef JSON_CONFIGURATION_H
 #define JSON_CONFIGURATION_H
 
-struct json_uart_message {
-    struct json_range {
-        int sender_id;
-        int receiver_id;
-        int sequence_number;
-        // char* type;
-        struct json_range_timestamps {
-            int tx_poll_ts;
-            int rx_response_ts;
-            int tx_final_ts;
-        } * timestamps;
-    } * range;
-    struct json_set {
-    } * get;
-    struct json_get {
-    } * set;
-    struct json_report {
-    } * report;
+#include "typedefs.h"
+
+#define NUM_MAX_TIMESTAMPS 128
+
+typedef struct rx_range_timestamp {
+    ranging_id_t node_id;
+    sequence_number_t sequence_number;
+    timestamp_t rx_time;
+} rx_range_timestamp_t;
+
+typedef struct rx_range {
+    ranging_id_t sender_id;
+    sequence_number_t sequence_number;
+    timestamp_t tx_time;
+    timestamp_t rx_time;
+    int timestamps_len;
+    rx_range_timestamp_t* timestamps;
+} rx_range_t;
+
+typedef struct tx_range {
+    ranging_id_t id;
+    sequence_number_t sequence_number;
+    timestamp_t tx_time;
+} tx_range_t;
+
+struct json_obj_descr json_rx_range_timestamps_descr[] = {
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "node id", node_id, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "sequence number", sequence_number, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "rx time", rx_time, JSON_TOK_NUMBER),
 };
 
-static struct json_obj_descr timestamp_descriptor[] = {
-    JSON_OBJ_DESCR_PRIM(struct json_range_timestamps, tx_poll_ts, JSON_TOK_NUMBER),
-    JSON_OBJ_DESCR_PRIM(struct json_range_timestamps, rx_response_ts, JSON_TOK_NUMBER),
-    JSON_OBJ_DESCR_PRIM(struct json_range_timestamps, tx_final_ts, JSON_TOK_NUMBER),
+struct json_obj_descr json_rx_range_descr[] = {
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range, "sender id", sender_id, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range, "sequence number", sequence_number, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range, "tx time", tx_time, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range, "rx time", rx_time, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_OBJ_ARRAY(struct rx_range,
+                             timestamps,
+                             NUM_MAX_TIMESTAMPS,
+                             timestamps_len,
+                             json_rx_range_timestamps_descr,
+                             3),
 };
 
-static struct json_obj_descr range_descriptor[] = {
-    JSON_OBJ_DESCR_PRIM(struct json_range, sender_id, JSON_TOK_NUMBER),
-    JSON_OBJ_DESCR_PRIM(struct json_range, receiver_id, JSON_TOK_NUMBER),
-
-    JSON_OBJ_DESCR_PRIM(struct json_range, sequence_number, JSON_TOK_NUMBER),
-    // JSON_OBJ_DESCR_PRIM(struct json_range, type, JSON_TOK_STRING),
-    JSON_OBJ_DESCR_OBJECT(struct json_range, timestamps, timestamp_descriptor),
-};
-
-static struct json_obj_descr get_descr[] = {};
-static struct json_obj_descr set_descr[] = {};
-static struct json_obj_descr report_descr[] = {};
-
-struct json_obj_descr uart_message_descr[] = {
-    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, range, range_descriptor),
-    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, set, get_descr),
-    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, get, set_descr),
-    JSON_OBJ_DESCR_OBJECT(struct json_uart_message, report, report_descr),
+struct json_obj_descr json_tx_range_descr[] = {
+    JSON_OBJ_DESCR_PRIM_NAMED(struct tx_range, "id", id, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct tx_range, "sequence number", sequence_number, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct tx_range, "time", tx_time, JSON_TOK_NUMBER),
 };
 
 #endif

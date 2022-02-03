@@ -1,48 +1,47 @@
 {
   "type": "object",
   "properties": {
-    "range": {
+    "rx range": {
       "type": "object",
       "properties": {
-        "sender_id": {
+        "sender id": {
           "type": "number"
         },
-        "receiver_id": {
+        "sequence number": {
           "type": "number"
         },
-        "sequence_number": {
+        "tx time": {
           "type": "number"
-        },
-        "type": {
-          "enum": ["poll", "response", "final"]
         },
         "timestamps": {
           "type": "object",
           "properties": {
-            "tx_poll_ts": {
+            "node id": {
               "type": "number"
             },
-            "rx_response_ts": {
+            "sequence number": {
               "type": "number"
             },
-            "tx_final_ts": {
+            "rx time": {
               "type": "number"
             }
           }
-        },
-        "direction": {
-          "enum": ["rx", "tx"]
         }
       }
     },
-    "set": {
-      "type": "object"
-    },
-    "get": {
-      "type": "object"
-    },
-    "report": {
-      "type": "object"
+    "tx range": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "sequence number": {
+          "type": "number"
+        },
+        "tx time":{
+          "type": "number"
+        }
+      }
     }
   }
 }
