@@ -26,6 +26,11 @@ typedef struct tx_range {
     timestamp_t tx_time;
 } tx_range_t;
 
+typedef struct range_info {
+    tx_range_t* tx_info;
+    rx_range_t* rx_info;
+} range_info_t;
+
 struct json_obj_descr json_rx_range_timestamps_descr[] = {
     JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "node id", node_id, JSON_TOK_NUMBER),
     JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "sequence number", sequence_number, JSON_TOK_NUMBER),
@@ -49,6 +54,11 @@ struct json_obj_descr json_tx_range_descr[] = {
     JSON_OBJ_DESCR_PRIM_NAMED(struct tx_range, "id", id, JSON_TOK_NUMBER),
     JSON_OBJ_DESCR_PRIM_NAMED(struct tx_range, "sequence number", sequence_number, JSON_TOK_NUMBER),
     JSON_OBJ_DESCR_PRIM_NAMED(struct tx_range, "time", tx_time, JSON_TOK_NUMBER),
+};
+
+struct json_obj_descr json_range_descr[] = {
+    JSON_OBJ_DESCR_OBJECT_NAMED(struct range_info, "tx range", tx_info, json_tx_range_descr),
+    JSON_OBJ_DESCR_OBJECT_NAMED(struct range_info, "rx range", rx_info, json_rx_range_descr),
 };
 
 #endif

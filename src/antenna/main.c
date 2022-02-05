@@ -19,7 +19,7 @@ LOG_MODULE_REGISTER(main);
 
 #define PAN_ID 0xDECA
 
-#define UART_BUFFER_SIZE 512
+#define UART_BUFFER_SIZE 1024
 
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
@@ -143,7 +143,7 @@ uint16_t get_id() {
 
 void process_in_message(rx_range_t* info) {
     char uart_buffer[UART_BUFFER_SIZE];
-    int ret = json_obj_encode_buf(json_rx_range_descr, 3, info, uart_buffer, UART_BUFFER_SIZE);
+    int ret = json_obj_encode_buf(json_rx_range_descr, 5, info, uart_buffer, UART_BUFFER_SIZE);
     if (ret) {
         LOG_ERR("Failed to encode json");
         return;
@@ -158,6 +158,20 @@ void process_in_message(rx_range_t* info) {
 void process_out_message(tx_range_t* info) {
     char uart_buffer[UART_BUFFER_SIZE];
     int ret = json_obj_encode_buf(json_tx_range_descr, 3, info, uart_buffer, UART_BUFFER_SIZE);
+    if (ret) {
+        LOG_ERR("Failed to encode json");
+        return;
+    }
+
+    for (int i = 0; i < UART_BUFFER_SIZE && uart_buffer[i] != '\0'; i++) {
+        uart_poll_out(uart_device, uart_buffer[i]);
+    }
+    uart_poll_out(uart_device, '\n');
+}
+
+void process_message(range_info_t* info) {
+    char uart_buffer[UART_BUFFER_SIZE];
+    int ret = json_obj_encode_buf(json_range_descr, 2, info, uart_buffer, UART_BUFFER_SIZE);
     if (ret) {
         LOG_ERR("Failed to encode json");
         return;
@@ -220,11 +234,14 @@ int send_message(/*message_data_t data*/) {
     };
     set_tx_timestamp(sequence_number, tx_timestamp);
     k_free(message_buffer);
-    tx_range_t info;
-    info.id = id;
-    info.sequence_number = sequence_number;
-    info.tx_time = tx_timestamp;
-    process_out_message(&info);
+
+    tx_range_t tx_info;
+    tx_info.id = id;
+    tx_info.sequence_number = sequence_number;
+    tx_info.tx_time = tx_timestamp;
+    // range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
+    process_out_message(&tx_info);
+
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
     dwt_rxenable(DWT_START_RX_IMMEDIATE);
     return 0;
@@ -243,90 +260,46 @@ void check_received_messages() {
         uint8_t* rx_buffer = (uint8_t*) k_malloc(frame_length);
         dwt_readrxdata(rx_buffer, frame_length, 0);
 
-        rx_range_t info;
-        info.sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
-        info.rx_time = read_rx_timestamp();
-        info.tx_time = message_read_timestamp(rx_buffer + TX_TIMESTAMP_IDX);
+        rx_range_t rx_info;
+        rx_info.sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
+        rx_info.rx_time = read_rx_timestamp();
+        rx_info.tx_time = message_read_timestamp(rx_buffer + TX_TIMESTAMP_IDX);
 
-        info.timestamps_len = (frame_length - RX_TIMESTAMP_OFFSET) / RX_TIMESTAMP_SIZE;
-        info.timestamps = k_malloc(sizeof(rx_range_timestamp_t) * info.timestamps_len);
+        rx_info.timestamps_len = (frame_length - RX_TIMESTAMP_OFFSET) / RX_TIMESTAMP_SIZE;
+        rx_info.timestamps = k_malloc(sizeof(rx_range_timestamp_t) * rx_info.timestamps_len);
 
-        for (int i = 0; i < info.timestamps_len; i++) {
+        for (int i = 0; i < rx_info.timestamps_len; i++) {
             int timestamp_index = RX_TIMESTAMP_OFFSET + i * RX_TIMESTAMP_SIZE;
-            info.timestamps[i].node_id = rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET] |
-                                         rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8;
-            info.timestamps[i].sequence_number = rx_buffer[timestamp_index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] |
-                                                 rx_buffer[timestamp_index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1]
-                                                     << 8;
-            info.timestamps[i].rx_time = message_read_timestamp(rx_buffer + timestamp_index + RX_TIMESTAMP_TIMESTAMP_OFFSET);
+            rx_info.timestamps[i].node_id = rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET] |
+                                            rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8;
+            rx_info.timestamps[i].sequence_number = rx_buffer[timestamp_index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] |
+                                                    rx_buffer[timestamp_index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1]
+                                                        << 8;
+            rx_info.timestamps[i].rx_time =
+                message_read_timestamp(rx_buffer + timestamp_index + RX_TIMESTAMP_TIMESTAMP_OFFSET);
         }
 
-        process_in_message(&info);
-
-
-        // timestamp_t rx_timestamp = read_rx_timestamp();
-        // timestamp_t message_tx_timestamp = message_read_timestamp(rx_buffer + TX_TIMESTAMP_IDX);
-
-        // ranging_id_t sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
-        // sequence_number_t sequence_number = rx_buffer[SEQUENCE_NUMBER_IDX_1] | (rx_buffer[SEQUENCE_NUMBER_IDX_2] <<
-        // 8);
-
-        // for (int i = RX_TIMESTAMP_OFFSET; i < frame_length; i += RX_TIMESTAMP_SIZE) {
-        //     ranging_id_t current_id = (rx_buffer[i + RX_TIMESTAMP_RANGING_ID_OFFSET] |
-        //                                (rx_buffer[i + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8));
-        //     LOG_DBG("inspection id %d", current_id);
-        //     if (current_id == id) {
-        //         LOG_DBG("Found own ts");
-        //         sequence_number_t rx_sequence_number = rx_buffer[i + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] |
-        //                                                (rx_buffer[i + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1] << 8);
-
-        //         // Reference to BA
-        //         LOG_DBG("Timestamps:");
-        //         LOG_DBG("TX_A: %llu", get_tx_timestamp(rx_sequence_number));
-        //         LOG_DBG("RX_B: %llu", message_read_timestamp(rx_buffer + i + RX_TIMESTAMP_TIMESTAMP_OFFSET));
-        //         LOG_DBG("TX_B: %llu", message_tx_timestamp);
-        //         LOG_DBG("RX_A: %llu", rx_timestamp);
-
-        //         timestamp_t tx_a = get_tx_timestamp(rx_sequence_number);
-        //         timestamp_t rx_a = message_read_timestamp(rx_buffer + i + RX_TIMESTAMP_TIMESTAMP_OFFSET);
-        //         timestamp_t tx_b = message_tx_timestamp;
-        //         timestamp_t rx_b = rx_timestamp;
-        //         if (tx_a > rx_a) {
-        //             rx_a += 0x10000000000;
-        //             LOG_WRN("Timestamp overflow tx_a > rx_a");
-        //         }
-        //         if (rx_b > tx_b) {
-        //             tx_b += 0x10000000000;
-        //             LOG_WRN("Timestamp overflow rx_b > tx_b");
-        //         }
-        //         // rx_a = tx_a > rx_a ? 0x10000000000 | rx_a : rx_a;
-        //         // tx_b = rx_b > tx_b ? 0x10000000000 | tx_b : tx_b;
-        //         // uint64_t D_a = tx_a < rx_a ? rx_a - tx_a : tx_a - rx_a;
-        //         // uint64_t D_b = tx_b < rx_b ? rx_b - tx_b : tx_b - rx_b;
-        //         double tof = ((double) ((rx_a - tx_a) - (tx_b - rx_b)) / 2) * DWT_TIME_UNITS;
-        //         LOG_INF("Measured TOF: %d ns", (int) (tof * 1000000000));
-        //         LOG_INF("Measured distance: %d cm to %d", (int) (tof * SPEED_OF_LIGHT * 100), sender_id);
-        //     }
-        // }
+        // range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
+        process_in_message(&rx_info);
 
         if (received_messages == NULL) {
             received_messages = k_malloc(sizeof(received_message_list_t));
-            received_messages->data.sender_id = info.sender_id;
-            received_messages->data.sequence_number = info.sequence_number;
-            received_messages->data.rx_timestamp = info.rx_time;
+            received_messages->data.sender_id = rx_info.sender_id;
+            received_messages->data.sequence_number = rx_info.sequence_number;
+            received_messages->data.rx_timestamp = rx_info.rx_time;
             received_messages->next = NULL;
         } else {
             received_message_list_t* iterator = received_messages;
             while (1) {
-                if (iterator->data.sender_id == info.sender_id) {
-                    iterator->data.sequence_number = info.sequence_number;
-                    iterator->data.rx_timestamp = info.rx_time;
+                if (iterator->data.sender_id == rx_info.sender_id) {
+                    iterator->data.sequence_number = rx_info.sequence_number;
+                    iterator->data.rx_timestamp = rx_info.rx_time;
                     break;
                 } else if (iterator->next == NULL) {
                     iterator->next = k_malloc(sizeof(received_message_list_t));
-                    iterator->next->data.sender_id = info.sender_id;
-                    iterator->next->data.sequence_number = info.sequence_number;
-                    iterator->next->data.rx_timestamp = info.rx_time;
+                    iterator->next->data.sender_id = rx_info.sender_id;
+                    iterator->next->data.sequence_number = rx_info.sequence_number;
+                    iterator->next->data.rx_timestamp = rx_info.rx_time;
                     iterator->next->next = NULL;
                     break;
                 }
@@ -336,7 +309,7 @@ void check_received_messages() {
 
         LOG_HEXDUMP_DBG(rx_buffer, frame_length - 2, "Received data");
 
-        k_free(info.timestamps);
+        k_free(rx_info.timestamps);
         k_free(rx_buffer);
         dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_RXFCG);
     } else if (status & SYS_STATUS_ALL_RX_ERR) {
