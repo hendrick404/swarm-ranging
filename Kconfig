@@ -1,0 +1,12 @@
+source "$ZEPHYR_BASE/Kconfig.zephyr"
+menu "Ranging Configuration"
+
+config RANGING_INTERVAL
+    int "The interval between sending ranging messages in milliseconds"
+    default 2000
+
+config TX_PROCESSING_DELAY
+    int "The time from creating a tx message to actually sending it"
+    default 500
+
+endmenu
