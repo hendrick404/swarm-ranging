@@ -1,9 +1,10 @@
 """Main module"""
 
 import json
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from serial import Serial
+import scipy as sc
 
 
 class Node:
@@ -11,6 +12,13 @@ class Node:
         self.ranging_id: int = ranging_id
         self.serial_connection: Optional[Serial] = serial_connection
         self.distance: Optional[float] = None
+        self.tx_timestamps: Dict[int, int] = {}
+
+    def get_ranging_id(self) -> int:
+        return self.ranging_id
+
+    def get_serial_connection(self) -> Optional[Serial]:
+        return self.serial_connection
 
     def set_distance(self, distance: float):
         self.distance = distance
@@ -18,17 +26,38 @@ class Node:
     def get_distance(self) -> Optional[float]:
         return self.distance
 
-    def get_serial_connection(self) -> Optional[Serial]:
-        return self.serial_connection
+    def range(self, message):
+        for timestamp in message["timestamps"]:
+            if timestamp["node id"] == self.ranging_id:
+                try:
+                    distance = (
+                        message["rx time"]
+                        - self.tx_timestamps[timestamp["sequence number"]]
+                    ) - (
+                        message["tx time"] - timestamp["rx time"]
+                    ) / 2 * sc.speed_of_light
+                    sender_id = message["sender id"]
+                    print(f"Distance to {sender_id} is {distance}")
+                except KeyError:
+                    print("Missing tx timestamp")
+            else:
+                pass  # Passive ranging
 
-    def get_ranging_id(self) -> int:
-        return self.ranging_id
+    def tx_event(self, message):
+        assert message["node id"] == self.ranging_id
+        self.tx_timestamps[message["sequence number"]] = message["tx time"]
+
+
+connections: List[Node] = []
+known_peers: List[Node] = []
 
 
 def main():
     """Main function. Loops forever and performs ranging."""
+    global connections, known_peers
 
-    connections: List[Node] = connect()
+    connections = connect()
+    known_peers = connect()
 
     while True:
         for node in connections:
@@ -37,20 +66,22 @@ def main():
                 line = connection.readline()
                 try:
                     json_string = str(line)
-                    json_string = json_string[2 : len(json_string) - 3]  # TODO
+                    # TODO: Trim dynamically
+                    json_string = json_string[2 : len(json_string) - 3]
                     decoded_json = json.JSONDecoder().decode(json_string)
                     if decoded_json:
-                        sender_id = decoded_json["range"]["sender_id"]
-                        print("Received message from " + str(sender_id))
+                        # print(decoded_json)
+                        if "rx range" in decoded_json:
+                            print("RX Event")
+                            node.range(decoded_json["rx range"])
+                        if "tx range" in decoded_json:
+                            node.tx_event(decoded_json["tx range"])
+                            print("TX Event")
                 except json.JSONDecodeError:
                     # Apparently we did not get a valid json, maybe a debug log
                     pass
                 except KeyError:
                     pass
-
-
-def range_next() -> Optional[Tuple[Node, Node]]:
-    return (Node(1), Node(2))
 
 
 def connect() -> List[Node]:

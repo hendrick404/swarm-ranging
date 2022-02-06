@@ -141,41 +141,36 @@ uint16_t get_id() {
     }
 }
 
-void process_in_message(rx_range_t* info) {
-    char uart_buffer[UART_BUFFER_SIZE];
-    int ret = json_obj_encode_buf(json_rx_range_descr, 5, info, uart_buffer, UART_BUFFER_SIZE);
-    if (ret) {
-        LOG_ERR("Failed to encode json");
-        return;
-    }
-
-    for (int i = 0; i < UART_BUFFER_SIZE && uart_buffer[i] != '\0'; i++) {
-        uart_poll_out(uart_device, uart_buffer[i]);
-    }
-    uart_poll_out(uart_device, '\n');
-}
-
-void process_out_message(tx_range_t* info) {
-    char uart_buffer[UART_BUFFER_SIZE];
-    int ret = json_obj_encode_buf(json_tx_range_descr, 3, info, uart_buffer, UART_BUFFER_SIZE);
-    if (ret) {
-        LOG_ERR("Failed to encode json");
-        return;
-    }
-
-    for (int i = 0; i < UART_BUFFER_SIZE && uart_buffer[i] != '\0'; i++) {
-        uart_poll_out(uart_device, uart_buffer[i]);
-    }
-    uart_poll_out(uart_device, '\n');
-}
-
 void process_message(range_info_t* info) {
     char uart_buffer[UART_BUFFER_SIZE];
-    int ret = json_obj_encode_buf(json_range_descr, 2, info, uart_buffer, UART_BUFFER_SIZE);
-    if (ret) {
-        LOG_ERR("Failed to encode json");
-        return;
+    snprintf(uart_buffer, UART_BUFFER_SIZE, "{");
+    char temp[256];
+    if (info->rx_info != NULL) {
+        snprintf(temp, 256, "\"rx range\": {\"sender id\": %u, \"tx time\": %llu, \"rx time\": %llu, \"timestamps\": [",
+                 info->rx_info->sender_id, info->rx_info->tx_time, info->rx_info->rx_time);
+        strncat(uart_buffer, temp, UART_BUFFER_SIZE);
+        for (int i = 0; i < info->rx_info->timestamps_len; i++) {
+            rx_range_timestamp_t* ts = info->rx_info->timestamps + i;
+            snprintf(temp, 256, "{\"node id\": %u, \"sequence number\": %u, \"rx time\": %llu}", ts->node_id,
+                     ts->sequence_number, ts->rx_time);
+            strncat(uart_buffer, temp, UART_BUFFER_SIZE);
+            if (i < info->rx_info->timestamps_len - 1) {
+                strncat(uart_buffer, ",", UART_BUFFER_SIZE);
+            }
+        }
+        strncat(uart_buffer, "]}", UART_BUFFER_SIZE);
+        if (info->tx_info != NULL) {
+            strncat(uart_buffer, ",", UART_BUFFER_SIZE);
+        }
     }
+
+    if (info->tx_info != NULL) {
+        snprintf(temp, 256, "\"tx range\": {\"id\": %u, \"sequence number\": %u, \"tx time\": %llu}", info->tx_info->id,
+                 info->tx_info->sequence_number, info->tx_info->tx_time);
+        strncat(uart_buffer, temp, UART_BUFFER_SIZE);
+    }
+
+    strncat(uart_buffer, "}", UART_BUFFER_SIZE);
 
     for (int i = 0; i < UART_BUFFER_SIZE && uart_buffer[i] != '\0'; i++) {
         uart_poll_out(uart_device, uart_buffer[i]);
@@ -212,7 +207,7 @@ int send_message(/*message_data_t data*/) {
 
     iterator = received_messages;
     for (int i = 0; i < num_timestamp; i++) {
-        int index = RX_TIMESTAMP_OFFSET + (sizeof(timestamp_t) + sizeof(ranging_id_t) + sizeof(sequence_number_t)) * i;
+        int index = RX_TIMESTAMP_OFFSET + (RX_TIMESTAMP_SIZE * i);
         message_buffer[index] = iterator->data.sender_id & 0xFF;
         message_buffer[index + 1] = (iterator->data.sender_id >> 8) & 0xFF;
         message_buffer[index + 2] = iterator->data.sequence_number & 0xFF;
@@ -239,8 +234,8 @@ int send_message(/*message_data_t data*/) {
     tx_info.id = id;
     tx_info.sequence_number = sequence_number;
     tx_info.tx_time = tx_timestamp;
-    // range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
-    process_out_message(&tx_info);
+    range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
+    process_message(&info);
 
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
     dwt_rxenable(DWT_START_RX_IMMEDIATE);
@@ -279,8 +274,8 @@ void check_received_messages() {
                 message_read_timestamp(rx_buffer + timestamp_index + RX_TIMESTAMP_TIMESTAMP_OFFSET);
         }
 
-        // range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
-        process_in_message(&rx_info);
+        range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
+        process_message(&info);
 
         if (received_messages == NULL) {
             received_messages = k_malloc(sizeof(received_message_list_t));
@@ -317,8 +312,6 @@ void check_received_messages() {
         dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_ALL_RX_ERR);
     }
 }
-
-void process_incoming_uart(char* message_buffer, int size) {}
 
 /**
  * @brief Checks if there are messages pending to be send and send them if so.

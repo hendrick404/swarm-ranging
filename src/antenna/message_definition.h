@@ -6,7 +6,7 @@
 #define FRAME_CONTROL_1 0x88
 #define FRAME_CONTROL_2 0x41
 
-#define TIMESTAMP_SIZE 8
+#define TIMESTAMP_SIZE sizeof(timestamp_t)
 
 #define FRAME_CONTROL_IDX_1 0
 #define FRAME_CONTROL_IDX_2 1
@@ -22,9 +22,9 @@
 
 #define TX_TIMESTAMP_IDX 9
 
-#define RX_TIMESTAMP_OFFSET TX_TIMESTAMP_IDX + 8
+#define RX_TIMESTAMP_OFFSET TX_TIMESTAMP_IDX + TIMESTAMP_SIZE
 
-#define RX_TIMESTAMP_SIZE 8 + sizeof(ranging_id_t) + sizeof(sequence_number_t)
+#define RX_TIMESTAMP_SIZE TIMESTAMP_SIZE + sizeof(ranging_id_t) + sizeof(sequence_number_t)
 #define RX_TIMESTAMP_RANGING_ID_OFFSET 0
 #define RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET sizeof(ranging_id_t)
 #define RX_TIMESTAMP_TIMESTAMP_OFFSET sizeof(ranging_id_t) + sizeof(sequence_number_t)

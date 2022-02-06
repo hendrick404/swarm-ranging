@@ -13,6 +13,9 @@
         "tx time": {
           "type": "number"
         },
+        "rx time": {
+          "type": "number"
+        },
         "timestamps": {
           "type": "object",
           "properties": {
