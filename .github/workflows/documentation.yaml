@@ -15,6 +15,7 @@ jobs:
           python-version: '3.9'
       - name: "Install dependencies"
         run: |
+          apt install doxygen
           pip install -r requirements-doc.txt
       - name: "Build doc"
         working-directory: doc
