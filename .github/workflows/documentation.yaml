@@ -15,7 +15,8 @@ jobs:
           python-version: '3.9'
       - name: "Install dependencies"
         run: |
-          sudo -H pip install -r requirements-doc.txt
-      - uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "doc/"
+          pip install -r requirements-doc.txt
+      - name: "Build doc"
+        working-directory: doc
+        run: |
+          sphinx-build -a -b html source build
