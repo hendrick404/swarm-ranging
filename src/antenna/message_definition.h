@@ -3,10 +3,15 @@
 
 #include "typedefs.h"
 
+/** @brief Lower byte of the frame control. */
 #define FRAME_CONTROL_1 0x88
+/** @brief Higher byte of the frame control. */
 #define FRAME_CONTROL_2 0x41
 
-#define TIMESTAMP_SIZE sizeof(timestamp_t)
+/**
+ * \defgroup message_idx Message indexes
+ * @{
+ */
 
 #define FRAME_CONTROL_IDX_1 0
 #define FRAME_CONTROL_IDX_2 1
@@ -21,6 +26,13 @@
 #define SENDER_ID_IDX_2 8
 
 #define TX_TIMESTAMP_IDX 9
+
+/**
+ * @}
+ */
+
+/** @brief The size of a timestamp field. */
+#define TIMESTAMP_SIZE sizeof(timestamp_t)
 
 #define RX_TIMESTAMP_OFFSET TX_TIMESTAMP_IDX + TIMESTAMP_SIZE
 
