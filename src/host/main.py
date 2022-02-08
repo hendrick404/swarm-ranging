@@ -1,17 +1,25 @@
 """Main module"""
 
 import json
-from typing import Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional
 
+from scipy.constants import speed_of_light
 from serial import Serial
-import scipy as sc
 
 
 class Node:
-    def __init__(self, ranging_id: int, serial_connection: Optional[Serial] = None):
+    def __init__(
+        self,
+        ranging_id: int,
+        serial_connection: Optional[Serial] = None,
+        distance_callback: Callable[[int, float], None] = None,
+        distance_difference_callback: Callable[[int,int,float], None] = None,
+        distance_foreign_callback: Callable[[int,int, float], None] = None
+    ):
         self.ranging_id: int = ranging_id
         self.serial_connection: Optional[Serial] = serial_connection
-        self.distance: Optional[float] = None
+        self.distance_callback = distance_callback
+        self.distance_difference_callback = distance_difference_callback
         self.tx_timestamps: Dict[int, int] = {}
 
     def get_ranging_id(self) -> int:
@@ -20,12 +28,6 @@ class Node:
     def get_serial_connection(self) -> Optional[Serial]:
         return self.serial_connection
 
-    def set_distance(self, distance: float):
-        self.distance = distance
-
-    def get_distance(self) -> Optional[float]:
-        return self.distance
-
     def range(self, message):
         for timestamp in message["timestamps"]:
             if timestamp["node id"] == self.ranging_id:
@@ -33,11 +35,11 @@ class Node:
                     distance = (
                         message["rx time"]
                         - self.tx_timestamps[timestamp["sequence number"]]
-                    ) - (
-                        message["tx time"] - timestamp["rx time"]
-                    ) / 2 * sc.speed_of_light
+                    ) - (message["tx time"] - timestamp["rx time"]) / 2 * speed_of_light
                     sender_id = message["sender id"]
-                    print(f"Distance to {sender_id} is {distance}")
+                    if self.distance_callback:
+                        self.distance_callback(sender_id, distance)
+                    # print(f"Distance to {sender_id} is {distance}")
                 except KeyError:
                     print("Missing tx timestamp")
             else:
@@ -48,16 +50,10 @@ class Node:
         self.tx_timestamps[message["sequence number"]] = message["tx time"]
 
 
-connections: List[Node] = []
-known_peers: List[Node] = []
-
-
 def main():
     """Main function. Loops forever and performs ranging."""
-    global connections, known_peers
 
     connections = connect()
-    known_peers = connect()
 
     while True:
         for node in connections:
