@@ -16,23 +16,23 @@ typedef struct rx_range {
     sequence_number_t sequence_number;
     timestamp_t tx_time;
     timestamp_t rx_time;
-    int timestamps_len;
+    size_t timestamps_len;
     rx_range_timestamp_t* timestamps;
-} rx_range_t;
+} rx_range_info_t;
 
 typedef struct tx_range {
     ranging_id_t id;
     sequence_number_t sequence_number;
     timestamp_t tx_time;
-} tx_range_t;
+} tx_range_info_t;
 
 typedef struct range_info {
-    tx_range_t* tx_info;
-    rx_range_t* rx_info;
+    tx_range_info_t* tx_info;
+    rx_range_info_t* rx_info;
 } range_info_t;
 
 struct json_obj_descr json_rx_range_timestamps_descr[] = {
-    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "node id", node_id, JSON_TOK_NUMBER),
+    JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "id", node_id, JSON_TOK_NUMBER),
     JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "sequence number", sequence_number, JSON_TOK_NUMBER),
     JSON_OBJ_DESCR_PRIM_NAMED(struct rx_range_timestamp, "rx time", rx_time, JSON_TOK_NUMBER),
 };

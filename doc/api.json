@@ -19,7 +19,7 @@
         "timestamps": {
           "type": "object",
           "properties": {
-            "node id": {
+            "id": {
               "type": "number"
             },
             "sequence number": {

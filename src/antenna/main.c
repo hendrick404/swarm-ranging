@@ -141,41 +141,85 @@ uint16_t get_id() {
     }
 }
 
+void uart_out(char* msg) {
+    while (*msg != '\0') {
+        uart_poll_out(uart_device, *msg);
+        msg++;
+    }
+}
+
+int json_send_bytes_uart(const char* bytes, size_t len, void* data) {
+    for (int i = 0; i < len; i++) {
+        uart_poll_out(uart_device, bytes[i]);
+    }
+    return 0;
+}
+
+void process_out_message(tx_range_info_t* info) {
+    uart_out("{\"tx range\": ");
+    int ret = json_obj_encode(json_tx_range_descr, 3, (void*) info, json_send_bytes_uart, NULL);
+    if (ret) {
+        LOG_ERR("Failed to encode json errno: %d", ret);
+        return;
+    }
+    uart_out("}\n");
+}
+
+void process_in_message(rx_range_info_t* info) {
+    uart_out("{\"rx range\": ");
+    int ret = json_obj_encode(json_rx_range_descr, 5, (void*) info, json_send_bytes_uart, NULL);
+    if (ret) {
+        LOG_ERR("Failed to encode json errno: %d", ret);
+        return;
+    }
+    uart_out("}\n");
+    // sprintf(uart_buffer, "{\"rx range\":%s}", json_buffer);
+    // uart_out(uart_buffer);
+}
+
 void process_message(range_info_t* info) {
     char uart_buffer[UART_BUFFER_SIZE];
-    snprintf(uart_buffer, UART_BUFFER_SIZE, "{");
-    char temp[256];
-    if (info->rx_info != NULL) {
-        snprintf(temp, 256, "\"rx range\": {\"sender id\": %u, \"tx time\": %llu, \"rx time\": %llu, \"timestamps\": [",
-                 info->rx_info->sender_id, info->rx_info->tx_time, info->rx_info->rx_time);
-        strncat(uart_buffer, temp, UART_BUFFER_SIZE);
-        for (int i = 0; i < info->rx_info->timestamps_len; i++) {
-            rx_range_timestamp_t* ts = info->rx_info->timestamps + i;
-            snprintf(temp, 256, "{\"node id\": %u, \"sequence number\": %u, \"rx time\": %llu}", ts->node_id,
-                     ts->sequence_number, ts->rx_time);
-            strncat(uart_buffer, temp, UART_BUFFER_SIZE);
-            if (i < info->rx_info->timestamps_len - 1) {
-                strncat(uart_buffer, ",", UART_BUFFER_SIZE);
-            }
-        }
-        strncat(uart_buffer, "]}", UART_BUFFER_SIZE);
-        if (info->tx_info != NULL) {
-            strncat(uart_buffer, ",", UART_BUFFER_SIZE);
-        }
+    int ret = json_obj_encode(json_range_descr, 2, (void*) info, json_send_bytes_uart, NULL);
+    if (ret) {
+        LOG_ERR("Failed to encode json errno: %d", ret);
+        return;
     }
+    // uart_out(uart_buffer);
+    // snprintf(uart_buffer, UART_BUFFER_SIZE, "{");
+    // char temp[256];
+    // if (info->rx_info != NULL) {
+    //     snprintf(temp, 256, "\"rx range\": {\"sender id\": %u, \"tx time\": %llu, \"rx time\": %llu, \"timestamps\":
+    //     [",
+    //              info->rx_info->sender_id, info->rx_info->tx_time, info->rx_info->rx_time);
+    //     strncat(uart_buffer, temp, UART_BUFFER_SIZE);
+    //     for (int i = 0; i < info->rx_info->timestamps_len; i++) {
+    //         rx_range_timestamp_t* ts = info->rx_info->timestamps + i;
+    //         snprintf(temp, 256, "{\"node id\": %u, \"sequence number\": %u, \"rx time\": %llu}", ts->node_id,
+    //                  ts->sequence_number, ts->rx_time);
+    //         strncat(uart_buffer, temp, UART_BUFFER_SIZE);
+    //         if (i < info->rx_info->timestamps_len - 1) {
+    //             strncat(uart_buffer, ",", UART_BUFFER_SIZE);
+    //         }
+    //     }
+    //     strncat(uart_buffer, "]}", UART_BUFFER_SIZE);
+    //     if (info->tx_info != NULL) {
+    //         strncat(uart_buffer, ",", UART_BUFFER_SIZE);
+    //     }
+    // }
 
-    if (info->tx_info != NULL) {
-        snprintf(temp, 256, "\"tx range\": {\"id\": %u, \"sequence number\": %u, \"tx time\": %llu}", info->tx_info->id,
-                 info->tx_info->sequence_number, info->tx_info->tx_time);
-        strncat(uart_buffer, temp, UART_BUFFER_SIZE);
-    }
+    // if (info->tx_info != NULL) {
+    //     snprintf(temp, 256, "\"tx range\": {\"id\": %u, \"sequence number\": %u, \"tx time\": %llu}",
+    //     info->tx_info->id,
+    //              info->tx_info->sequence_number, info->tx_info->tx_time);
+    //     strncat(uart_buffer, temp, UART_BUFFER_SIZE);
+    // }
 
-    strncat(uart_buffer, "}", UART_BUFFER_SIZE);
+    // strncat(uart_buffer, "}", UART_BUFFER_SIZE);
 
-    for (int i = 0; i < UART_BUFFER_SIZE && uart_buffer[i] != '\0'; i++) {
-        uart_poll_out(uart_device, uart_buffer[i]);
-    }
-    uart_poll_out(uart_device, '\n');
+    // for (int i = 0; i < UART_BUFFER_SIZE && uart_buffer[i] != '\0'; i++) {
+    //     uart_poll_out(uart_device, uart_buffer[i]);
+    // }
+    // uart_poll_out(uart_device, '\n');
 }
 
 /**
@@ -206,13 +250,14 @@ int send_message(/*message_data_t data*/) {
     message_buffer[SENDER_ID_IDX_2] = (id >> 8) & 0xFF;
 
     iterator = received_messages;
-    for (int i = 0; i < num_timestamp; i++) {
+    for (int i = 0; i < num_timestamp && iterator != NULL; i++) {
         int index = RX_TIMESTAMP_OFFSET + (RX_TIMESTAMP_SIZE * i);
         message_buffer[index] = iterator->data.sender_id & 0xFF;
         message_buffer[index + 1] = (iterator->data.sender_id >> 8) & 0xFF;
         message_buffer[index + 2] = iterator->data.sequence_number & 0xFF;
         message_buffer[index + 3] = (iterator->data.sequence_number >> 8) & 0xFF;
         message_write_timestamp(message_buffer + index + RX_TIMESTAMP_TIMESTAMP_OFFSET, iterator->data.rx_timestamp);
+        iterator = iterator->next;
     }
 
     uint32_t tx_time = (read_systemtime() + (TX_PROCESSING_DELAY * UUS_TO_DWT_TIME)) >> 8;
@@ -230,12 +275,12 @@ int send_message(/*message_data_t data*/) {
     set_tx_timestamp(sequence_number, tx_timestamp);
     k_free(message_buffer);
 
-    tx_range_t tx_info;
+    tx_range_info_t tx_info;
     tx_info.id = id;
     tx_info.sequence_number = sequence_number;
     tx_info.tx_time = tx_timestamp;
     range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
-    process_message(&info);
+    process_out_message(&tx_info);
 
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
     dwt_rxenable(DWT_START_RX_IMMEDIATE);
@@ -255,15 +300,17 @@ void check_received_messages() {
         uint8_t* rx_buffer = (uint8_t*) k_malloc(frame_length);
         dwt_readrxdata(rx_buffer, frame_length, 0);
 
-        rx_range_t rx_info;
+        rx_range_info_t rx_info;
         rx_info.sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
         rx_info.rx_time = read_rx_timestamp();
         rx_info.tx_time = message_read_timestamp(rx_buffer + TX_TIMESTAMP_IDX);
 
         rx_info.timestamps_len = (frame_length - RX_TIMESTAMP_OFFSET) / RX_TIMESTAMP_SIZE;
+        LOG_DBG("Timestamp num: %d", rx_info.timestamps_len);
         rx_info.timestamps = k_malloc(sizeof(rx_range_timestamp_t) * rx_info.timestamps_len);
 
         for (int i = 0; i < rx_info.timestamps_len; i++) {
+            LOG_DBG("Reading timestamp %d", i);
             int timestamp_index = RX_TIMESTAMP_OFFSET + i * RX_TIMESTAMP_SIZE;
             rx_info.timestamps[i].node_id = rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET] |
                                             rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8;
@@ -275,7 +322,7 @@ void check_received_messages() {
         }
 
         range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
-        process_message(&info);
+        process_in_message(&rx_info);
 
         if (received_messages == NULL) {
             received_messages = k_malloc(sizeof(received_message_list_t));
