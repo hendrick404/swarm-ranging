@@ -20,6 +20,7 @@ class Node:
         self.serial_connection: Optional[Serial] = serial_connection
         self.distance_callback = distance_callback
         self.distance_difference_callback = distance_difference_callback
+        self.distance_foreign_callback = distance_foreign_callback
         self.tx_timestamps: Dict[int, int] = {}
 
     def get_ranging_id(self) -> int:
