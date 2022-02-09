@@ -15,10 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          path: car-ranging
+          path: swarm-ranging
 
       - name: Initialize
-        working-directory: car-ranging
+        working-directory: swarm-ranging
         run: |
           pip3 install west
           west init -l .
