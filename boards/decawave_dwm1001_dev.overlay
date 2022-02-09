@@ -1,0 +1,28 @@
+/*
+ * Copyright (c) 2017 Shawn Nock <shawn@monadnock.ca>
+ * Copyright (c) 2017 Linaro Limited
+ * Copyright (c) 2019 Frederic Mes <fred@rtloc.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Extract from https://github.com/foldedtoad/dwm1001/blob/9aba3a427f7adfb53000523d8e0e4865c73a0abe/boards/arm/nrf52_dwm1001/nrf52_dwm1001.dts
+ */
+
+ / {
+    radio {
+		compatible = "gpio-generic";
+		dwmirq: dwm_irq {
+			gpios = <&gpio0 19 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+			label = "RADIO_IRQ";
+		};
+	};
+};
+
+&spi1 {
+	compatible = "nordic,nrf-spi";
+	status = "okay";
+	sck-pin  = <16>;
+	mosi-pin = <20>;
+	miso-pin = <18>;
+	cs-gpios = <&gpio0 17 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+};
