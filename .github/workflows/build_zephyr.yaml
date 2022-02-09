@@ -1,0 +1,33 @@
+name: Build
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: zephyrprojectrtos/ci:latest
+    env:
+      CMAKE_PREFIX_PATH: /opt/toolchains
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: car-ranging
+
+      - name: Initialize
+        working-directory: car-ranging
+        run: |
+          pip3 install -U west
+          west init -l .
+          west update
+          west zephyr-export
+          pip3 install -r ../zephyr/scripts/requirements-base.txt
+      - name: Build firmware
+        working-directory: swarm-ranging
+        run: |
+          cmake -Bbuild -H. -DBOARD=nrf52_dwm1001
+          cd build
+          make
