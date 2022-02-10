@@ -214,3 +214,5 @@ cython_debug/
 !lib/decadriver
 !lib/platform
 !lib/unity
+# Platformio
+.pio
