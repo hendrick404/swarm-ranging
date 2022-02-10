@@ -17,10 +17,6 @@
 #define LOG_LEVEL 4
 LOG_MODULE_REGISTER(main);
 
-#define PAN_ID 0xDECA
-
-#define UART_BUFFER_SIZE 1024
-
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
 static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, DWT_BR_6M8, DWT_PHRMODE_STD, (129)};
@@ -173,53 +169,14 @@ void process_in_message(rx_range_info_t* info) {
         return;
     }
     uart_out("}\n");
-    // sprintf(uart_buffer, "{\"rx range\":%s}", json_buffer);
-    // uart_out(uart_buffer);
 }
 
 void process_message(range_info_t* info) {
-    char uart_buffer[UART_BUFFER_SIZE];
     int ret = json_obj_encode(json_range_descr, 2, (void*) info, json_send_bytes_uart, NULL);
     if (ret) {
         LOG_ERR("Failed to encode json errno: %d", ret);
         return;
     }
-    // uart_out(uart_buffer);
-    // snprintf(uart_buffer, UART_BUFFER_SIZE, "{");
-    // char temp[256];
-    // if (info->rx_info != NULL) {
-    //     snprintf(temp, 256, "\"rx range\": {\"sender id\": %u, \"tx time\": %llu, \"rx time\": %llu, \"timestamps\":
-    //     [",
-    //              info->rx_info->sender_id, info->rx_info->tx_time, info->rx_info->rx_time);
-    //     strncat(uart_buffer, temp, UART_BUFFER_SIZE);
-    //     for (int i = 0; i < info->rx_info->timestamps_len; i++) {
-    //         rx_range_timestamp_t* ts = info->rx_info->timestamps + i;
-    //         snprintf(temp, 256, "{\"node id\": %u, \"sequence number\": %u, \"rx time\": %llu}", ts->node_id,
-    //                  ts->sequence_number, ts->rx_time);
-    //         strncat(uart_buffer, temp, UART_BUFFER_SIZE);
-    //         if (i < info->rx_info->timestamps_len - 1) {
-    //             strncat(uart_buffer, ",", UART_BUFFER_SIZE);
-    //         }
-    //     }
-    //     strncat(uart_buffer, "]}", UART_BUFFER_SIZE);
-    //     if (info->tx_info != NULL) {
-    //         strncat(uart_buffer, ",", UART_BUFFER_SIZE);
-    //     }
-    // }
-
-    // if (info->tx_info != NULL) {
-    //     snprintf(temp, 256, "\"tx range\": {\"id\": %u, \"sequence number\": %u, \"tx time\": %llu}",
-    //     info->tx_info->id,
-    //              info->tx_info->sequence_number, info->tx_info->tx_time);
-    //     strncat(uart_buffer, temp, UART_BUFFER_SIZE);
-    // }
-
-    // strncat(uart_buffer, "}", UART_BUFFER_SIZE);
-
-    // for (int i = 0; i < UART_BUFFER_SIZE && uart_buffer[i] != '\0'; i++) {
-    //     uart_poll_out(uart_device, uart_buffer[i]);
-    // }
-    // uart_poll_out(uart_device, '\n');
 }
 
 /**
@@ -244,8 +201,8 @@ int send_message(/*message_data_t data*/) {
     message_buffer[FRAME_CONTROL_IDX_2] = 0x41;
     message_buffer[SEQUENCE_NUMBER_IDX_1] = sequence_number & 0xFF;
     message_buffer[SEQUENCE_NUMBER_IDX_2] = (sequence_number >> 8) & 0xFF;
-    message_buffer[PAN_ID_IDX_1] = PAN_ID & 0xFF;
-    message_buffer[PAN_ID_IDX_2] = (PAN_ID >> 8) & 0xFF;
+    message_buffer[PAN_ID_IDX_1] = CONFIG_PAN_ID & 0xFF;
+    message_buffer[PAN_ID_IDX_2] = (CONFIG_PAN_ID >> 8) & 0xFF;
     message_buffer[SENDER_ID_IDX_1] = id & 0xFF;
     message_buffer[SENDER_ID_IDX_2] = (id >> 8) & 0xFF;
 
@@ -260,7 +217,7 @@ int send_message(/*message_data_t data*/) {
         iterator = iterator->next;
     }
 
-    uint32_t tx_time = (read_systemtime() + (TX_PROCESSING_DELAY * UUS_TO_DWT_TIME)) >> 8;
+    uint32_t tx_time = (read_systemtime() + (CONFIG_TX_PROCESSING_DELAY * UUS_TO_DWT_TIME)) >> 8;
     timestamp_t tx_timestamp = (((uint64) (tx_time & 0xFFFFFFFEUL)) << 8) + TX_ANTENNA_DELAY;
     dwt_setdelayedtrxtime(tx_time);
 

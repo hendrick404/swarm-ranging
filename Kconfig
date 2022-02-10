@@ -9,4 +9,8 @@ config TX_PROCESSING_DELAY
     int "The time from creating a tx message to actually sending it"
     default 500
 
+config PAN_ID
+    int "The PAN ID"
+    default 57034
+
 endmenu
