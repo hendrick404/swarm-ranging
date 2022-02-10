@@ -3,7 +3,11 @@ menu "Ranging Configuration"
 
 config RANGING_INTERVAL
     int "The interval between sending ranging messages in milliseconds"
-    default 2000
+    default 1000
+
+config RANGING_INTERVAL_MAX_DEVIATION
+    int ""
+    default 100
 
 config TX_PROCESSING_DELAY
     int "The time from creating a tx message to actually sending it"

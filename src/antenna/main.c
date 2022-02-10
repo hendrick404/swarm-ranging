@@ -1,6 +1,7 @@
 #include <data/json.h>
 #include <drivers/uart.h>
 #include <logging/log.h>
+#include <syscalls/rand32.h>
 #include <zephyr.h>
 
 #include "deca_device_api.h"
@@ -16,6 +17,8 @@
 
 #define LOG_LEVEL 4
 LOG_MODULE_REGISTER(main);
+
+K_TIMER_DEFINE(send_timer, NULL, NULL);
 
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
@@ -317,20 +320,6 @@ void check_received_messages() {
     }
 }
 
-/**
- * @brief Checks if there are messages pending to be send and send them if so.
- *
- */
-void check_message_to_send() {
-    counter++;
-    if (counter >= 5000) {
-        send_message();
-        print_received_message_list();
-        sequence_number++;
-        counter = 0;
-    }
-}
-
 int main(void) {
     // Initialise dwm1001
     reset_DW1000();
@@ -352,10 +341,18 @@ int main(void) {
     tx_timestamps = k_malloc(sizeof(tx_timestamp_list_t));
     tx_timestamps->next = NULL;
 
+    k_timer_start(&send_timer, K_MSEC(CONFIG_RANGING_INTERVAL), K_NO_WAIT);
+
     while (1) {
         check_received_messages();
-        check_message_to_send();
-        k_msleep(1);
+        if (k_timer_status_get(&send_timer) > 0) {
+            send_message();
+            sequence_number++;
+            // TODO: Use random number
+            // int deviation = sys_rand32_get() % CONFIG_RANGING_INTERVAL_MAX_DEVIATION;
+            int deviation = dwt_getpartid() % CONFIG_RANGING_INTERVAL_MAX_DEVIATION;
+            k_timer_start(&send_timer, K_MSEC(CONFIG_RANGING_INTERVAL + deviation), K_NO_WAIT);
+        }
     }
     return 0;
 }
