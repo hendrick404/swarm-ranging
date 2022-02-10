@@ -209,10 +209,10 @@ int send_message(/*message_data_t data*/) {
     iterator = received_messages;
     for (int i = 0; i < num_timestamp && iterator != NULL; i++) {
         int index = RX_TIMESTAMP_OFFSET + (RX_TIMESTAMP_SIZE * i);
-        message_buffer[index] = iterator->data.sender_id & 0xFF;
-        message_buffer[index + 1] = (iterator->data.sender_id >> 8) & 0xFF;
-        message_buffer[index + 2] = iterator->data.sequence_number & 0xFF;
-        message_buffer[index + 3] = (iterator->data.sequence_number >> 8) & 0xFF;
+        message_buffer[index + RX_TIMESTAMP_RANGING_ID_OFFSET] = iterator->data.sender_id & 0xFF;
+        message_buffer[index + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] = (iterator->data.sender_id >> 8) & 0xFF;
+        message_buffer[index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] = iterator->data.sequence_number & 0xFF;
+        message_buffer[index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1] = (iterator->data.sequence_number >> 8) & 0xFF;
         message_write_timestamp(message_buffer + index + RX_TIMESTAMP_TIMESTAMP_OFFSET, iterator->data.rx_timestamp);
         iterator = iterator->next;
     }
