@@ -1,5 +1,4 @@
-#include <data/json.h>
-#include <drivers/uart.h>
+
 #include <logging/log.h>
 #include <syscalls/rand32.h>
 #include <zephyr.h>
@@ -10,7 +9,7 @@
 #include "port.h"
 
 #include "configuration.h"
-#include "json_configuration.h"
+#include "host_interface.h"
 #include "message_definition.h"
 #include "misc.h"
 #include "storage.h"
@@ -21,7 +20,6 @@ LOG_MODULE_REGISTER(main);
 
 K_TIMER_DEFINE(send_timer, NULL, NULL);
 
-static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
 static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, DWT_BR_6M8, DWT_PHRMODE_STD, (129)};
 
@@ -109,48 +107,6 @@ ranging_id_t get_id() {
             return 3;
         default:
             return 0;
-    }
-}
-
-void uart_out(char* msg) {
-    while (*msg != '\0') {
-        uart_poll_out(uart_device, *msg);
-        msg++;
-    }
-}
-
-int json_send_bytes_uart(const char* bytes, size_t len, void* data) {
-    for (int i = 0; i < len; i++) {
-        uart_poll_out(uart_device, bytes[i]);
-    }
-    return 0;
-}
-
-void process_out_message(tx_range_info_t* info) {
-    uart_out("{\"tx range\": ");
-    int ret = json_obj_encode(json_tx_range_descr, 3, (void*) info, json_send_bytes_uart, NULL);
-    if (ret) {
-        LOG_ERR("Failed to encode json errno: %d", ret);
-        return;
-    }
-    uart_out("}\n");
-}
-
-void process_in_message(rx_range_info_t* info) {
-    uart_out("{\"rx range\": ");
-    int ret = json_obj_encode(json_rx_range_descr, 5, (void*) info, json_send_bytes_uart, NULL);
-    if (ret) {
-        LOG_ERR("Failed to encode json errno: %d", ret);
-        return;
-    }
-    uart_out("}\n");
-}
-
-void process_message(range_info_t* info) {
-    int ret = json_obj_encode(json_range_descr, 2, (void*) info, json_send_bytes_uart, NULL);
-    if (ret) {
-        LOG_ERR("Failed to encode json errno: %d", ret);
-        return;
     }
 }
 

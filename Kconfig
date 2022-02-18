@@ -17,4 +17,8 @@ config PAN_ID
     int "The PAN ID"
     default 57034
 
+config NUM_MAX_TIMESTAMPS
+    int "The upper bound of timestamps included in one message"
+    default 64
+
 endmenu
