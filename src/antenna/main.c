@@ -13,6 +13,7 @@
 #include "json_configuration.h"
 #include "message_definition.h"
 #include "misc.h"
+#include "storage.h"
 #include "typedefs.h"
 
 #define LOG_LEVEL 4
@@ -24,15 +25,9 @@ static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console
 
 static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, DWT_BR_6M8, DWT_PHRMODE_STD, (129)};
 
-static sequence_number_t sequence_number = 1;
-
-static uint16_t counter = 0;
-
 static received_message_list_t* received_messages = NULL;
 
-static ranging_id_t id;
-
-static tx_timestamp_list_t* tx_timestamps = NULL;
+self_t self = {.id = 0, .sequence_number = 1};
 
 void print_received_message_list() {
     received_message_list_t* iterator = received_messages;
@@ -43,29 +38,6 @@ void print_received_message_list() {
         i++;
         iterator = iterator->next;
     }
-}
-
-timestamp_t get_tx_timestamp(sequence_number_t sequence_number) {
-    tx_timestamp_list_t* iterator = tx_timestamps;
-    for (int i = 0; i < sequence_number / TX_TIMESTAMP_BLOCKSIZE; i++) {
-        if (iterator == NULL || iterator->next == NULL) {
-            return 0;
-        }
-        iterator = iterator->next;
-    }
-    return iterator->timestamps[sequence_number % TX_TIMESTAMP_BLOCKSIZE];
-}
-
-void set_tx_timestamp(sequence_number_t sequence_number, timestamp_t timestamp) {
-    tx_timestamp_list_t* iterator = tx_timestamps;
-    for (int i = 0; i < sequence_number / TX_TIMESTAMP_BLOCKSIZE; i++) {
-        if (iterator->next == NULL) {
-            iterator->next = k_malloc(sizeof(tx_timestamp_list_t));
-            iterator->next->next = NULL;
-        }
-        iterator = iterator->next;
-    }
-    iterator->timestamps[sequence_number % TX_TIMESTAMP_BLOCKSIZE] = timestamp;
 }
 
 timestamp_t read_systemtime() {
@@ -125,7 +97,7 @@ void message_write_timestamp(uint8_t* buffer, timestamp_t ts) {
  *
  * @return uint16_t the id. If no mapping exists, 0 is returned as default.
  */
-uint16_t get_id() {
+ranging_id_t get_id() {
     uint32_t part_id = dwt_getpartid();
     LOG_DBG("Part id %d", part_id);
     switch (part_id) {
@@ -188,8 +160,8 @@ void process_message(range_info_t* info) {
  * @param data the data that should be trasmitted.
  * @return int 0 on successful transmission.
  */
-int send_message(/*message_data_t data*/) {
-    LOG_DBG("Sending message %d", sequence_number);
+int send_message() {
+    LOG_DBG("Sending message %d", self.sequence_number);
     int num_timestamp = 0;
     received_message_list_t* iterator = received_messages;
     while (iterator != NULL) {
@@ -202,12 +174,12 @@ int send_message(/*message_data_t data*/) {
     uint8_t* message_buffer = (uint8_t*) k_malloc(message_size);
     message_buffer[FRAME_CONTROL_IDX_1] = 0x88;
     message_buffer[FRAME_CONTROL_IDX_2] = 0x41;
-    message_buffer[SEQUENCE_NUMBER_IDX_1] = sequence_number & 0xFF;
-    message_buffer[SEQUENCE_NUMBER_IDX_2] = (sequence_number >> 8) & 0xFF;
+    message_buffer[SEQUENCE_NUMBER_IDX_1] = self.sequence_number & 0xFF;
+    message_buffer[SEQUENCE_NUMBER_IDX_2] = (self.sequence_number >> 8) & 0xFF;
     message_buffer[PAN_ID_IDX_1] = CONFIG_PAN_ID & 0xFF;
     message_buffer[PAN_ID_IDX_2] = (CONFIG_PAN_ID >> 8) & 0xFF;
-    message_buffer[SENDER_ID_IDX_1] = id & 0xFF;
-    message_buffer[SENDER_ID_IDX_2] = (id >> 8) & 0xFF;
+    message_buffer[SENDER_ID_IDX_1] = self.id & 0xFF;
+    message_buffer[SENDER_ID_IDX_2] = (self.id >> 8) & 0xFF;
 
     iterator = received_messages;
     for (int i = 0; i < num_timestamp && iterator != NULL; i++) {
@@ -232,12 +204,12 @@ int send_message(/*message_data_t data*/) {
 
     while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS)) {
     };
-    set_tx_timestamp(sequence_number, tx_timestamp);
+    set_tx_timestamp(self.sequence_number, tx_timestamp);
     k_free(message_buffer);
 
     tx_range_info_t tx_info;
-    tx_info.id = id;
-    tx_info.sequence_number = sequence_number;
+    tx_info.id = self.id;
+    tx_info.sequence_number = self.sequence_number;
     tx_info.tx_time = tx_timestamp;
     range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
     process_out_message(&tx_info);
@@ -335,11 +307,8 @@ int main(void) {
     dwt_settxantennadelay(TX_ANTENNA_DELAY);
     dwt_setleds(1);
 
-    id = get_id();
-    LOG_DBG("Ranging id %d", id);
-
-    tx_timestamps = k_malloc(sizeof(tx_timestamp_list_t));
-    tx_timestamps->next = NULL;
+    self.id = get_id();
+    LOG_DBG("Ranging id %d", self.id);
 
     k_timer_start(&send_timer, K_MSEC(CONFIG_RANGING_INTERVAL), K_NO_WAIT);
 
@@ -347,7 +316,7 @@ int main(void) {
         check_received_messages();
         if (k_timer_status_get(&send_timer) > 0) {
             send_message();
-            sequence_number++;
+            self.sequence_number++;
             // TODO: Use random number
             // int deviation = sys_rand32_get() % CONFIG_RANGING_INTERVAL_MAX_DEVIATION;
             int deviation = dwt_getpartid() % CONFIG_RANGING_INTERVAL_MAX_DEVIATION;
