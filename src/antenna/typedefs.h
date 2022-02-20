@@ -5,9 +5,9 @@
 
 typedef int16_t ranging_id_t;
 
-typedef uint16_t sequence_number_t;
+typedef int16_t sequence_number_t;
 
-typedef uint64_t timestamp_t;
+typedef int64_t timestamp_t;
 
 typedef struct received_message {
     ranging_id_t sender_id;

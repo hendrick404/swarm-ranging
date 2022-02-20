@@ -167,8 +167,8 @@ int send_message() {
     tx_info.id = self.id;
     tx_info.sequence_number = self.sequence_number;
     tx_info.tx_time = tx_timestamp;
-    range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
-    process_out_message(&tx_info);
+    // range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
+    process_out_message(&tx_info, self.id);
 
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
     dwt_rxenable(DWT_START_RX_IMMEDIATE);
@@ -209,8 +209,8 @@ void check_received_messages() {
                 message_read_timestamp(rx_buffer + timestamp_index + RX_TIMESTAMP_TIMESTAMP_OFFSET);
         }
 
-        range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
-        process_in_message(&rx_info);
+        // range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
+        process_in_message(&rx_info, self.id);
 
         if (received_messages == NULL) {
             received_messages = k_malloc(sizeof(received_message_list_t));

@@ -7,7 +7,7 @@
         "sender id": {
           "type": "number"
         },
-        "sequence number": {
+        "seq num": {
           "type": "number"
         },
         "tx time": {
@@ -22,7 +22,7 @@
             "id": {
               "type": "number"
             },
-            "sequence number": {
+            "seq num": {
               "type": "number"
             },
             "rx time": {
@@ -35,10 +35,7 @@
     "tx range": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "number"
-        },
-        "sequence number": {
+        "seq num": {
           "type": "number"
         },
         "tx time":{
