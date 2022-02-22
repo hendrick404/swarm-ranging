@@ -37,6 +37,7 @@ void print_received_message_list() {
 }
 
 timestamp_t read_systemtime() {
+    uint32_t nrf_time = (uint32_t) ((double) k_uptime_get() / 1000 / DWT_TIME_UNITS);
     uint8_t timestamp_buffer[5];
     dwt_readsystime(timestamp_buffer);
     timestamp_t timestamp = 0;
@@ -44,7 +45,7 @@ timestamp_t read_systemtime() {
         timestamp <<= 8;
         timestamp |= timestamp_buffer[i];
     }
-    return timestamp;
+    return timestamp; // | nrf_time << (5 * 8);;
 }
 
 timestamp_t read_rx_timestamp() {
@@ -56,7 +57,7 @@ timestamp_t read_rx_timestamp() {
         timestamp <<= 8;
         timestamp |= timestamp_buffer[i];
     }
-    return timestamp;  // | nrf_time << (5 * 8);
+    return timestamp; // | nrf_time << (5 * 8);
 }
 
 timestamp_t read_tx_timestamp() {
@@ -68,7 +69,7 @@ timestamp_t read_tx_timestamp() {
         timestamp <<= 8;
         timestamp |= timestamp_buffer[i];
     }
-    return timestamp;  // | nrf_time << (5 * 8);
+    return timestamp; // | nrf_time << (5 * 8);
 }
 
 timestamp_t message_read_timestamp(uint8_t* buffer) {
