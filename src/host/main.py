@@ -34,6 +34,7 @@ class Node:
 
     def range(self, message):
         for timestamp in message["timestamps"]:
+<<<<<<< HEAD
             print("timestamp from " + str(timestamp["id"]))
             if timestamp["id"] == self.ranging_id:
                 try:
@@ -46,6 +47,18 @@ class Node:
                     print(
                         f"Distance from {self.ranging_id} to {sender_id} is {distance} m"
                     )
+=======
+            if timestamp["id"] == self.ranging_id:
+                try:
+                    distance = (
+                        message["rx time"]
+                        - self.tx_timestamps[timestamp["seq num"]]
+                    ) - (message["tx time"] - timestamp["rx time"]) / 2 * speed_of_light
+                    sender_id = message["sender id"]
+                    if self.distance_callback:
+                        self.distance_callback(sender_id, distance)
+                    print(f"Distance to {sender_id} is {distance}")
+>>>>>>> 3b75144 (WIP)
                 except KeyError:
                     print("Missing tx timestamp")
             else:
@@ -77,8 +90,14 @@ def main():
                             eval_file.write(json_string + "\n")
                         if "rx range" in decoded_json:
                             node.range(decoded_json["rx range"])
-                        if "tx range" in decoded_json:
+                        elif "tx range" in decoded_json:
                             node.tx_event(decoded_json["tx range"])
+<<<<<<< HEAD
+=======
+                            print("TX Event")
+                        else:
+                            print("Unknown event")
+>>>>>>> 3b75144 (WIP)
                 except json.JSONDecodeError:
                     # Apparently we did not get a valid json, maybe a debug log
                     pass

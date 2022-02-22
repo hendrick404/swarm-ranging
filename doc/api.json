@@ -17,16 +17,19 @@
           "type": "number"
         },
         "timestamps": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "number"
-            },
-            "seq num": {
-              "type": "number"
-            },
-            "rx time": {
-              "type": "number"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "seq num": {
+                "type": "number"
+              },
+              "rx time": {
+                "type": "number"
+              }
             }
           }
         }
@@ -38,7 +41,7 @@
         "seq num": {
           "type": "number"
         },
-        "tx time":{
+        "tx time": {
           "type": "number"
         }
       }

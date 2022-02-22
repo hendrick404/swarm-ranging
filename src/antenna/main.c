@@ -14,7 +14,6 @@
 #include "storage.h"
 #include "typedefs.h"
 
-#define LOG_LEVEL 4
 LOG_MODULE_REGISTER(main);
 
 K_TIMER_DEFINE(send_timer, NULL, NULL);

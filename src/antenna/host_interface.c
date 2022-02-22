@@ -7,9 +7,6 @@
 #include "host_interface.h"
 #include "typedefs.h"
 
-#define LOG_LEVEL 4
-LOG_MODULE_REGISTER(host_interface);
-
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
 void uart_out(char* msg) {
@@ -20,8 +17,6 @@ void uart_out(char* msg) {
 }
 
 void process_out_message(tx_range_info_t* info, ranging_id_t id) {
-    LOG_DBG("Id %d, seq num %d", info->id, info->sequence_number);
-
     char buf[90];
     snprintf(buf, 90, "{\"id\":%u,\"tx range\":{\"seq num\":%d,\"tx time\":%llu}}\n", id, info->sequence_number,
              info->tx_time);
