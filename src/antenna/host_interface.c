@@ -7,6 +7,8 @@
 #include "host_interface.h"
 #include "typedefs.h"
 
+LOG_MODULE_REGISTER(host_interface);
+
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
 void uart_out(char* msg) {

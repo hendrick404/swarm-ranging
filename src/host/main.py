@@ -79,12 +79,6 @@ def main():
                             node.range(decoded_json["rx range"])
                         elif "tx range" in decoded_json:
                             node.tx_event(decoded_json["tx range"])
-<<<<<<< HEAD
-=======
-                            print("TX Event")
-                        else:
-                            print("Unknown event")
->>>>>>> 3b75144 (WIP)
                 except json.JSONDecodeError:
                     # Apparently we did not get a valid json, maybe a debug log
                     pass
