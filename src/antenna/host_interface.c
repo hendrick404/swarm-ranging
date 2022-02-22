@@ -1,5 +1,6 @@
 #include <data/json.h>
 #include <drivers/uart.h>
+#include <logging/log.h>
 #include <stdio.h>
 #include <zephyr.h>
 

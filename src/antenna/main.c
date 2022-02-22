@@ -1,4 +1,3 @@
-
 #include <logging/log.h>
 #include <syscalls/rand32.h>
 #include <zephyr.h>
@@ -19,7 +18,6 @@
 LOG_MODULE_REGISTER(main);
 
 K_TIMER_DEFINE(send_timer, NULL, NULL);
-
 
 static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, DWT_BR_6M8, DWT_PHRMODE_STD, (129)};
 
@@ -105,6 +103,12 @@ ranging_id_t get_id() {
             return 2;
         case 268447501:
             return 3;
+        case 268438754:
+            return 4;
+        case 268446529:
+            return 5;
+        case 268447385:
+            return 6;
         default:
             return 0;
     }
@@ -190,6 +194,7 @@ void check_received_messages() {
 
         rx_range_info_t rx_info;
         rx_info.sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
+        rx_info.sequence_number = rx_buffer[SEQUENCE_NUMBER_IDX_1] | (rx_buffer[SEQUENCE_NUMBER_IDX_2] << 8);
         rx_info.rx_time = read_rx_timestamp();
         rx_info.tx_time = message_read_timestamp(rx_buffer + TX_TIMESTAMP_IDX);
 
