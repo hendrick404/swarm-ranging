@@ -21,4 +21,16 @@ config NUM_MAX_TIMESTAMPS
     int "The upper bound of timestamps included in one message"
     default 64
 
+config NUM_PARTICIPANTS
+    int "The number of participating nodes"
+    default 12
+
+config ACTIVE_RANGING
+    bool ""
+    default y
+
+config PASSIVE_RANGING
+    bool ""
+    default y
+
 endmenu

@@ -88,19 +88,19 @@ def main():
 
 def connect() -> List[Node]:
     """Generates a list of connections."""
-    # # Home
-    # connections = [
-    #     Node(1, Serial("/dev/tty.usbmodem0007601185891", 115200, timeout=1)),
-    #     Node(2, Serial("/dev/tty.usbmodem0007601197931", 115200, timeout=1)),
-    #     Node(3, Serial("/dev/tty.usbmodem0007601194831", 115200, timeout=1)),
-    # ]
-
-    # Lab
+    # Home
     connections = [
-        Node(4, Serial("/dev/tty.usbmodem0007601194661", 115200, timeout=1)),
-        Node(5, Serial("/dev/tty.usbmodem0007601202211", 115200, timeout=1)),
-        Node(6, Serial("/dev/tty.usbmodem0007601195171", 115200, timeout=1)),
+        Node(1, Serial("/dev/tty.usbmodem0007601185891", 115200, timeout=1)),
+        Node(2, Serial("/dev/tty.usbmodem0007601197931", 115200, timeout=1)),
+        Node(3, Serial("/dev/tty.usbmodem0007601194831", 115200, timeout=1)),
     ]
+
+    # # Lab
+    # connections = [
+    #     Node(4, Serial("/dev/tty.usbmodem0007601194661", 115200, timeout=1)),
+    #     Node(5, Serial("/dev/tty.usbmodem0007601202211", 115200, timeout=1)),
+    #     Node(6, Serial("/dev/tty.usbmodem0007601195171", 115200, timeout=1)),
+    # ]
 
     return connections
 
