@@ -1,5 +1,3 @@
-#include <zephyr.h>
-
 #include "typedefs.h"
 
 static timestamp_t tx_timestamps[TX_TIMESTAMP_BLOCKSIZE];

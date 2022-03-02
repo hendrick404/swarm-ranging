@@ -1,6 +1,9 @@
 #ifndef TYPEDEFS_H
 #define TYPEDEFS_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 #define TX_TIMESTAMP_BLOCKSIZE 32
 
 typedef int16_t ranging_id_t;

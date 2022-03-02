@@ -13,6 +13,7 @@
 #include "misc.h"
 #include "storage.h"
 #include "typedefs.h"
+#include "util.h"
 
 LOG_MODULE_REGISTER(main);
 
@@ -81,20 +82,7 @@ timestamp_t read_tx_timestamp() {
     return timestamp;  // | nrf_time << (5 * 8);
 }
 
-timestamp_t message_read_timestamp(uint8_t* buffer) {
-    timestamp_t result = 0;
-    for (int i = 0; i < 8; i++) {
-        result <<= 8;
-        result |= buffer[i];
-    }
-    return result;
-}
 
-void message_write_timestamp(uint8_t* buffer, timestamp_t ts) {
-    for (int i = 0; i < 8; i++) {
-        buffer[i] = (ts >> (8 * (7 - i))) & 0xFF;
-    }
-}
 
 /**
  * @brief Get the id object
