@@ -18,3 +18,7 @@ jobs:
     - name: "Run pytest"
       run: |
         pytest test
+    - name: "Run unity"
+      working-directory: test/antenna
+      run: |
+        make
