@@ -208,3 +208,9 @@ cython_debug/
 
 # Editor / IDE
 .vscode
+
+# Explicitly include wanted library sources
+!lib/compiler
+!lib/decadriver
+!lib/platform
+!lib/unity
