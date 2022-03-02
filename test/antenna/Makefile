@@ -19,7 +19,7 @@ C_COMPILER=clang
 endif
 
 UNITY_ROOT=../../lib/unity
-SRC_ROOT=../../src/antenna/common
+SRC_ROOT=../../src/antenna
 TEST_ROOT=.
 
 CFLAGS=-std=c99
