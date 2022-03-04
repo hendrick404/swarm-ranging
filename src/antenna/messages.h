@@ -13,6 +13,8 @@ timestamp_t message_read_timestamp(uint8_t* buffer);
 
 void message_write_timestamp(uint8_t* buffer, timestamp_t ts);
 
-size_t construct_message(uint8_t* message_buffer, received_message_t* received_messages, size_t received_messages_len, self_t self, timestamp_t tx_timestamp);
+rx_range_info_t analyse_message(uint8_t* message_buffer, size_t message_buffer_len, timestamp_t rx_time);
+
+size_t construct_message(uint8_t* message_buffer, size_t message_buffer_size, received_message_t* received_messages, size_t received_messages_len, self_t self, timestamp_t tx_timestamp);
 
 #endif

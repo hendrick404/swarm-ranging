@@ -6,7 +6,7 @@
 #include "deca_regs.h"
 #include "deca_spi.h"
 #include "port.h"
-
+ 
 #include "configuration.h"
 #include "host_interface.h"
 #include "message_definition.h"
@@ -116,13 +116,14 @@ ranging_id_t get_id() {
  * @return int 0 on successful transmission.
  */
 int send_message() {
+    LOG_DBG("Sending message");
     uint32_t tx_time = (read_systemtime() + (CONFIG_TX_PROCESSING_DELAY * UUS_TO_DWT_TIME)) >> 8;
     timestamp_t tx_timestamp = (((uint64) (tx_time & 0xFFFFFFFEUL)) << 8) + TX_ANTENNA_DELAY;
     dwt_setdelayedtrxtime(tx_time);
 
-    uint8_t message_buffer[TX_TIMESTAMP_IDX + TIMESTAMP_SIZE + CONFIG_NUM_PARTICIPANTS * RX_TIMESTAMP_SIZE];
-    size_t message_size = construct_message(message_buffer, received_messages, CONFIG_NUM_PARTICIPANTS, self, tx_timestamp);
-
+    size_t message_buffer_len = TX_TIMESTAMP_IDX + TIMESTAMP_SIZE + CONFIG_NUM_PARTICIPANTS * RX_TIMESTAMP_SIZE + 12;
+    uint8_t message_buffer[message_buffer_len];
+    size_t message_size = construct_message(message_buffer, message_buffer_len, received_messages, CONFIG_NUM_PARTICIPANTS, self, tx_timestamp);
 
     // message_write_timestamp(message_buffer + TX_TIMESTAMP_IDX, tx_timestamp);
 
@@ -133,7 +134,6 @@ int send_message() {
     while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS)) {
     };
     set_tx_timestamp(self.sequence_number, tx_timestamp);
-    k_free(message_buffer);
 
     tx_range_info_t tx_info;
     tx_info.id = self.id;
@@ -160,27 +160,9 @@ void check_received_messages() {
         uint8_t* rx_buffer = (uint8_t*) k_malloc(frame_length);
         dwt_readrxdata(rx_buffer, frame_length, 0);
 
-        rx_range_info_t rx_info;
-        rx_info.sender_id = rx_buffer[SENDER_ID_IDX_1] | (rx_buffer[SENDER_ID_IDX_2] << 8);
-        rx_info.sequence_number = rx_buffer[SEQUENCE_NUMBER_IDX_1] | (rx_buffer[SEQUENCE_NUMBER_IDX_2] << 8);
-        rx_info.rx_time = read_rx_timestamp();
-        rx_info.tx_time = message_read_timestamp(rx_buffer + TX_TIMESTAMP_IDX);
+        timestamp_t rx_timestamp = read_rx_timestamp();
 
-        rx_info.timestamps_len = (frame_length - RX_TIMESTAMP_OFFSET) / RX_TIMESTAMP_SIZE;
-        LOG_DBG("Timestamp num: %d", rx_info.timestamps_len);
-        rx_info.timestamps = k_malloc(sizeof(rx_range_timestamp_t) * rx_info.timestamps_len);
-
-        for (int i = 0; i < rx_info.timestamps_len; i++) {
-            LOG_DBG("Reading timestamp %d", i);
-            int timestamp_index = RX_TIMESTAMP_OFFSET + i * RX_TIMESTAMP_SIZE;
-            rx_info.timestamps[i].node_id = rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET] |
-                                            (rx_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8);
-            rx_info.timestamps[i].sequence_number =
-                rx_buffer[timestamp_index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] |
-                (rx_buffer[timestamp_index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1] << 8);
-            rx_info.timestamps[i].rx_time =
-                message_read_timestamp(rx_buffer + timestamp_index + RX_TIMESTAMP_TIMESTAMP_OFFSET);
-        }
+        rx_range_info_t rx_info = analyse_message(rx_buffer, frame_length, rx_timestamp);
 
         // range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
         process_in_message(&rx_info, self.id);
