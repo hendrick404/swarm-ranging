@@ -48,7 +48,19 @@ TEST(Messages, construct_message_without_reception_timestamps_correct) {
     uint8_t test_buffer[] = {0x88, 0x41, 0, 0xca, 0xde, 1, 0, 1, 0, 0xAB, 0xCD, 0xEF, 0xAB, 0xCD};
     
     buffer[2] = 0;
-    
+
     TEST_ASSERT_EQUAL_MESSAGE(14, buffer_len, "The encoded message seems to not have the correct size");
     TEST_ASSERT_FALSE_MESSAGE(memcmp(buffer, test_buffer, buffer_len), "The encoded message seems to have a wrong byte");
+}
+
+TEST(Messages, analyse_message_without_reception_timestamps_correct) {
+    timestamp_t rx_timestamp = 0xABCDEFABCD;
+    uint8_t test_buffer[] = {0x88, 0x41, 0, 0xca, 0xde, 1, 0, 1, 0, 0xAB, 0xCD, 0xEF, 0xAB, 0xCD};
+    rx_range_info_t rx_info = analyse_message(test_buffer, 14, rx_timestamp);
+
+    TEST_ASSERT_EQUAL_INT16(1, rx_info.sender_id);
+    TEST_ASSERT_EQUAL_INT16(1, rx_info.sequence_number);
+    TEST_ASSERT_EQUAL_UINT64(0xABCDEFABCD, rx_info.tx_time);
+    TEST_ASSERT_EQUAL_INT(0, rx_info.timestamps_len);
+    TEST_ASSERT_EQUAL(NULL, rx_info.timestamps);
 }

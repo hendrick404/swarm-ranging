@@ -50,8 +50,12 @@ rx_range_info_t analyse_message(uint8_t* message_buffer, size_t message_buffer_l
     rx_info.tx_time = message_read_timestamp(message_buffer + TX_TIMESTAMP_IDX);
 
     rx_info.timestamps_len = (message_buffer_len - RX_TIMESTAMP_OFFSET) / RX_TIMESTAMP_SIZE;
-    rx_info.timestamps = k_malloc(sizeof(rx_range_timestamp_t) * rx_info.timestamps_len);
-
+    if (rx_info.timestamps_len > 0) {
+        rx_info.timestamps = k_malloc(sizeof(rx_range_timestamp_t) * rx_info.timestamps_len);
+    } else {
+        rx_info.timestamps = NULL;
+    }
+    
     for (int i = 0; i < rx_info.timestamps_len; i++) {
         int timestamp_index = RX_TIMESTAMP_OFFSET + i * RX_TIMESTAMP_SIZE;
         rx_info.timestamps[i].node_id = message_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET] |
