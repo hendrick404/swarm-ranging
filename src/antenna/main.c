@@ -21,18 +21,7 @@ K_TIMER_DEFINE(send_timer, NULL, NULL);
 
 static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, DWT_BR_6M8, DWT_PHRMODE_STD, (129)};
 
-// static received_message_list_t* received_messages = NULL;
-
 static received_message_t received_messages[CONFIG_NUM_PARTICIPANTS];
-
-// void store_receive_timestamp(received_message_t received_message) {
-//     received_messages[received_message.sender_id].sequence_number = received_message.sequence_number;
-//     received_messages[received_message.sender_id].rx_timestamp = received_message.rx_timestamp;
-// }
-
-// received_message_t get_stored_receive_timestamp(ranging_id_t id) {
-//     return received_messages[id];
-// }
 
 self_t self = {.id = 0, .sequence_number = 1};
 
@@ -164,41 +153,11 @@ void check_received_messages() {
 
         rx_range_info_t rx_info = analyse_message(rx_buffer, frame_length, rx_timestamp);
 
-        // range_info_t info = {.rx_info = &rx_info, .tx_info = NULL};
         process_in_message(&rx_info, self.id);
 
-        // received_message_t rec = {.rx_timestamp = rx_info.rx_time,
-        //                           .sender_id = rx_info.sender_id,
-        //                           .sequence_number = rx_info.sequence_number};
-        // store_receive_timestamp(rec);
         received_messages[rx_info.sender_id].sequence_number = rx_info.sequence_number;
         received_messages[rx_info.sender_id].rx_timestamp = rx_info.rx_time;
         print_received_message_list();
-
-        // if (received_messages == NULL) {
-        //     received_messages = k_malloc(sizeof(received_message_list_t));
-        //     received_messages->data.sender_id = rx_info.sender_id;
-        //     received_messages->data.sequence_number = rx_info.sequence_number;
-        //     received_messages->data.rx_timestamp = rx_info.rx_time;
-        //     received_messages->next = NULL;
-        // } else {
-        //     received_message_list_t* iterator = received_messages;
-        //     while (1) {
-        //         if (iterator->data.sender_id == rx_info.sender_id) {
-        //             iterator->data.sequence_number = rx_info.sequence_number;
-        //             iterator->data.rx_timestamp = rx_info.rx_time;
-        //             break;
-        //         } else if (iterator->next == NULL) {
-        //             iterator->next = k_malloc(sizeof(received_message_list_t));
-        //             iterator->next->data.sender_id = rx_info.sender_id;
-        //             iterator->next->data.sequence_number = rx_info.sequence_number;
-        //             iterator->next->data.rx_timestamp = rx_info.rx_time;
-        //             iterator->next->next = NULL;
-        //             break;
-        //         }
-        //         iterator = iterator->next;
-        //     }
-        // }
 
         LOG_HEXDUMP_DBG(rx_buffer, frame_length - 2, "Received data");
 
