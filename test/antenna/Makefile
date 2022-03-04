@@ -43,9 +43,9 @@ TARGET1 = $(TARGET_BASE1)$(TARGET_EXTENSION)
 SRC_FILES1=\
   $(UNITY_ROOT)/src/unity.c \
   $(UNITY_ROOT)/extras/fixture/src/unity_fixture.c \
-  $(SRC_ROOT)/util.c \
+  $(SRC_ROOT)/messages.c \
   $(TEST_ROOT)/all_tests.c \
-  $(TEST_ROOT)/test_util.c
+  $(TEST_ROOT)/test_messages.c
 INC_DIRS=-I$(UNITY_ROOT)/src -I$(SRC_ROOT) -I$(UNITY_ROOT)/extras/fixture/src
 SYMBOLS=-DUNITY_FIXTURE_NO_EXTRAS
 

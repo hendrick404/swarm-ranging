@@ -10,10 +10,10 @@
 #include "configuration.h"
 #include "host_interface.h"
 #include "message_definition.h"
+#include "messages.h"
 #include "misc.h"
 #include "storage.h"
 #include "typedefs.h"
-#include "util.h"
 
 LOG_MODULE_REGISTER(main);
 
@@ -36,15 +36,13 @@ static received_message_t received_messages[CONFIG_NUM_PARTICIPANTS];
 
 self_t self = {.id = 0, .sequence_number = 1};
 
-// void print_received_message_list() {
-//     int i = 0;
-//     while (iterator != NULL) {
-//         LOG_DBG("%d. element: id: %d, seq num: %d, ts %lld", i, iterator->data.sender_id,
-//                 iterator->data.sequence_number, iterator->data.rx_timestamp);
-//         i++;
-//         iterator = iterator->next;
-//     }
-// }
+void print_received_message_list() {
+    for (int i = 0; i < CONFIG_NUM_PARTICIPANTS; i++) {
+        if (received_messages[i].sequence_number != 0) {
+            LOG_DBG("%dth timestamp: seqq num: %d, timestamp: %llu", i, received_messages[i].sequence_number, received_messages[i].rx_timestamp);
+        }
+     }
+}
 
 timestamp_t read_systemtime() {
     uint32_t nrf_time = (uint32_t) ((double) k_uptime_get() / 1000 / DWT_TIME_UNITS);
@@ -115,51 +113,18 @@ ranging_id_t get_id() {
 /**
  * @brief Transmits a message.
  *
- * @param data the data that should be trasmitted.
  * @return int 0 on successful transmission.
  */
 int send_message() {
-    LOG_DBG("Sending message %d", self.sequence_number);
-    int num_timestamp = 0;
-    for (int i = 0; i < CONFIG_NUM_PARTICIPANTS; i++) {
-        if (received_messages[i].sequence_number != 0) {
-            num_timestamp++;
-        }
-    }
-
-    size_t message_size = 9 + sizeof(timestamp_t) +
-                          num_timestamp * (sizeof(timestamp_t) + sizeof(ranging_id_t) + sizeof(sequence_number_t));
-    uint8_t* message_buffer = (uint8_t*) k_malloc(message_size);
-    message_buffer[FRAME_CONTROL_IDX_1] = 0x88;
-    message_buffer[FRAME_CONTROL_IDX_2] = 0x41;
-    message_buffer[SEQUENCE_NUMBER_IDX_1] = self.sequence_number & 0xFF;
-    message_buffer[SEQUENCE_NUMBER_IDX_2] = (self.sequence_number >> 8) & 0xFF;
-    message_buffer[PAN_ID_IDX_1] = CONFIG_PAN_ID & 0xFF;
-    message_buffer[PAN_ID_IDX_2] = (CONFIG_PAN_ID >> 8) & 0xFF;
-    message_buffer[SENDER_ID_IDX_1] = self.id & 0xFF;
-    message_buffer[SENDER_ID_IDX_2] = (self.id >> 8) & 0xFF;
-
-    // We use j as an index for the message buffer and i as an index for the `received_messages` list.
-    int j = 0;
-    for (int i = 0; i < CONFIG_NUM_PARTICIPANTS; i++) {
-        if (received_messages[i].sequence_number != 0) {
-            int index = RX_TIMESTAMP_OFFSET + (RX_TIMESTAMP_SIZE * j);
-            message_buffer[index + RX_TIMESTAMP_RANGING_ID_OFFSET] = received_messages[i].sender_id & 0xFF;
-            message_buffer[index + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] = (received_messages[i].sender_id >> 8) & 0xFF;
-            message_buffer[index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET] = received_messages[i].sequence_number & 0xFF;
-            message_buffer[index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1] =
-                (received_messages[i].sequence_number >> 8) & 0xFF;
-            message_write_timestamp(message_buffer + index + RX_TIMESTAMP_TIMESTAMP_OFFSET,
-                                    received_messages[i].rx_timestamp);
-            j++;
-        }
-    }
-
     uint32_t tx_time = (read_systemtime() + (CONFIG_TX_PROCESSING_DELAY * UUS_TO_DWT_TIME)) >> 8;
     timestamp_t tx_timestamp = (((uint64) (tx_time & 0xFFFFFFFEUL)) << 8) + TX_ANTENNA_DELAY;
     dwt_setdelayedtrxtime(tx_time);
 
-    message_write_timestamp(message_buffer + TX_TIMESTAMP_IDX, tx_timestamp);
+    uint8_t message_buffer[TX_TIMESTAMP_IDX + TIMESTAMP_SIZE + CONFIG_NUM_PARTICIPANTS * RX_TIMESTAMP_SIZE];
+    size_t message_size = construct_message(message_buffer, received_messages, CONFIG_NUM_PARTICIPANTS, self, tx_timestamp);
+
+
+    // message_write_timestamp(message_buffer + TX_TIMESTAMP_IDX, tx_timestamp);
 
     dwt_writetxdata(message_size, message_buffer, 0);
     dwt_writetxfctrl(message_size, 0, 1);
@@ -226,6 +191,7 @@ void check_received_messages() {
         // store_receive_timestamp(rec);
         received_messages[rx_info.sender_id].sequence_number = rx_info.sequence_number;
         received_messages[rx_info.sender_id].rx_timestamp = rx_info.rx_time;
+        print_received_message_list();
 
         // if (received_messages == NULL) {
         //     received_messages = k_malloc(sizeof(received_message_list_t));

@@ -41,7 +41,7 @@
  */
 
 /** @brief The size of a timestamp field. */
-#define TIMESTAMP_SIZE sizeof(timestamp_t)
+#define TIMESTAMP_SIZE 5
 
 /** @brief The beginning of the receive timestamp section. Index of the first timestamp. */
 #define RX_TIMESTAMP_OFFSET (TX_TIMESTAMP_IDX + TIMESTAMP_SIZE)
