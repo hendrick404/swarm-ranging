@@ -69,6 +69,8 @@ def main():
                 line = connection.readline()
                 try:
                     json_string = str(line)
+                    # if evaluate and node.get_ranging_id() == 1:
+                    #     eval_file.write(json_string + "\n")
                     # TODO: Trim dynamically
                     json_string = json_string[2 : len(json_string) - 3]
                     decoded_json = json.JSONDecoder().decode(json_string)

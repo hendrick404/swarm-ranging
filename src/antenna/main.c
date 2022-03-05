@@ -116,8 +116,8 @@ int send_message() {
 
     // message_write_timestamp(message_buffer + TX_TIMESTAMP_IDX, tx_timestamp);
 
-    dwt_writetxdata(message_size, message_buffer, 0);
-    dwt_writetxfctrl(message_size, 0, 1);
+    dwt_writetxdata(message_size + 2, message_buffer, 0);
+    dwt_writetxfctrl(message_size + 2, 0, 1);
     dwt_starttx(DWT_START_TX_DELAYED);
 
     while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS)) {
@@ -133,6 +133,8 @@ int send_message() {
 
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);
     dwt_rxenable(DWT_START_RX_IMMEDIATE);
+
+    LOG_HEXDUMP_DBG(message_buffer, message_size, "Sent data");
     return 0;
 }
 
