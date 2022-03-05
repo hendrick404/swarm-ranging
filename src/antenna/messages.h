@@ -5,6 +5,7 @@
 
 #include "typedefs.h"
 
+// If we are not using the Zephyr build system (e.g. for unit tests)
 #ifndef CONFIG_PAN_ID
 #define CONFIG_PAN_ID 0xDECA
 #endif

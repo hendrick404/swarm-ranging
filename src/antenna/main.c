@@ -13,6 +13,7 @@
 #include "messages.h"
 #include "misc.h"
 #include "storage.h"
+#include "timestamps.h"
 #include "typedefs.h"
 
 LOG_MODULE_REGISTER(main);
@@ -24,52 +25,6 @@ static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, D
 static received_message_t received_messages[CONFIG_NUM_PARTICIPANTS];
 
 self_t self = {.id = 0, .sequence_number = 1};
-
-void print_received_message_list() {
-    for (int i = 0; i < CONFIG_NUM_PARTICIPANTS; i++) {
-        if (received_messages[i].sequence_number != 0) {
-            LOG_DBG("%dth timestamp: seqq num: %d, timestamp: %llu", i, received_messages[i].sequence_number, received_messages[i].rx_timestamp);
-        }
-     }
-}
-
-timestamp_t read_systemtime() {
-    uint32_t nrf_time = (uint32_t) ((double) k_uptime_get() / 1000 / DWT_TIME_UNITS);
-    uint8_t timestamp_buffer[5];
-    dwt_readsystime(timestamp_buffer);
-    timestamp_t timestamp = 0;
-    for (int i = 4; i >= 0; i--) {
-        timestamp <<= 8;
-        timestamp |= timestamp_buffer[i];
-    }
-    return timestamp;  // | nrf_time << (5 * 8);
-}
-
-timestamp_t read_rx_timestamp() {
-    uint32_t nrf_time = (uint32_t) ((double) k_uptime_get() / 1000 / DWT_TIME_UNITS);
-    uint8_t timestamp_buffer[5];
-    dwt_readrxtimestamp(timestamp_buffer);
-    timestamp_t timestamp = 0;
-    for (int i = 4; i >= 0; i--) {
-        timestamp <<= 8;
-        timestamp |= timestamp_buffer[i];
-    }
-    return timestamp;  // | nrf_time << (5 * 8);
-}
-
-timestamp_t read_tx_timestamp() {
-    uint32_t nrf_time = (uint32_t) ((double) k_uptime_get() / 1000 / DWT_TIME_UNITS);
-    uint8_t timestamp_buffer[5];
-    dwt_readtxtimestamp(timestamp_buffer);
-    timestamp_t timestamp = 0;
-    for (int i = 4; i >= 0; i--) {
-        timestamp <<= 8;
-        timestamp |= timestamp_buffer[i];
-    }
-    return timestamp;  // | nrf_time << (5 * 8);
-}
-
-
 
 /**
  * @brief Get the id object
@@ -114,8 +69,7 @@ int send_message() {
     uint8_t message_buffer[message_buffer_len];
     size_t message_size = construct_message(message_buffer, message_buffer_len, received_messages, CONFIG_NUM_PARTICIPANTS, self, tx_timestamp);
 
-    // message_write_timestamp(message_buffer + TX_TIMESTAMP_IDX, tx_timestamp);
-
+    // Add two bytes to message length for the DWMs automatic checksum
     dwt_writetxdata(message_size + 2, message_buffer, 0);
     dwt_writetxfctrl(message_size + 2, 0, 1);
     dwt_starttx(DWT_START_TX_DELAYED);
@@ -128,7 +82,6 @@ int send_message() {
     tx_info.id = self.id;
     tx_info.sequence_number = self.sequence_number;
     tx_info.tx_time = tx_timestamp;
-    // range_info_t info = {.rx_info = NULL, .tx_info = &tx_info};
     process_out_message(&tx_info, self.id);
 
     dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_TXFRS);

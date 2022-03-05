@@ -17,6 +17,7 @@ LOG_MODULE_REGISTER(messages);
 #define LOG_INF(a)
 #define LOG_DBG(a)
 
+// Use regular malloc instead of k_malloc when building for POSIX
 void* k_malloc(size_t size) {
     return malloc(size);
 }
