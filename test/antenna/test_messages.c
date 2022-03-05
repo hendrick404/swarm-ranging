@@ -64,3 +64,37 @@ TEST(Messages, analyse_message_without_reception_timestamps_correct) {
     TEST_ASSERT_EQUAL_INT(0, rx_info.timestamps_len);
     TEST_ASSERT_EQUAL(NULL, rx_info.timestamps);
 }
+
+TEST(Messages, encode_decode_message) {
+    self_t self = {.id = 1, .sequence_number = 1};
+    received_message_t rx_timestamps[3] = {
+        {.sender_id = 1, .sequence_number = 11, .rx_timestamp = 0xAAAAAAAAAA},
+        {.sender_id = 2, .sequence_number = 12, .rx_timestamp = 0xBBBBBBBBBB},
+        {.sender_id = 3, .sequence_number = 13, .rx_timestamp = 0xCCCCCCCCCC}
+    };
+    timestamp_t tx_time = 0xDDDDDDDDDD;
+    timestamp_t rx_time = 0xEEEEEEEEEE;
+    uint8_t message_buffer[64];
+    size_t message_size = construct_message(message_buffer, 64, rx_timestamps, 3, self, tx_time);
+    rx_range_info_t rx_info = analyse_message(message_buffer, message_size, rx_time);
+
+    TEST_ASSERT_EQUAL_INT16(1, rx_info.sender_id);
+    TEST_ASSERT_EQUAL_INT16(1, rx_info.sequence_number);
+    TEST_ASSERT_EQUAL_UINT64(0xDDDDDDDDDD, rx_info.tx_time);
+    TEST_ASSERT_EQUAL_INT(3, rx_info.timestamps_len);
+
+    for (int i = 0; i < 3; i++) {
+        if (rx_info.timestamps[i].node_id == 1) {
+            TEST_ASSERT_EQUAL_UINT64(0xAAAAAAAAAA, rx_info.timestamps[i].rx_time);
+            TEST_ASSERT_EQUAL(11, rx_info.timestamps[i].sequence_number);
+        } else if (rx_info.timestamps[i].node_id == 2) {
+            TEST_ASSERT_EQUAL_UINT64(0xBBBBBBBBBB, rx_info.timestamps[i].rx_time);
+            TEST_ASSERT_EQUAL(12, rx_info.timestamps[i].sequence_number);
+        } else if (rx_info.timestamps[i].node_id == 3) {
+            TEST_ASSERT_EQUAL_UINT64(0xCCCCCCCCCC, rx_info.timestamps[i].rx_time);
+            TEST_ASSERT_EQUAL(13, rx_info.timestamps[i].sequence_number);
+        } else {
+            TEST_FAIL_MESSAGE("Unknown id");
+        }
+    }
+}
