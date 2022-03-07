@@ -18,7 +18,7 @@ def main():
     peer1_distance_measurements: List[float] = []
     peer2_distance_measurements: List[float] = []
 
-    eval_file = open("evaluation.txt", "r") 
+    eval_file = open("evaluation_simulated.txt", "r") 
     lines = eval_file.readlines()
     for line in lines:
         operation = json.JSONDecoder().decode(line)
