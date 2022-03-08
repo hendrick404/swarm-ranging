@@ -112,7 +112,6 @@ void check_received_messages() {
 
         received_messages[rx_info.sender_id].sequence_number = rx_info.sequence_number;
         received_messages[rx_info.sender_id].rx_timestamp = rx_info.rx_time;
-        print_received_message_list();
 
         LOG_HEXDUMP_DBG(rx_buffer, frame_length - 2, "Received data");
 
