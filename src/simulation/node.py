@@ -1,20 +1,11 @@
-"""
-Simulates a scenario with a number of static nodes. Configure `ranging_interval`,
-`nodes` and `transmission_succes_rate` in the main function.
-"""
-
-import json
-from random import random
 from math import sqrt
 from typing import Dict, Tuple, List
 from scipy.constants import speed_of_light
 
-
 second = 1_000_000_000_000
 
-
 class Node:
-    def __init__(self, node_id, pos, clock_err=1, clock_offset=0):
+    def __init__(self, node_id: int, pos: Tuple[int, int], clock_err: float = 1, clock_offset: int = 0):
         self.node_id = node_id
         self.pos = pos
         self.clock_err = clock_err
@@ -25,9 +16,9 @@ class Node:
     def get_pos(self):
         return self.pos
 
-    def tx(self, global_time):
+    def tx(self, global_time: int):
         json_obj = {
-            "id": self.id,
+            "id": self.node_id,
             "tx range": {
                 "seq num": self.sequence_number,
                 "tx time": int(global_time * self.clock_err + self.clock_offset),
@@ -36,7 +27,7 @@ class Node:
         self.sequence_number += 1
         return (json_obj, self.receive_timestamps)
 
-    def rx(self, global_time, message, pos, message_receive_timestamps):
+    def rx(self, global_time: int, message, pos: Tuple[int, int], message_receive_timestamps: Dict[int, Tuple[int, int]]):
         rx_time = (
             global_time
             + (
@@ -54,7 +45,7 @@ class Node:
                 {"id": node_id, "seq num": seq_num, "rx time": rx_timestamp}
             )
         json_obj = {
-            "id": self.id,
+            "id": self.node_id,
             "rx range": {
                 "sender id": message["id"],
                 "seq num": message["tx range"]["seq num"],
@@ -66,32 +57,4 @@ class Node:
         return json_obj
 
     def __eq__(self, other):
-        return self.id == other.id
-
-
-def main():
-    with open("evaluation_simulated.txt", "a") as eval_file:
-        exchange_counter = 1
-        ranging_interval = 1 * second
-        global_clock = 0
-        nodes: List[Node] = [Node(1, (0, 0)), Node(2, (60, 0))]
-        transmission_success_rate = 0.95
-        while exchange_counter <= 2 * len(nodes):
-            for tx_node in nodes:
-                global_clock += ranging_interval / len(nodes)
-                (tx_message, receive_timestamps) = tx_node.tx(global_clock)
-                eval_file.write(json.JSONEncoder().encode(tx_message) + "\n")
-                for rx_node in nodes:
-                    if rx_node != tx_node and random() <= transmission_success_rate:
-                        rx_message = rx_node.rx(
-                            global_clock,
-                            tx_message,
-                            tx_node.get_pos(),
-                            receive_timestamps,
-                        )
-                        eval_file.write(json.JSONEncoder().encode(rx_message) + "\n")
-            exchange_counter += 1
-
-
-if __name__ == "__main__":
-    main()
+        return self.node_id == other.node_id
