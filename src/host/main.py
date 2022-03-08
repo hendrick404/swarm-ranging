@@ -37,7 +37,10 @@ class Node:
             print("timestamp from " + str(timestamp["id"]))
             if timestamp["id"] == self.ranging_id:
                 try:
-                    tof_dtu = ((message["rx time"] - self.tx_timestamps[timestamp["seq num"]]) - (message["tx time"] - timestamp["rx time"])) / 2
+                    tof_dtu = (
+                        (message["rx time"] - self.tx_timestamps[timestamp["seq num"]])
+                        - (message["tx time"] - timestamp["rx time"])
+                    ) / 2
                     tof = tof_dtu * (1.0 / 499.2e6 / 128.0)
                     distance = tof * speed_of_light
                     sender_id = message["sender id"]
