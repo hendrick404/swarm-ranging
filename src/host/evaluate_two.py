@@ -3,7 +3,8 @@ from typing import Callable, Dict, List, Optional
 
 from scipy.constants import speed_of_light
 
-dwt_time_units = (1.0 / 499.2e6 / 128.0)
+# time_units = (1.0 / 499.2e6 / 128.0)
+time_units = 1 / 1_000_000_000_000
 
 def main():
     # The ids of the peers
@@ -53,7 +54,7 @@ def main():
     print(peer2_distance_measurements)
 
 def measure_distance(tx_a, rx_a, tx_b, rx_b):
-    return ((rx_a - tx_a) - (tx_b - rx_b)) / 2 * dwt_time_units * speed_of_light 
+    return ((rx_a - tx_a) - (tx_b - rx_b)) / 2 * time_units * speed_of_light 
 
 if __name__ == "__main__":
     main()
