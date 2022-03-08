@@ -1,11 +1,12 @@
 from math import sqrt
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Callable
 from scipy.constants import speed_of_light
 
 second = 1_000_000_000_000
 
+
 class Node:
-    def __init__(self, node_id: int, pos: Tuple[int, int], clock_err: float = 1, clock_offset: int = 0):
+    def __init__(self, node_id: int, pos, clock_err: float = 1, clock_offset: int = 0):
         self.node_id = node_id
         self.pos = pos
         self.clock_err = clock_err
@@ -16,7 +17,7 @@ class Node:
     def get_pos(self):
         return self.pos
 
-    def tx(self, global_time: int):
+    def tx(self, global_time: int) -> Tuple[Dict, Dict, Tuple[int, int]]:
         json_obj = {
             "id": self.node_id,
             "tx range": {
@@ -25,9 +26,19 @@ class Node:
             },
         }
         self.sequence_number += 1
-        return (json_obj, self.receive_timestamps)
+        if type(self.pos) == Callable:
+            pos = self.pos(global_time)
+        else:
+            pos = self.pos
+        return (json_obj, self.receive_timestamps, pos)
 
-    def rx(self, global_time: int, message, pos: Tuple[int, int], message_receive_timestamps: Dict[int, Tuple[int, int]]):
+    def rx(
+        self,
+        global_time: int,
+        message: Dict,
+        pos: Tuple[int, int],
+        message_receive_timestamps: Dict[int, Tuple[int, int]],
+    ) -> Dict:
         rx_time = (
             global_time
             + (
