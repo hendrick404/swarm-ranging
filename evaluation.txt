@@ -1,0 +1,507 @@
+{"id":1,"tx range":{"seq num":43,"tx time":971451838004}}
+{"id":3,"rx range":{"sender id":1,"seq num":43,"rx time":710215570781,"tx time":971451838004,"timestamps":[{"id":2,"seq num":35,"rx time":903516365024},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":36,"tx time":455508123188}}
+{"id":1,"rx range":{"sender id":2,"seq num":36,"rx time":977541818927,"tx time":455508123188,"timestamps":[{"id":3,"seq num":39,"rx time":386574069609}]}}
+{"id":3,"tx range":{"seq num":40,"tx time":721346803252}}
+{"id":2,"rx range":{"sender id":3,"seq num":40,"rx time":460549396315,"tx time":721346803252,"timestamps":[{"id":1,"seq num":43,"rx time":710215570781}]}}
+{"id":1,"tx range":{"seq num":44,"tx time":1045428348980}}
+{"id":3,"rx range":{"sender id":1,"seq num":44,"rx time":784191873945,"tx time":1045428348980,"timestamps":[{"id":2,"seq num":36,"rx time":977541818927},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":37,"tx time":529534563380}}
+{"id":1,"rx range":{"sender id":2,"seq num":37,"rx time":1051568385966,"tx time":529534563380,"timestamps":[{"id":3,"seq num":40,"rx time":460549396315}]}}
+{"id":3,"tx range":{"seq num":41,"tx time":795325952052}}
+{"id":2,"rx range":{"sender id":3,"seq num":41,"rx time":534528626285,"tx time":795325952052,"timestamps":[{"id":1,"seq num":44,"rx time":784191873945}]}}
+{"id":1,"tx range":{"seq num":45,"tx time":19900240948}}
+{"id":3,"rx range":{"sender id":1,"seq num":45,"rx time":858175185160,"tx time":19900240948,"timestamps":[{"id":2,"seq num":37,"rx time":1051568385966},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":38,"tx time":603558160436}}
+{"id":3,"tx range":{"seq num":42,"tx time":869303412276}}
+{"id":1,"rx range":{"sender id":2,"seq num":38,"rx time":26080481694,"tx time":603558160436,"timestamps":[{"id":3,"seq num":41,"rx time":534528626285}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":42,"rx time":608506168800,"tx time":869303412276,"timestamps":[{"id":1,"seq num":45,"rx time":858175185160}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":46,"rx time":932146198364,"tx time":93871463476,"timestamps":[{"id":2,"seq num":38,"rx time":26080481694},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":1,"tx range":{"seq num":46,"tx time":93871463476}}
+{"id":2,"tx range":{"seq num":39,"tx time":677584795700}}
+{"id":3,"tx range":{"seq num":43,"tx time":943263268916}}
+{"id":1,"rx range":{"sender id":2,"seq num":39,"rx time":100107243351,"tx time":677584795700,"timestamps":[{"id":3,"seq num":42,"rx time":608506168800}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":43,"rx time":682466108536,"tx time":943263268916,"timestamps":[{"id":1,"seq num":46,"rx time":932146198364}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":47,"rx time":1006117323043,"tx time":167842798132,"timestamps":[{"id":2,"seq num":39,"rx time":100107243351},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":40,"tx time":751612432436}}
+{"id":1,"tx range":{"seq num":47,"tx time":167842798132}}
+{"id":3,"tx range":{"seq num":44,"tx time":1017251734068}}
+{"id":2,"rx range":{"sender id":3,"seq num":44,"rx time":756454657695,"tx time":1017251734068,"timestamps":[{"id":1,"seq num":47,"rx time":1006117323043}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":40,"rx time":174135006322,"tx time":751612432436,"timestamps":[{"id":3,"seq num":43,"rx time":682466108536}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":48,"rx time":1080093735077,"tx time":241819421236,"timestamps":[{"id":2,"seq num":40,"rx time":174135006322},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":41,"tx time":825640972340}}
+{"id":1,"tx range":{"seq num":48,"tx time":241819421236}}
+{"id":3,"tx range":{"seq num":45,"tx time":1091228914740}}
+{"id":2,"rx range":{"sender id":3,"seq num":45,"rx time":830431923234,"tx time":1091228914740,"timestamps":[{"id":1,"seq num":48,"rx time":1080093735077}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":41,"rx time":248163672690,"tx time":825640972340,"timestamps":[{"id":3,"seq num":44,"rx time":756454657695}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":49,"rx time":54559265629,"tx time":315796791860,"timestamps":[{"id":2,"seq num":41,"rx time":248163672690},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":42,"tx time":899668426804}}
+{"id":1,"tx range":{"seq num":49,"tx time":315796791860}}
+{"id":3,"tx range":{"seq num":46,"tx time":65678215732}}
+{"id":2,"rx range":{"sender id":3,"seq num":46,"rx time":904392938127,"tx time":65678215732,"timestamps":[{"id":1,"seq num":49,"rx time":54559265629}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":42,"rx time":322191253600,"tx time":899668426804,"timestamps":[{"id":3,"seq num":45,"rx time":830431923234}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":50,"rx time":128534765064,"tx time":389772504628,"timestamps":[{"id":2,"seq num":42,"rx time":322191253600},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":43,"tx time":973692247092}}
+{"id":1,"tx range":{"seq num":50,"tx time":389772504628}}
+{"id":3,"tx range":{"seq num":47,"tx time":139659889204}}
+{"id":2,"rx range":{"sender id":3,"seq num":47,"rx time":978374698671,"tx time":139659889204,"timestamps":[{"id":1,"seq num":50,"rx time":128534765064}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":43,"rx time":396215200325,"tx time":973692247092,"timestamps":[{"id":3,"seq num":46,"rx time":904392938127}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":51,"rx time":202509900125,"tx time":463747853876,"timestamps":[{"id":2,"seq num":43,"rx time":396215200325},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":44,"tx time":1047716816948}}
+{"id":1,"tx range":{"seq num":51,"tx time":463747853876}}
+{"id":3,"tx range":{"seq num":48,"tx time":213635431988}}
+{"id":2,"rx range":{"sender id":3,"seq num":48,"rx time":1052350329606,"tx time":213635431988,"timestamps":[{"id":1,"seq num":51,"rx time":202509900125}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":44,"rx time":470239896496,"tx time":1047716816948,"timestamps":[{"id":3,"seq num":47,"rx time":978374698671}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":52,"rx time":276488721122,"tx time":537726890036,"timestamps":[{"id":2,"seq num":44,"rx time":470239896496},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":45,"tx time":22238442036}}
+{"id":3,"tx range":{"seq num":49,"tx time":287614065716}}
+{"id":1,"tx range":{"seq num":52,"tx time":537726890036}}
+{"id":2,"rx range":{"sender id":3,"seq num":49,"rx time":26817424369,"tx time":287614065716,"timestamps":[{"id":1,"seq num":52,"rx time":276488721122}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":53,"rx time":350463139813,"tx time":611701524532,"timestamps":[{"id":2,"seq num":45,"rx time":544273275832},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":45,"rx time":544273275832,"tx time":22238442036,"timestamps":[{"id":3,"seq num":48,"rx time":1052350329606}]}}
+{"id":2,"tx range":{"seq num":46,"tx time":96258082868}}
+{"id":3,"tx range":{"seq num":50,"tx time":361588040244}}
+{"id":1,"tx range":{"seq num":53,"tx time":611701524532}}
+{"id":2,"rx range":{"sender id":3,"seq num":50,"rx time":100791488660,"tx time":361588040244,"timestamps":[{"id":1,"seq num":53,"rx time":350463139813}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":54,"rx time":424439499389,"tx time":685678100532,"timestamps":[{"id":2,"seq num":46,"rx time":618293042936},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":47,"tx time":170278921780}}
+{"id":1,"rx range":{"sender id":2,"seq num":46,"rx time":618293042936,"tx time":96258082868,"timestamps":[{"id":3,"seq num":49,"rx time":26817424369}]}}
+{"id":3,"tx range":{"seq num":51,"tx time":435564014132}}
+{"id":2,"rx range":{"sender id":3,"seq num":51,"rx time":174767553080,"tx time":435564014132,"timestamps":[{"id":1,"seq num":54,"rx time":424439499389}]}}
+{"id":1,"tx range":{"seq num":54,"tx time":685678100532}}
+{"id":3,"rx range":{"sender id":1,"seq num":55,"rx time":498416639580,"tx time":759655457844,"timestamps":[{"id":2,"seq num":47,"rx time":692314007917},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":48,"tx time":244307501620}}
+{"id":1,"rx range":{"sender id":2,"seq num":47,"rx time":692314007917,"tx time":170278921780,"timestamps":[{"id":3,"seq num":50,"rx time":100791488660}]}}
+{"id":3,"tx range":{"seq num":52,"tx time":509546721332}}
+{"id":2,"rx range":{"sender id":3,"seq num":52,"rx time":248750351899,"tx time":509546721332,"timestamps":[{"id":1,"seq num":55,"rx time":498416639580}]}}
+{"id":1,"tx range":{"seq num":55,"tx time":759655457844}}
+{"id":3,"rx range":{"sender id":1,"seq num":56,"rx time":572391456770,"tx time":833630492724,"timestamps":[{"id":2,"seq num":48,"rx time":766342713490},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":49,"tx time":318332130356}}
+{"id":1,"rx range":{"sender id":2,"seq num":48,"rx time":766342713490,"tx time":244307501620,"timestamps":[{"id":3,"seq num":51,"rx time":174767553080}]}}
+{"id":3,"tx range":{"seq num":53,"tx time":583515495988}}
+{"id":2,"rx range":{"sender id":3,"seq num":53,"rx time":322719219068,"tx time":583515495988,"timestamps":[{"id":1,"seq num":56,"rx time":572391456770}]}}
+{"id":1,"tx range":{"seq num":56,"tx time":833630492724}}
+{"id":3,"rx range":{"sender id":1,"seq num":57,"rx time":646367785361,"tx time":907607039540,"timestamps":[{"id":2,"seq num":49,"rx time":840367467557},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":50,"tx time":392361978932}}
+{"id":1,"rx range":{"sender id":2,"seq num":49,"rx time":840367467557,"tx time":318332130356,"timestamps":[{"id":3,"seq num":52,"rx time":248750351899}]}}
+{"id":3,"tx range":{"seq num":54,"tx time":657500289076}}
+{"id":2,"rx range":{"sender id":3,"seq num":54,"rx time":396704105797,"tx time":657500289076,"timestamps":[{"id":1,"seq num":57,"rx time":646367785361}]}}
+{"id":1,"tx range":{"seq num":57,"tx time":907607039540}}
+{"id":3,"rx range":{"sender id":1,"seq num":58,"rx time":720345663149,"tx time":981585136180,"timestamps":[{"id":2,"seq num":50,"rx time":914397440978},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":51,"tx time":466388105268}}
+{"id":1,"rx range":{"sender id":2,"seq num":50,"rx time":914397440978,"tx time":392361978932,"timestamps":[{"id":3,"seq num":53,"rx time":322719219068}]}}
+{"id":3,"tx range":{"seq num":55,"tx time":731471238196}}
+{"id":2,"rx range":{"sender id":3,"seq num":55,"rx time":470675149550,"tx time":731471238196,"timestamps":[{"id":1,"seq num":58,"rx time":720345663149}]}}
+{"id":1,"tx range":{"seq num":58,"tx time":981585136180}}
+{"id":3,"rx range":{"sender id":1,"seq num":59,"rx time":794323329947,"tx time":1055563022388,"timestamps":[{"id":2,"seq num":51,"rx time":988423691691},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":52,"tx time":540412727860}}
+{"id":3,"tx range":{"seq num":56,"tx time":805454020660}}
+{"id":1,"rx range":{"sender id":2,"seq num":51,"rx time":988423691691,"tx time":466388105268,"timestamps":[{"id":3,"seq num":54,"rx time":396704105797}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":56,"rx time":544658027518,"tx time":805454020660,"timestamps":[{"id":1,"seq num":59,"rx time":794323329947}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":60,"rx time":868305238088,"tx time":30033522740,"timestamps":[{"id":2,"seq num":52,"rx time":1062448438358},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":1,"tx range":{"seq num":59,"tx time":1055563022388}}
+{"id":2,"tx range":{"seq num":53,"tx time":614438598708}}
+{"id":3,"tx range":{"seq num":57,"tx time":879426363444}}
+{"id":1,"rx range":{"sender id":2,"seq num":52,"rx time":1062448438358,"tx time":540412727860,"timestamps":[{"id":3,"seq num":55,"rx time":470675149550}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":57,"rx time":618630466506,"tx time":879426363444,"timestamps":[{"id":1,"seq num":60,"rx time":868305238088}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":61,"rx time":942273711395,"tx time":104002216500,"timestamps":[{"id":2,"seq num":53,"rx time":36962805358},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":54,"tx time":688464825908}}
+{"id":1,"tx range":{"seq num":60,"tx time":30033522740}}
+{"id":3,"tx range":{"seq num":58,"tx time":953396456500}}
+{"id":2,"rx range":{"sender id":3,"seq num":58,"rx time":692600656376,"tx time":953396456500,"timestamps":[{"id":1,"seq num":61,"rx time":942273711395}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":53,"rx time":36962805358,"tx time":614438598708,"timestamps":[{"id":3,"seq num":56,"rx time":544658027518}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":62,"rx time":1016251025872,"tx time":177979751988,"timestamps":[{"id":2,"seq num":54,"rx time":110989156400},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":55,"tx time":762490491444}}
+{"id":1,"tx range":{"seq num":61,"tx time":104002216500}}
+{"id":3,"tx range":{"seq num":59,"tx time":1027390387764}}
+{"id":2,"rx range":{"sender id":3,"seq num":59,"rx time":766594685229,"tx time":1027390387764,"timestamps":[{"id":1,"seq num":62,"rx time":1016251025872}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":54,"rx time":110989156400,"tx time":688464825908,"timestamps":[{"id":3,"seq num":57,"rx time":618630466506}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":63,"rx time":1090226475152,"tx time":251955422772,"timestamps":[{"id":2,"seq num":55,"rx time":185014945509},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":56,"tx time":836520537652}}
+{"id":1,"tx range":{"seq num":62,"tx time":177979751988}}
+{"id":3,"tx range":{"seq num":60,"tx time":1855266868}}
+{"id":2,"rx range":{"sender id":3,"seq num":60,"rx time":840571290563,"tx time":1855266868,"timestamps":[{"id":1,"seq num":63,"rx time":1090226475152}]}}
+{"id":1,"rx range":{"sender id":2,"seq num":55,"rx time":185014945509,"tx time":762490491444,"timestamps":[{"id":3,"seq num":58,"rx time":692600656376}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":64,"rx time":64691328925,"tx time":325932126260,"timestamps":[{"id":2,"seq num":56,"rx time":259045114974},{"id":3,"seq num":4,"rx time":529655299248}]}}
+{"id":2,"tx range":{"seq num":57,"tx time":910549662772}}
+{"id":1,"tx range":{"seq num":63,"tx time":251955422772}}
+{"id":3,"tx range":{"seq num":61,"tx time":75812941364}}
+{"id":2,"rx range":{"sender id":3,"seq num":61,"rx time":914529064037,"tx time":75812941364,"timestamps":[{"id":1,"seq num":64,"rx time":64691328925}]}}
+{"id":2,"tx range":{"seq num":2,"tx time":136811290676}}
+{"id":1,"tx range":{"seq num":2,"tx time":136724125236}}
+{"id":3,"tx range":{"seq num":1,"tx time":65294899252}}
+{"id":2,"rx range":{"sender id":3,"seq num":1,"rx time":191200048353,"tx time":65294899252,"timestamps":[]}}
+{"id":1,"tx range":{"seq num":1,"tx time":65297754676}}
+{"id":3,"rx range":{"sender id":1,"seq num":1,"rx time":102238683848,"tx time":65297754676,"timestamps":[]}}
+{"id":1,"rx range":{"sender id":3,"seq num":2,"rx time":95036347643,"tx time":131977203764,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848}]}}
+{"id":2,"tx range":{"seq num":1,"tx time":65307493940}}
+{"id":3,"tx range":{"seq num":2,"tx time":131977203764}}
+{"id":1,"tx range":{"seq num":2,"tx time":137681319476}}
+{"id":2,"rx range":{"sender id":1,"seq num":2,"rx time":68342725557,"tx time":137681319476,"timestamps":[{"id":3,"seq num":2,"rx time":95036347643}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":1,"rx time":171586835994,"tx time":65307493940,"timestamps":[]}}
+{"id":2,"tx range":{"seq num":2,"tx time":137764913716}}
+{"id":1,"rx range":{"sender id":3,"seq num":3,"rx time":163272304134,"tx time":200212990004,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":1,"rx time":171586835994}]}}
+{"id":3,"tx range":{"seq num":3,"tx time":200212990004}}
+{"id":1,"tx range":{"seq num":3,"tx time":211622048308}}
+{"id":2,"rx range":{"sender id":1,"seq num":3,"rx time":142283286939,"tx time":211622048308,"timestamps":[{"id":3,"seq num":3,"rx time":163272304134}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":2,"rx time":244044240046,"tx time":137764913716,"timestamps":[{"id":1,"seq num":2,"rx time":68342725557}]}}
+{"id":2,"tx range":{"seq num":3,"tx time":211790606388}}
+{"id":1,"rx range":{"sender id":3,"seq num":4,"rx time":231536556026,"tx time":268477071924,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":2,"rx time":244044240046}]}}
+{"id":3,"tx range":{"seq num":4,"tx time":268477071924}}
+{"id":1,"tx range":{"seq num":4,"tx time":285562481716}}
+{"id":2,"rx range":{"sender id":1,"seq num":4,"rx time":216223556696,"tx time":285562481716,"timestamps":[{"id":3,"seq num":4,"rx time":231536556026}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":3,"rx time":318069911545,"tx time":211790606388,"timestamps":[{"id":1,"seq num":3,"rx time":142283286939}]}}
+{"id":2,"tx range":{"seq num":4,"tx time":285816271924}}
+{"id":1,"rx range":{"sender id":3,"seq num":5,"rx time":299799984287,"tx time":336740328500,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":3,"rx time":318069911545}]}}
+{"id":3,"tx range":{"seq num":5,"tx time":336740328500}}
+{"id":1,"tx range":{"seq num":5,"tx time":359503513140}}
+{"id":2,"rx range":{"sender id":1,"seq num":5,"rx time":290164425886,"tx time":359503513140,"timestamps":[{"id":3,"seq num":5,"rx time":299799984287}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":4,"rx time":392095551164,"tx time":285816271924,"timestamps":[{"id":1,"seq num":4,"rx time":216223556696}]}}
+{"id":2,"tx range":{"seq num":5,"tx time":359842170932}}
+{"id":1,"rx range":{"sender id":3,"seq num":6,"rx time":368064917497,"tx time":405005086772,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":4,"rx time":392095551164}]}}
+{"id":3,"tx range":{"seq num":6,"tx time":405005086772}}
+{"id":1,"tx range":{"seq num":6,"tx time":433442797108}}
+{"id":2,"rx range":{"sender id":1,"seq num":6,"rx time":364103547660,"tx time":433442797108,"timestamps":[{"id":3,"seq num":6,"rx time":368064917497}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":5,"rx time":466121419360,"tx time":359842170932,"timestamps":[{"id":1,"seq num":5,"rx time":290164425886}]}}
+{"id":2,"tx range":{"seq num":6,"tx time":433869853236}}
+{"id":1,"rx range":{"sender id":3,"seq num":7,"rx time":441690972069,"tx time":478630948404,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":5,"rx time":466121419360}]}}
+{"id":3,"tx range":{"seq num":7,"tx time":478630948404}}
+{"id":1,"tx range":{"seq num":7,"tx time":507382771252}}
+{"id":2,"rx range":{"sender id":1,"seq num":7,"rx time":438043359766,"tx time":507382771252,"timestamps":[{"id":3,"seq num":7,"rx time":441690972069}]}}
+{"id":2,"tx range":{"seq num":7,"tx time":507895722036}}
+{"id":3,"rx range":{"sender id":2,"seq num":6,"rx time":540149067030,"tx time":433869853236,"timestamps":[{"id":1,"seq num":6,"rx time":364103547660}]}}
+{"id":1,"rx range":{"sender id":3,"seq num":8,"rx time":515716964490,"tx time":552656743476,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":6,"rx time":540149067030}]}}
+{"id":1,"tx range":{"seq num":8,"tx time":581323549236}}
+{"id":2,"rx range":{"sender id":1,"seq num":8,"rx time":511983976117,"tx time":581323549236,"timestamps":[{"id":3,"seq num":8,"rx time":515716964490}]}}
+{"id":3,"tx range":{"seq num":8,"tx time":552656743476}}
+{"id":2,"tx range":{"seq num":8,"tx time":581923143220}}
+{"id":1,"rx range":{"sender id":3,"seq num":9,"rx time":589743130875,"tx time":626682709556,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":7,"rx time":614174897903}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":7,"rx time":614174897903,"tx time":507895722036,"timestamps":[{"id":1,"seq num":7,"rx time":438043359766}]}}
+{"id":1,"tx range":{"seq num":9,"tx time":655262949940}}
+{"id":2,"rx range":{"sender id":1,"seq num":9,"rx time":585923215641,"tx time":655262949940,"timestamps":[{"id":3,"seq num":9,"rx time":589743130875}]}}
+{"id":3,"tx range":{"seq num":9,"tx time":626682709556}}
+{"id":2,"tx range":{"seq num":9,"tx time":655949504052}}
+{"id":1,"rx range":{"sender id":3,"seq num":10,"rx time":663776151645,"tx time":700715527732,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":8,"rx time":688202278238}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":8,"rx time":688202278238,"tx time":581923143220,"timestamps":[{"id":1,"seq num":8,"rx time":511983976117}]}}
+{"id":1,"tx range":{"seq num":10,"tx time":729205087284}}
+{"id":2,"rx range":{"sender id":1,"seq num":10,"rx time":659865192460,"tx time":729205087284,"timestamps":[{"id":3,"seq num":10,"rx time":663776151645}]}}
+{"id":3,"tx range":{"seq num":10,"tx time":700715527732}}
+{"id":2,"tx range":{"seq num":10,"tx time":729976279604}}
+{"id":1,"rx range":{"sender id":3,"seq num":11,"rx time":737799736648,"tx time":774738908212,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":9,"rx time":762228595606}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":9,"rx time":762228595606,"tx time":655949504052,"timestamps":[{"id":1,"seq num":9,"rx time":585923215641}]}}
+{"id":1,"tx range":{"seq num":11,"tx time":803151206452}}
+{"id":2,"rx range":{"sender id":1,"seq num":11,"rx time":733811151502,"tx time":803151206452,"timestamps":[{"id":3,"seq num":11,"rx time":737799736648}]}}
+{"id":3,"tx range":{"seq num":11,"tx time":774738908212}}
+{"id":2,"tx range":{"seq num":11,"tx time":804012730932}}
+{"id":1,"rx range":{"sender id":3,"seq num":12,"rx time":811848253218,"tx time":848787218484,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":10,"rx time":836255325452}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":10,"rx time":836255325452,"tx time":729976279604,"timestamps":[{"id":1,"seq num":10,"rx time":659865192460}]}}
+{"id":1,"tx range":{"seq num":12,"tx time":877097684020}}
+{"id":2,"rx range":{"sender id":1,"seq num":12,"rx time":807757469653,"tx time":877097684020,"timestamps":[{"id":3,"seq num":12,"rx time":811848253218}]}}
+{"id":3,"tx range":{"seq num":12,"tx time":848787218484}}
+{"id":2,"tx range":{"seq num":12,"tx time":878047140404}}
+{"id":1,"rx range":{"sender id":3,"seq num":13,"rx time":885884599512,"tx time":922823356980,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":11,"rx time":910291728925}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":11,"rx time":910291728925,"tx time":804012730932,"timestamps":[{"id":1,"seq num":11,"rx time":733811151502}]}}
+{"id":1,"tx range":{"seq num":13,"tx time":951045850164}}
+{"id":2,"rx range":{"sender id":1,"seq num":13,"rx time":881705476958,"tx time":951045850164,"timestamps":[{"id":3,"seq num":13,"rx time":885884599512}]}}
+{"id":3,"tx range":{"seq num":13,"tx time":922823356980}}
+{"id":2,"tx range":{"seq num":13,"tx time":952080927284}}
+{"id":1,"rx range":{"sender id":3,"seq num":14,"rx time":959921752542,"tx time":996860300852,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":12,"rx time":984326088497}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":12,"rx time":984326088497,"tx time":878047140404,"timestamps":[{"id":1,"seq num":12,"rx time":807757469653}]}}
+{"id":1,"tx range":{"seq num":14,"tx time":1024991725620}}
+{"id":2,"rx range":{"sender id":1,"seq num":14,"rx time":955651194127,"tx time":1024991725620,"timestamps":[{"id":3,"seq num":14,"rx time":959921752542}]}}
+{"id":2,"tx range":{"seq num":14,"tx time":1026113664052}}
+{"id":3,"tx range":{"seq num":14,"tx time":996860300852}}
+{"id":1,"rx range":{"sender id":3,"seq num":15,"rx time":1033967734460,"tx time":1070906072116,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":13,"rx time":1058359823524}]}}
+{"id":1,"tx range":{"seq num":15,"tx time":1098944124980}}
+{"id":2,"rx range":{"sender id":1,"seq num":15,"rx time":1029603435641,"tx time":1098944124980,"timestamps":[{"id":3,"seq num":15,"rx time":1033967734460}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":13,"rx time":1058359823524,"tx time":952080927284,"timestamps":[{"id":1,"seq num":13,"rx time":881705476958}]}}
+{"id":2,"tx range":{"seq num":15,"tx time":642340916}}
+{"id":1,"rx range":{"sender id":3,"seq num":16,"rx time":8465633353,"tx time":45403759156,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":14,"rx time":32880878819}]}}
+{"id":3,"tx range":{"seq num":15,"tx time":1070906072116}}
+{"id":1,"tx range":{"seq num":16,"tx time":73387010100}}
+{"id":2,"rx range":{"sender id":1,"seq num":16,"rx time":4046163295,"tx time":73387010100,"timestamps":[{"id":3,"seq num":16,"rx time":8465633353}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":14,"rx time":32880878819,"tx time":1026113664052,"timestamps":[{"id":1,"seq num":14,"rx time":955651194127}]}}
+{"id":2,"tx range":{"seq num":16,"tx time":74662349364}}
+{"id":1,"rx range":{"sender id":3,"seq num":17,"rx time":82504042867,"tx time":119441955380,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":15,"rx time":106921128071}]}}
+{"id":3,"tx range":{"seq num":16,"tx time":45403759156}}
+{"id":1,"tx range":{"seq num":17,"tx time":147329404468}}
+{"id":2,"rx range":{"sender id":1,"seq num":17,"rx time":77988400845,"tx time":147329404468,"timestamps":[{"id":3,"seq num":17,"rx time":82504042867}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":15,"rx time":106921128071,"tx time":642340916,"timestamps":[{"id":1,"seq num":15,"rx time":1029603435641}]}}
+{"id":2,"tx range":{"seq num":17,"tx time":148689561652}}
+{"id":1,"rx range":{"sender id":3,"seq num":18,"rx time":156518105732,"tx time":193455803956,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":16,"rx time":180941079375}]}}
+{"id":3,"tx range":{"seq num":17,"tx time":119441955380}}
+{"id":1,"tx range":{"seq num":18,"tx time":221276856884}}
+{"id":2,"rx range":{"sender id":1,"seq num":18,"rx time":151935697054,"tx time":221276856884,"timestamps":[{"id":3,"seq num":18,"rx time":156518105732}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":16,"rx time":180941079375,"tx time":74662349364,"timestamps":[{"id":1,"seq num":16,"rx time":4046163295}]}}
+{"id":2,"tx range":{"seq num":18,"tx time":222722270772}}
+{"id":1,"rx range":{"sender id":3,"seq num":19,"rx time":230559274999,"tx time":267496757812,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":17,"rx time":254968232890}]}}
+{"id":3,"tx range":{"seq num":18,"tx time":193455803956}}
+{"id":1,"tx range":{"seq num":19,"tx time":295221335604}}
+{"id":2,"rx range":{"sender id":1,"seq num":19,"rx time":225880020182,"tx time":295221335604,"timestamps":[{"id":3,"seq num":19,"rx time":230559274999}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":17,"rx time":254968232890,"tx time":148689561652,"timestamps":[{"id":1,"seq num":17,"rx time":77988400845}]}}
+{"id":2,"tx range":{"seq num":19,"tx time":296753567796}}
+{"id":1,"rx range":{"sender id":3,"seq num":20,"rx time":304592659772,"tx time":341529926196,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":18,"rx time":329000881571}]}}
+{"id":3,"tx range":{"seq num":19,"tx time":267496757812}}
+{"id":1,"tx range":{"seq num":20,"tx time":369166879796}}
+{"id":2,"rx range":{"sender id":1,"seq num":20,"rx time":299825409296,"tx time":369166879796,"timestamps":[{"id":3,"seq num":20,"rx time":304592659772}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":18,"rx time":329000881571,"tx time":222722270772,"timestamps":[{"id":1,"seq num":18,"rx time":151935697054}]}}
+{"id":2,"tx range":{"seq num":20,"tx time":370784992820}}
+{"id":1,"rx range":{"sender id":3,"seq num":21,"rx time":378627647237,"tx time":415564696116,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":19,"rx time":403032116570}]}}
+{"id":3,"tx range":{"seq num":20,"tx time":341529926196}}
+{"id":1,"tx range":{"seq num":21,"tx time":443113334324}}
+{"id":2,"rx range":{"sender id":1,"seq num":21,"rx time":373771709273,"tx time":443113334324,"timestamps":[{"id":3,"seq num":21,"rx time":378627647237}]}}
+{"id":2,"tx range":{"seq num":21,"tx time":444817668148}}
+{"id":3,"rx range":{"sender id":2,"seq num":19,"rx time":403032116570,"tx time":296753567796,"timestamps":[{"id":1,"seq num":19,"rx time":225880020182}]}}
+{"id":1,"rx range":{"sender id":3,"seq num":22,"rx time":452658064005,"tx time":489594894388,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":20,"rx time":477063477940}]}}
+{"id":1,"tx range":{"seq num":22,"tx time":517058932276}}
+{"id":2,"rx range":{"sender id":1,"seq num":22,"rx time":447717153169,"tx time":517058932276,"timestamps":[{"id":3,"seq num":22,"rx time":452658064005}]}}
+{"id":3,"tx range":{"seq num":21,"tx time":415564696116}}
+{"id":2,"tx range":{"seq num":22,"tx time":518850214964}}
+{"id":1,"rx range":{"sender id":3,"seq num":23,"rx time":526686137956,"tx time":563622748724,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":21,"rx time":551096088161}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":20,"rx time":477063477940,"tx time":370784992820,"timestamps":[{"id":1,"seq num":20,"rx time":299825409296}]}}
+{"id":1,"tx range":{"seq num":23,"tx time":591006405172}}
+{"id":2,"rx range":{"sender id":1,"seq num":23,"rx time":521664472509,"tx time":591006405172,"timestamps":[{"id":3,"seq num":23,"rx time":526686137956}]}}
+{"id":3,"tx range":{"seq num":22,"tx time":489594894388}}
+{"id":2,"tx range":{"seq num":23,"tx time":592885653044}}
+{"id":1,"rx range":{"sender id":3,"seq num":24,"rx time":600721555384,"tx time":637657945652,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":22,"rx time":625128568285}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":21,"rx time":551096088161,"tx time":444817668148,"timestamps":[{"id":1,"seq num":21,"rx time":373771709273}]}}
+{"id":1,"tx range":{"seq num":24,"tx time":664953575476}}
+{"id":2,"rx range":{"sender id":1,"seq num":24,"rx time":595611489694,"tx time":664953575476,"timestamps":[{"id":3,"seq num":24,"rx time":600721555384}]}}
+{"id":3,"tx range":{"seq num":23,"tx time":563622748724}}
+{"id":2,"tx range":{"seq num":24,"tx time":666920374324}}
+{"id":1,"rx range":{"sender id":3,"seq num":25,"rx time":674752618154,"tx time":711688786996,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":23,"rx time":699163938494}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":22,"rx time":625128568285,"tx time":518850214964,"timestamps":[{"id":1,"seq num":22,"rx time":447717153169}]}}
+{"id":1,"tx range":{"seq num":25,"tx time":738899180596}}
+{"id":2,"rx range":{"sender id":1,"seq num":25,"rx time":669556942343,"tx time":738899180596,"timestamps":[{"id":3,"seq num":25,"rx time":674752618154}]}}
+{"id":3,"tx range":{"seq num":24,"tx time":637657945652}}
+{"id":2,"tx range":{"seq num":25,"tx time":740954400308}}
+{"id":1,"rx range":{"sender id":3,"seq num":26,"rx time":748795755316,"tx time":785731701812,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":24,"rx time":773198590264}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":23,"rx time":699163938494,"tx time":592885653044,"timestamps":[{"id":1,"seq num":23,"rx time":521664472509}]}}
+{"id":1,"tx range":{"seq num":26,"tx time":812846445108}}
+{"id":2,"rx range":{"sender id":1,"seq num":26,"rx time":743504054752,"tx time":812846445108,"timestamps":[{"id":3,"seq num":26,"rx time":748795755316}]}}
+{"id":3,"tx range":{"seq num":25,"tx time":711688786996}}
+{"id":2,"tx range":{"seq num":26,"tx time":814992431668}}
+{"id":1,"rx range":{"sender id":3,"seq num":27,"rx time":822830957827,"tx time":859766681140,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":25,"rx time":847232545515}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":24,"rx time":773198590264,"tx time":666920374324,"timestamps":[{"id":1,"seq num":24,"rx time":595611489694}]}}
+{"id":1,"tx range":{"seq num":27,"tx time":886793090612}}
+{"id":2,"rx range":{"sender id":1,"seq num":27,"rx time":817450548945,"tx time":886793090612,"timestamps":[{"id":3,"seq num":27,"rx time":822830957827}]}}
+{"id":3,"tx range":{"seq num":26,"tx time":785731701812}}
+{"id":2,"tx range":{"seq num":27,"tx time":889025356852}}
+{"id":1,"rx range":{"sender id":3,"seq num":28,"rx time":896864676153,"tx time":933800175668,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":26,"rx time":921270504675}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":25,"rx time":847232545515,"tx time":740954400308,"timestamps":[{"id":1,"seq num":25,"rx time":669556942343}]}}
+{"id":1,"tx range":{"seq num":28,"tx time":960738439220}}
+{"id":2,"rx range":{"sender id":1,"seq num":28,"rx time":891395746842,"tx time":960738439220,"timestamps":[{"id":3,"seq num":28,"rx time":896864676153}]}}
+{"id":2,"tx range":{"seq num":28,"tx time":963059171380}}
+{"id":3,"tx range":{"seq num":27,"tx time":859766681140}}
+{"id":1,"rx range":{"sender id":3,"seq num":29,"rx time":970897896506,"tx time":1007833171508,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":27,"rx time":995303356339}]}}
+{"id":1,"tx range":{"seq num":29,"tx time":1034686280756}}
+{"id":2,"rx range":{"sender id":1,"seq num":29,"rx time":965343438058,"tx time":1034686280756,"timestamps":[{"id":3,"seq num":29,"rx time":970897896506}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":26,"rx time":921270504675,"tx time":814992431668,"timestamps":[{"id":1,"seq num":26,"rx time":743504054752}]}}
+{"id":2,"tx range":{"seq num":29,"tx time":1037091714100}}
+{"id":1,"rx range":{"sender id":3,"seq num":30,"rx time":1044941916292,"tx time":1081876965940,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":28,"rx time":1069337096162}]}}
+{"id":3,"tx range":{"seq num":28,"tx time":933800175668}}
+{"id":1,"tx range":{"seq num":30,"tx time":9126052404}}
+{"id":2,"rx range":{"sender id":1,"seq num":30,"rx time":1039294687527,"tx time":9126052404,"timestamps":[{"id":3,"seq num":30,"rx time":1044941916292}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":27,"rx time":995303356339,"tx time":889025356852,"timestamps":[{"id":1,"seq num":27,"rx time":817450548945}]}}
+{"id":2,"tx range":{"seq num":30,"tx time":11619937844}}
+{"id":1,"rx range":{"sender id":3,"seq num":31,"rx time":19442049498,"tx time":56376873012,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":29,"rx time":43857935258}]}}
+{"id":3,"tx range":{"seq num":29,"tx time":1007833171508}}
+{"id":1,"tx range":{"seq num":31,"tx time":83059907636}}
+{"id":2,"rx range":{"sender id":1,"seq num":31,"rx time":13716765637,"tx time":83059907636,"timestamps":[{"id":3,"seq num":31,"rx time":19442049498}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":28,"rx time":1069337096162,"tx time":963059171380,"timestamps":[{"id":1,"seq num":28,"rx time":891395746842}]}}
+{"id":2,"tx range":{"seq num":31,"tx time":85647383092}}
+{"id":1,"rx range":{"sender id":3,"seq num":32,"rx time":93482836037,"tx time":130417432628,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":30,"rx time":117897709475}]}}
+{"id":3,"tx range":{"seq num":30,"tx time":1081876965940}}
+{"id":1,"tx range":{"seq num":32,"tx time":156998251060}}
+{"id":2,"rx range":{"sender id":1,"seq num":32,"rx time":87654960365,"tx time":156998251060,"timestamps":[{"id":3,"seq num":32,"rx time":93482836037}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":29,"rx time":43857935258,"tx time":1037091714100,"timestamps":[{"id":1,"seq num":29,"rx time":965343438058}]}}
+{"id":2,"tx range":{"seq num":32,"tx time":159675667508}}
+{"id":1,"rx range":{"sender id":3,"seq num":33,"rx time":167501469942,"tx time":204435839028,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":31,"rx time":191925076240}]}}
+{"id":3,"tx range":{"seq num":31,"tx time":56376873012}}
+{"id":1,"tx range":{"seq num":33,"tx time":230942760500}}
+{"id":2,"rx range":{"sender id":1,"seq num":33,"rx time":161599321744,"tx time":230942760500,"timestamps":[{"id":3,"seq num":33,"rx time":167501469942}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":30,"rx time":117897709475,"tx time":11619937844,"timestamps":[{"id":1,"seq num":30,"rx time":1039294687527}]}}
+{"id":2,"tx range":{"seq num":33,"tx time":233710104116}}
+{"id":1,"rx range":{"sender id":3,"seq num":34,"rx time":241531621340,"tx time":278465762356,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":32,"rx time":265953280896}]}}
+{"id":3,"tx range":{"seq num":32,"tx time":130417432628}}
+{"id":1,"tx range":{"seq num":34,"tx time":304889641012}}
+{"id":2,"rx range":{"sender id":1,"seq num":34,"rx time":235546054777,"tx time":304889641012,"timestamps":[{"id":3,"seq num":34,"rx time":241531621340}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":31,"rx time":191925076240,"tx time":85647383092,"timestamps":[{"id":1,"seq num":31,"rx time":13716765637}]}}
+{"id":2,"tx range":{"seq num":34,"tx time":307744749108}}
+{"id":1,"rx range":{"sender id":3,"seq num":35,"rx time":315575226758,"tx time":352509138996,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":33,"rx time":339987636557}]}}
+{"id":3,"tx range":{"seq num":33,"tx time":204435839028}}
+{"id":1,"tx range":{"seq num":35,"tx time":378836920884}}
+{"id":2,"rx range":{"sender id":1,"seq num":35,"rx time":309493187804,"tx time":378836920884,"timestamps":[{"id":3,"seq num":35,"rx time":315575226758}]}}
+{"id":2,"tx range":{"seq num":35,"tx time":381777549876}}
+{"id":3,"rx range":{"sender id":2,"seq num":32,"rx time":265953280896,"tx time":159675667508,"timestamps":[{"id":1,"seq num":32,"rx time":87654960365}]}}
+{"id":1,"rx range":{"sender id":3,"seq num":36,"rx time":389617861399,"tx time":426551544372,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":34,"rx time":414022199395}]}}
+{"id":1,"tx range":{"seq num":36,"tx time":452784550964}}
+{"id":2,"rx range":{"sender id":1,"seq num":36,"rx time":383440671386,"tx time":452784550964,"timestamps":[{"id":3,"seq num":36,"rx time":389617861399}]}}
+{"id":3,"tx range":{"seq num":34,"tx time":278465762356}}
+{"id":2,"tx range":{"seq num":36,"tx time":455810370100}}
+{"id":1,"rx range":{"sender id":3,"seq num":37,"rx time":463647415619,"tx time":500580868660,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":35,"rx time":488054917072}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":33,"rx time":339987636557,"tx time":233710104116,"timestamps":[{"id":1,"seq num":33,"rx time":161599321744}]}}
+{"id":1,"tx range":{"seq num":37,"tx time":526733219892}}
+{"id":2,"rx range":{"sender id":1,"seq num":37,"rx time":457389194200,"tx time":526733219892,"timestamps":[{"id":3,"seq num":37,"rx time":463647415619}]}}
+{"id":3,"tx range":{"seq num":35,"tx time":352509138996}}
+{"id":2,"tx range":{"seq num":37,"tx time":529843424308}}
+{"id":1,"rx range":{"sender id":3,"seq num":38,"rx time":537684935158,"tx time":574618157620,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":36,"rx time":562087653072}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":34,"rx time":414022199395,"tx time":307744749108,"timestamps":[{"id":1,"seq num":34,"rx time":235546054777}]}}
+{"id":1,"tx range":{"seq num":38,"tx time":600681516596}}
+{"id":2,"rx range":{"sender id":1,"seq num":38,"rx time":531337345238,"tx time":600681516596,"timestamps":[{"id":3,"seq num":38,"rx time":537684935158}]}}
+{"id":3,"tx range":{"seq num":36,"tx time":426551544372}}
+{"id":2,"tx range":{"seq num":38,"tx time":603876631604}}
+{"id":1,"rx range":{"sender id":3,"seq num":39,"rx time":611720814857,"tx time":648653806132,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":37,"rx time":636120622061}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":35,"rx time":488054917072,"tx time":381777549876,"timestamps":[{"id":1,"seq num":35,"rx time":309493187804}]}}
+{"id":1,"tx range":{"seq num":39,"tx time":674632046132}}
+{"id":2,"rx range":{"sender id":1,"seq num":39,"rx time":605287729582,"tx time":674632046132,"timestamps":[{"id":3,"seq num":39,"rx time":611720814857}]}}
+{"id":3,"tx range":{"seq num":37,"tx time":500580868660}}
+{"id":2,"tx range":{"seq num":39,"tx time":677908187188}}
+{"id":1,"rx range":{"sender id":3,"seq num":40,"rx time":685744869994,"tx time":722677629492,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":38,"rx time":710153742976}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":36,"rx time":562087653072,"tx time":455810370100,"timestamps":[{"id":1,"seq num":36,"rx time":383440671386}]}}
+{"id":1,"tx range":{"seq num":40,"tx time":748583943220}}
+{"id":2,"rx range":{"sender id":1,"seq num":40,"rx time":679239482137,"tx time":748583943220,"timestamps":[{"id":3,"seq num":40,"rx time":685744869994}]}}
+{"id":3,"tx range":{"seq num":38,"tx time":574618157620}}
+{"id":2,"tx range":{"seq num":40,"tx time":751942001204}}
+{"id":1,"rx range":{"sender id":3,"seq num":41,"rx time":759781144139,"tx time":796713671220,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":39,"rx time":784185211041}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":37,"rx time":636120622061,"tx time":529843424308,"timestamps":[{"id":1,"seq num":37,"rx time":457389194200}]}}
+{"id":1,"tx range":{"seq num":41,"tx time":822533505588}}
+{"id":2,"rx range":{"sender id":1,"seq num":41,"rx time":753188900633,"tx time":822533505588,"timestamps":[{"id":3,"seq num":41,"rx time":759781144139}]}}
+{"id":3,"tx range":{"seq num":39,"tx time":648653806132}}
+{"id":2,"tx range":{"seq num":41,"tx time":825973423668}}
+{"id":1,"rx range":{"sender id":3,"seq num":42,"rx time":833815332791,"tx time":870747627060,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":40,"rx time":858218936280}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":38,"rx time":710153742976,"tx time":603876631604,"timestamps":[{"id":1,"seq num":38,"rx time":531337345238}]}}
+{"id":1,"tx range":{"seq num":42,"tx time":896479889972}}
+{"id":2,"rx range":{"sender id":1,"seq num":42,"rx time":827135141713,"tx time":896479889972,"timestamps":[{"id":3,"seq num":42,"rx time":833815332791}]}}
+{"id":2,"tx range":{"seq num":42,"tx time":900008064564}}
+{"id":3,"tx range":{"seq num":40,"tx time":722677629492}}
+{"id":1,"rx range":{"sender id":3,"seq num":43,"rx time":907842713471,"tx time":944774774324,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":41,"rx time":932250268947}]}}
+{"id":1,"tx range":{"seq num":43,"tx time":970427815476}}
+{"id":2,"rx range":{"sender id":1,"seq num":43,"rx time":901082924376,"tx time":970427815476,"timestamps":[{"id":3,"seq num":43,"rx time":907842713471}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":39,"rx time":784185211041,"tx time":677908187188,"timestamps":[{"id":1,"seq num":39,"rx time":605287729582}]}}
+{"id":2,"tx range":{"seq num":43,"tx time":974041313332}}
+{"id":1,"rx range":{"sender id":3,"seq num":44,"rx time":981887361990,"tx time":1018819188788,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":42,"rx time":1006284818875}]}}
+{"id":3,"tx range":{"seq num":41,"tx time":796713671220}}
+{"id":1,"tx range":{"seq num":44,"tx time":1044377435700}}
+{"id":2,"rx range":{"sender id":1,"seq num":44,"rx time":975032402202,"tx time":1044377435700,"timestamps":[{"id":3,"seq num":44,"rx time":981887361990}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":40,"rx time":858218936280,"tx time":751942001204,"timestamps":[{"id":1,"seq num":40,"rx time":679239482137}]}}
+{"id":2,"tx range":{"seq num":44,"tx time":1048074815028}}
+{"id":1,"rx range":{"sender id":3,"seq num":45,"rx time":1055926005860,"tx time":1092857598004,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":43,"rx time":1080317975718}]}}
+{"id":3,"tx range":{"seq num":42,"tx time":870747627060}}
+{"id":1,"tx range":{"seq num":45,"tx time":18819337780}}
+{"id":2,"rx range":{"sender id":1,"seq num":45,"rx time":1048985790179,"tx time":18819337780,"timestamps":[{"id":3,"seq num":45,"rx time":1055926005860}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":41,"rx time":932250268947,"tx time":825973423668,"timestamps":[{"id":1,"seq num":41,"rx time":753188900633}]}}
+{"id":2,"tx range":{"seq num":45,"tx time":22601230388}}
+{"id":1,"rx range":{"sender id":3,"seq num":46,"rx time":30428035180,"tx time":67359392308,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":44,"rx time":54839756653}]}}
+{"id":3,"tx range":{"seq num":43,"tx time":944774774324}}
+{"id":1,"tx range":{"seq num":46,"tx time":92760003124}}
+{"id":2,"rx range":{"sender id":1,"seq num":46,"rx time":23414686434,"tx time":92760003124,"timestamps":[{"id":3,"seq num":46,"rx time":30428035180}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":42,"rx time":1006284818875,"tx time":900008064564,"timestamps":[{"id":1,"seq num":42,"rx time":827135141713}]}}
+{"id":2,"tx range":{"seq num":46,"tx time":96627899956}}
+{"id":1,"rx range":{"sender id":3,"seq num":47,"rx time":104471771851,"tx time":141402893364,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":45,"rx time":128877705818}]}}
+{"id":3,"tx range":{"seq num":44,"tx time":1018819188788}}
+{"id":1,"tx range":{"seq num":47,"tx time":166702104116}}
+{"id":2,"rx range":{"sender id":1,"seq num":47,"rx time":97356646753,"tx time":166702104116,"timestamps":[{"id":3,"seq num":47,"rx time":104471771851}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":43,"rx time":1080317975718,"tx time":974041313332,"timestamps":[{"id":1,"seq num":43,"rx time":901082924376}]}}
+{"id":2,"tx range":{"seq num":47,"tx time":170655869492}}
+{"id":1,"rx range":{"sender id":3,"seq num":48,"rx time":178487388224,"tx time":215418273844,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":46,"rx time":202904280335}]}}
+{"id":3,"tx range":{"seq num":45,"tx time":1092857598004}}
+{"id":1,"tx range":{"seq num":48,"tx time":240651501108}}
+{"id":2,"rx range":{"sender id":1,"seq num":48,"rx time":171305903514,"tx time":240651501108,"timestamps":[{"id":3,"seq num":48,"rx time":178487388224}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":44,"rx time":54839756653,"tx time":1048074815028,"timestamps":[{"id":1,"seq num":44,"rx time":975032402202}]}}
+{"id":2,"tx range":{"seq num":48,"tx time":244689399860}}
+{"id":1,"rx range":{"sender id":3,"seq num":49,"rx time":252521937956,"tx time":289452587060,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":47,"rx time":276932153823}]}}
+{"id":3,"tx range":{"seq num":46,"tx time":67359392308}}
+{"id":1,"tx range":{"seq num":49,"tx time":314602555444}}
+{"id":2,"rx range":{"sender id":1,"seq num":49,"rx time":245256818202,"tx time":314602555444,"timestamps":[{"id":3,"seq num":49,"rx time":252521937956}]}}
+{"id":2,"tx range":{"seq num":49,"tx time":318723094068}}
+{"id":3,"rx range":{"sender id":2,"seq num":45,"rx time":128877705818,"tx time":22601230388,"timestamps":[{"id":1,"seq num":45,"rx time":1048985790179}]}}
+{"id":1,"rx range":{"sender id":3,"seq num":50,"rx time":326560057694,"tx time":363490469940,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":48,"rx time":350965587220}]}}
+{"id":1,"tx range":{"seq num":50,"tx time":388553696820}}
+{"id":2,"rx range":{"sender id":1,"seq num":50,"rx time":319207820314,"tx time":388553696820,"timestamps":[{"id":3,"seq num":50,"rx time":326560057694}]}}
+{"id":3,"tx range":{"seq num":47,"tx time":141402893364}}
+{"id":2,"tx range":{"seq num":50,"tx time":392756065332}}
+{"id":1,"rx range":{"sender id":3,"seq num":51,"rx time":400593764846,"tx time":437523939892,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":49,"rx time":424999183733}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":46,"rx time":202904280335,"tx time":96627899956,"timestamps":[{"id":1,"seq num":46,"rx time":23414686434}]}}
+{"id":1,"tx range":{"seq num":51,"tx time":462500702260}}
+{"id":2,"rx range":{"sender id":1,"seq num":51,"rx time":393154687199,"tx time":462500702260,"timestamps":[{"id":3,"seq num":51,"rx time":400593764846}]}}
+{"id":3,"tx range":{"seq num":48,"tx time":215418273844}}
+{"id":2,"tx range":{"seq num":51,"tx time":466791539252}}
+{"id":1,"rx range":{"sender id":3,"seq num":52,"rx time":474629846349,"tx time":511559783988,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":50,"rx time":499032056360}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":47,"rx time":276932153823,"tx time":170655869492,"timestamps":[{"id":1,"seq num":47,"rx time":97356646753}]}}
+{"id":1,"tx range":{"seq num":52,"tx time":536448191540}}
+{"id":2,"rx range":{"sender id":3,"seq num":53,"rx time":479310519400,"tx time":585586394676,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":51,"rx time":573067430640}]}}
+{"id":3,"tx range":{"seq num":49,"tx time":289452587060}}
+{"id":1,"rx range":{"sender id":3,"seq num":53,"rx time":548656694783,"tx time":585586394676,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":51,"rx time":573067430640}]}}
+{"id":2,"tx range":{"seq num":52,"tx time":540826818100}}
+{"id":3,"rx range":{"sender id":2,"seq num":48,"rx time":350965587220,"tx time":244689399860,"timestamps":[{"id":1,"seq num":48,"rx time":171305903514}]}}
+{"id":1,"tx range":{"seq num":53,"tx time":610396219956}}
+{"id":2,"rx range":{"sender id":3,"seq num":54,"rx time":553637876387,"tx time":659913652788,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":52,"rx time":647102610829}]}}
+{"id":3,"tx range":{"seq num":50,"tx time":363490469940}}
+{"id":1,"rx range":{"sender id":3,"seq num":54,"rx time":622984191810,"tx time":659913652788,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":52,"rx time":647102610829}]}}
+{"id":2,"tx range":{"seq num":53,"tx time":614890530868}}
+{"id":3,"rx range":{"sender id":2,"seq num":49,"rx time":424999183733,"tx time":318723094068,"timestamps":[{"id":1,"seq num":49,"rx time":245256818202}]}}
+{"id":1,"tx range":{"seq num":54,"tx time":684342990900}}
+{"id":2,"rx range":{"sender id":3,"seq num":55,"rx time":627697608750,"tx time":733973286964,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":3,"tx range":{"seq num":51,"tx time":437523939892}}
+{"id":1,"rx range":{"sender id":3,"seq num":55,"rx time":697044064353,"tx time":733973286964,"timestamps":[{"id":1,"seq num":1,"rx time":102238683848},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":2,"tx range":{"seq num":54,"tx time":688953862196}}
+{"id":3,"rx range":{"sender id":2,"seq num":50,"rx time":499032056360,"tx time":392756065332,"timestamps":[{"id":1,"seq num":50,"rx time":319207820314}]}}
+{"id":1,"tx range":{"seq num":55,"tx time":758288198708}}
+{"id":2,"rx range":{"sender id":3,"seq num":56,"rx time":701473263042,"tx time":807748843572,"timestamps":[{"id":1,"seq num":55,"rx time":795217222665},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":3,"tx range":{"seq num":52,"tx time":511559783988}}
+{"id":1,"tx range":{"seq num":56,"tx time":832234533428}}
+{"id":2,"tx range":{"seq num":55,"tx time":763019403316}}
+{"id":3,"rx range":{"sender id":2,"seq num":51,"rx time":573067430640,"tx time":466791539252,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199}]}}
+{"id":1,"rx range":{"sender id":3,"seq num":57,"rx time":844768129464,"tx time":881696875572,"timestamps":[{"id":1,"seq num":56,"rx time":869163318790},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":57,"rx time":775421393110,"tx time":881696875572,"timestamps":[{"id":1,"seq num":56,"rx time":869163318790},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":57,"tx time":906182823988}}
+{"id":3,"tx range":{"seq num":53,"tx time":585586394676}}
+{"id":2,"tx range":{"seq num":56,"tx time":837085859380}}
+{"id":1,"rx range":{"sender id":3,"seq num":58,"rx time":918717241226,"tx time":955645748276,"timestamps":[{"id":1,"seq num":57,"rx time":943111370262},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":52,"rx time":647102610829,"tx time":540826818100,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":53,"rx time":479310519400}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":58,"rx time":849370364206,"tx time":955645748276,"timestamps":[{"id":1,"seq num":57,"rx time":943111370262},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":58,"tx time":980131774004}}
+{"id":3,"tx range":{"seq num":54,"tx time":659913652788}}
+{"id":2,"tx range":{"seq num":57,"tx time":911149428276}}
+{"id":1,"rx range":{"sender id":2,"seq num":57,"rx time":980496423213,"tx time":911149428276,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":58,"rx time":849370364206}]}}
+{"id":3,"rx range":{"sender id":2,"seq num":53,"rx time":721166225385,"tx time":614890530868,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":54,"rx time":553637876387}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":59,"rx time":923324697988,"tx time":1029599983156,"timestamps":[{"id":1,"seq num":58,"rx time":1017060080971},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":59,"tx time":1054081628724}}
+{"id":3,"tx range":{"seq num":55,"tx time":733973286964}}
+{"id":2,"tx range":{"seq num":58,"tx time":985211908148}}
+{"id":1,"rx range":{"sender id":2,"seq num":58,"rx time":1054559046260,"tx time":985211908148,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":59,"rx time":923324697988}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":55,"rx time":795217222665,"tx time":758288198708,"timestamps":[{"id":3,"seq num":55,"rx time":697044064353}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":60,"rx time":997561440805,"tx time":4324998708,"timestamps":[{"id":1,"seq num":59,"rx time":1091009693596},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":60,"tx time":28552838196}}
+{"id":3,"tx range":{"seq num":56,"tx time":807748843572}}
+{"id":2,"tx range":{"seq num":59,"tx time":1059275312692}}
+{"id":1,"rx range":{"sender id":2,"seq num":59,"rx time":29110967677,"tx time":1059275312692,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":60,"rx time":997561440805}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":56,"rx time":869163318790,"tx time":832234533428,"timestamps":[{"id":3,"seq num":55,"rx time":697044064353}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":61,"rx time":1071527918277,"tx time":78291376692,"timestamps":[{"id":1,"seq num":60,"rx time":65480659149},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":61,"tx time":102523644468}}
+{"id":3,"tx range":{"seq num":57,"tx time":881696875572}}
+{"id":2,"tx range":{"seq num":60,"tx time":33832270388}}
+{"id":1,"rx range":{"sender id":2,"seq num":60,"rx time":103179699001,"tx time":33832270388,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":61,"rx time":1071527918277}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":57,"rx time":943111370262,"tx time":906182823988,"timestamps":[{"id":3,"seq num":57,"rx time":844768129464}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":62,"rx time":45990266105,"tx time":152265252404,"timestamps":[{"id":1,"seq num":61,"rx time":139451219925},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":62,"tx time":176498668084}}
+{"id":3,"tx range":{"seq num":58,"tx time":955645748276}}
+{"id":2,"tx range":{"seq num":61,"tx time":107889042484}}
+{"id":1,"rx range":{"sender id":2,"seq num":61,"rx time":177236617779,"tx time":107889042484,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":62,"rx time":45990266105}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":58,"rx time":1017060080971,"tx time":980131774004,"timestamps":[{"id":3,"seq num":58,"rx time":918717241226}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":63,"rx time":119967549483,"tx time":226242435124,"timestamps":[{"id":1,"seq num":62,"rx time":213425996568},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":63,"tx time":250474926644}}
+{"id":3,"tx range":{"seq num":59,"tx time":1029599983156}}
+{"id":2,"tx range":{"seq num":62,"tx time":181954500660}}
+{"id":1,"rx range":{"sender id":2,"seq num":62,"rx time":251302223419,"tx time":181954500660,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":63,"rx time":119967549483}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":59,"rx time":1091009693596,"tx time":1054081628724,"timestamps":[{"id":2,"seq num":57,"rx time":980496423213},{"id":3,"seq num":58,"rx time":918717241226}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":64,"rx time":193944109040,"tx time":300218893364,"timestamps":[{"id":1,"seq num":63,"rx time":287402006611},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":64,"tx time":324452866100}}
+{"id":3,"tx range":{"seq num":60,"tx time":4324998708}}
+{"id":2,"tx range":{"seq num":63,"tx time":256020461108}}
+{"id":1,"rx range":{"sender id":2,"seq num":63,"rx time":325368331685,"tx time":256020461108,"timestamps":[{"id":1,"seq num":51,"rx time":393154687199},{"id":3,"seq num":64,"rx time":193944109040}]}}
+{"id":3,"rx range":{"sender id":1,"seq num":60,"rx time":65480659149,"tx time":28552838196,"timestamps":[{"id":2,"seq num":58,"rx time":1054559046260},{"id":3,"seq num":58,"rx time":918717241226}]}}
+{"id":2,"rx range":{"sender id":3,"seq num":65,"rx time":267921221629,"tx time":374195904052,"timestamps":[{"id":1,"seq num":64,"rx time":361379696608},{"id":2,"seq num":53,"rx time":721166225385}]}}
+{"id":1,"tx range":{"seq num":65,"tx time":398432147508}}
+{"id":3,"tx range":{"seq num":61,"tx time":78291376692}}

@@ -1,0 +1,15 @@
+{"id": 1, "tx range": {"seq num": 1, "tx time": 500000000000}}
+{"id": 2, "tx range": {"seq num": 1, "tx time": 1000000000000}}
+{"id": 1, "rx range": {"sender id": 2, "seq num": 1, "tx time": 1000000000000, "rx time": 1000000200138, "timestamps": []}}
+{"id": 1, "tx range": {"seq num": 2, "tx time": 1500000000000}}
+{"id": 2, "rx range": {"sender id": 1, "seq num": 2, "tx time": 1500000000000, "rx time": 1500000200138, "timestamps": [{"id": 2, "seq num": 1, "rx time": 1000000200138}]}}
+{"id": 2, "tx range": {"seq num": 2, "tx time": 2000000000000}}
+{"id": 1, "rx range": {"sender id": 2, "seq num": 2, "tx time": 2000000000000, "rx time": 2000000200138, "timestamps": [{"id": 1, "seq num": 2, "rx time": 1500000200138}]}}
+{"id": 1, "tx range": {"seq num": 3, "tx time": 2500000000000}}
+{"id": 2, "rx range": {"sender id": 1, "seq num": 3, "tx time": 2500000000000, "rx time": 2500000200138, "timestamps": [{"id": 2, "seq num": 2, "rx time": 2000000200138}]}}
+{"id": 2, "tx range": {"seq num": 3, "tx time": 3000000000000}}
+{"id": 1, "rx range": {"sender id": 2, "seq num": 3, "tx time": 3000000000000, "rx time": 3000000200138, "timestamps": [{"id": 1, "seq num": 3, "rx time": 2500000200138}]}}
+{"id": 1, "tx range": {"seq num": 4, "tx time": 3500000000000}}
+{"id": 2, "rx range": {"sender id": 1, "seq num": 4, "tx time": 3500000000000, "rx time": 3500000200138, "timestamps": [{"id": 2, "seq num": 3, "rx time": 3000000200138}]}}
+{"id": 2, "tx range": {"seq num": 4, "tx time": 4000000000000}}
+{"id": 1, "rx range": {"sender id": 2, "seq num": 4, "tx time": 4000000000000, "rx time": 4000000200138, "timestamps": [{"id": 1, "seq num": 4, "rx time": 3500000200138}]}}

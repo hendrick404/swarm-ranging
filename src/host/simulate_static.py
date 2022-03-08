@@ -1,3 +1,8 @@
+"""
+Simulates a scenario with a number of static nodes. Configure `ranging_interval`,
+`nodes` and `transmission_succes_rate` in the main function.
+"""
+
 import json
 from random import random
 from math import sqrt
@@ -9,13 +14,13 @@ second = 1_000_000_000_000
 
 
 class Node:
-    def __init__(self, id, pos, clock_err=1, clock_offset=0):
-        self.id = id
+    def __init__(self, node_id, pos, clock_err=1, clock_offset=0):
+        self.node_id = node_id
         self.pos = pos
         self.clock_err = clock_err
         self.clock_offset = clock_offset
         self.sequence_number = 1
-        self.receive_timestamps: Dict[Int, Tuple[Int, Int]] = {}
+        self.receive_timestamps: Dict[int, Tuple[int, int]] = {}
 
     def get_pos(self):
         return self.pos

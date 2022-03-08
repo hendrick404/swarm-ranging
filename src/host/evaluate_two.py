@@ -1,5 +1,5 @@
 import json
-from typing import Callable, Dict, List, Optional
+from typing import List, Tuple
 
 from scipy.constants import speed_of_light
 
