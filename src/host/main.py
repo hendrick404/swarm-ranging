@@ -15,9 +15,9 @@ class Node:
         self,
         ranging_id: int,
         serial_connection: Optional[Serial] = None,
-        distance_callback: Callable[[int, float], None] = None,
-        distance_difference_callback: Callable[[int, int, float], None] = None,
-        distance_foreign_callback: Callable[[int, int, float], None] = None,
+        distance_callback: Optional[Callable[[int, float], None]] = None,
+        distance_difference_callback: Optional[Callable[[int, int, float], None]] = None,
+        distance_foreign_callback: Optional[Callable[[int, int, float], None]] = None,
     ):
         self.ranging_id: int = ranging_id
         self.serial_connection: Optional[Serial] = serial_connection

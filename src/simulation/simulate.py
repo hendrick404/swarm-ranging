@@ -4,12 +4,13 @@ Simulates a scenario with a number of static nodes. Configure `ranging_interval`
 """
 
 import json
-from random import random
-from math import sqrt
+from random import random, uniform
+from math import sqrt, sin, cos, pi
 from typing import Dict, Tuple, List
 from scipy.constants import speed_of_light
 
 from node import Node
+from evaluate import evaluate_static
 
 
 second = 1_000_000_000_000
@@ -37,7 +38,14 @@ def simulate(nodes: List[Node], ranging_interval: int, exchanges: int, transmiss
 
 
 def main():
-    simulate([Node(1, (0, 0)), Node(2, (60, 0))], 1 * second, 4, 0.95, "evaluation_simulated.txt")
+    simulate([Node(1, (0, 0)), Node(2, (60, 0))], 1 * second, 100, 0.95, "evaluation_small.txt")
+    circle_size = 12
+    max_clock_error = 0.1
+    nodes = []
+    for i in range(circle_size):
+        nodes.append(Node(i,(sin(i * (2 * pi / circle_size)),cos(i * (2 * pi / circle_size))), clock_offset=int(uniform(0,second)), clock_err=uniform(1-max_clock_error, 1+max_clock_error)))
+    simulate(nodes, 1 * second, 100, 0.95, "evaluation_circle.txt")
+    evaluate_static(nodes, "evaluation_circle.txt")
 
 
 if __name__ == "__main__":
