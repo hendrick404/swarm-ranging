@@ -1,2 +1,8 @@
 pyserial
 scipy
+breathe
+sphinx
+flake8
+mypy
+pylint
+pytest
