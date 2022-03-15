@@ -18,7 +18,10 @@ class Node:
         self.tx_timestamps: Dict[int, int] = {}
         self.rx_timestamps: Dict[Tuple[int, int], int] = {}
         self.other_tx_timestamps: Dict[Tuple[int, int], int] = {}
+        self.other_rx_timestamps: Dict[Tuple[int,int,int], int] = {}
         self.active_ranging_distances: Dict[int, List[float]] = {}
+        self.passive_ranging_distances: Dict[Tuple[int,int], List[float]] = {}
+        self.passive_ranging_distances_alternative: Dict[Tuple[int,int],  List[Callable[[float],float]]] = {}
 
     def get_pos(self, global_time: int) -> Tuple[float, float]:
         return self.pos(global_time) if type(self.pos) == Callable else self.pos
@@ -28,7 +31,7 @@ class Node:
         (other_pos_x, other_pos_y) = other_node.get_pos(global_time)
         return sqrt((own_pos_x - other_pos_x) ** 2 + (own_pos_y - other_pos_y) ** 2)
 
-    def tx(self, global_time: int) -> Tuple[Dict, Dict, Tuple[int, int]]:
+    def tx(self, global_time: int) -> Tuple[Dict, Dict, Tuple[float, float]]:
         json_obj = {
             "id": self.node_id,
             "tx range": {
@@ -37,11 +40,8 @@ class Node:
             },
         }
         self.sequence_number += 1
-        if type(self.pos) == Callable:
-            pos = self.pos(global_time)
-        else:
-            pos = self.pos
-        return (json_obj, self.receive_timestamps, pos)
+
+        return (json_obj, self.receive_timestamps, self.get_pos(global_time))
 
     def rx(
         self,
@@ -50,10 +50,11 @@ class Node:
         pos: Tuple[int, int],
         message_receive_timestamps: Dict[int, Tuple[int, int]],
     ) -> Dict:
+        own_pos = self.get_pos(global_time)
         rx_time = (
             global_time
             + (
-                sqrt((self.pos[0] - pos[0]) ** 2 + (self.pos[1] - pos[1]) ** 2)
+                sqrt((own_pos[0] - pos[0]) ** 2 + (own_pos[1] - pos[1]) ** 2)
                 / (speed_of_light / second)
             )
         ) * self.clock_err + self.clock_offset
@@ -91,20 +92,21 @@ class Node:
         assert (
             message["id"] == self.node_id
         ), "We only want to process information created at our own end"
-
+        self.other_tx_timestamps[
+            (message["rx range"]["sender id"], message["rx range"]["seq num"])
+        ] = message["rx range"]["tx time"]
+        self.rx_timestamps[
+            (message["rx range"]["sender id"], message["rx range"]["seq num"])
+        ] = message["rx range"]["rx time"]
         for rx_timestamp in message["rx range"]["timestamps"]:
+            self.other_rx_timestamps[(message["rx range"]["sender id"], rx_timestamp["id"] , rx_timestamp["seq num"])] = rx_timestamp["rx time"]
             if rx_timestamp["id"] == self.node_id:
-                self.other_tx_timestamps[
-                    (message["rx range"]["sender id"], message["rx range"]["seq num"])
-                ] = message["rx range"]["tx time"]
-                self.rx_timestamps[
-                    (message["rx range"]["sender id"], message["rx range"]["seq num"])
-                ] = message["rx range"]["rx time"]
+                
 
                 i =  message["rx range"]["seq num"] - 1
                 while (message["rx range"]["sender id"], i) not in self.rx_timestamps.keys():
                     if i <= 0:
-                        return
+                        break
                     i -= 1
                 
                 try:
@@ -115,7 +117,7 @@ class Node:
                     tx_b2 = message["rx range"]["tx time"]
                     rx_a2 = message["rx range"]["rx time"]
                 except KeyError:
-                    return
+                    break
                     
                 r_a = rx_a2 - tx_a
                 r_b = rx_b - tx_b1
@@ -130,6 +132,49 @@ class Node:
                 self.active_ranging_distances[message["rx range"]["sender id"]].append(
                     (tof / second) * speed_of_light
                 )
+            else:
+                
+                
+                # Passively ranging nodes: B: message["rx range"]["sender id"] and C: rx_timestamp["id"]
+                # Message sequence numbers: M_B1: i
+                #                           M_C1: timestamp["seq num"]
+                #                           M_B2: message["rx range"]["seq num"]
+                i = message["rx range"]["seq num"] - 1
+                while (message["rx range"]["sender id"], i) not in self.rx_timestamps.keys():
+                    if i <= 0:
+                        break
+                    i -= 1
+                try:
+                    rx_a1 = self.rx_timestamps[(message["rx range"]["sender id"], i)]
+                except KeyError:
+                    print("Missing timestamp: rx_timestamps[(message[\"rx range\"][\"sender id\"], i)]")
+                    break
+                try:
+                    rx_a2 = self.rx_timestamps[(rx_timestamp["id"], rx_timestamp["seq num"])]
+                except KeyError:
+                    print("Missing timestamp: rx_timestamps[(rx_timestamp[\"id\"], rx_timestamp[\"seq num\"])]")
+                    break
+                rx_a3 = message["rx range"]["rx time"]
+                try:
+                    rx_c = self.other_rx_timestamps[(rx_timestamp["id"], message["rx range"]["sender id"], i)]
+                except KeyError:
+                    print("Missing timestamp: other_rx_timestamps[(rx_timestamp[\"id\"], message[\"rx range\"][\"sender id\"], i)]")
+                    break
+                try:
+                    tx_c = self.other_tx_timestamps[(rx_timestamp["id"], rx_timestamp["seq num"])]
+                except KeyError:
+                    print("Missing timestamp: other_tx_timestamps[(rx_timestamp[\"id\"], rx_timestamp[\"seq num\"])]")
+                    break
+                rx_b = rx_timestamp["rx time"]
+                tx_b = message["rx range"]["tx time"]
+
+                r_a1 = rx_a2 - rx_a1
+                r_a2 = rx_a3 - rx_a2
+                t_dB = tx_b - rx_b
+                t_dC = tx_c - rx_c
+
+                self.passive_ranging_distances[message["rx range"]["sender id"], rx_timestamp["id"]].append((r_a1 - t_dC - r_a2 + t_dB) / 2 / second * speed_of_light)
+            
 
     def __eq__(self, other):
         return self.node_id == other.node_id
