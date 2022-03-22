@@ -22,7 +22,7 @@ class Node:
         self.other_rx_timestamps: Dict[Tuple[int,int,int], int] = {}
         self.active_ranging_distances: Dict[int, List[float]] = {}
         self.passive_ranging_distances: Dict[Tuple[int,int], List[float]] = {}
-        self.passive_ranging_distances_adjusted: Dict[Tuple[int,int], List[Callable[[float],float]]] = {}
+        self.passive_ranging_distances_adjusted: Dict[Tuple[int,int], List[float]] = {}
         self.passive_ranging_distances_alternative: Dict[Tuple[int,int],  List[Callable[[float],float]]] = {}
 
     def get_pos(self, global_time: int) -> Tuple[float, float]:
@@ -190,7 +190,7 @@ class Node:
 
                 if (message["rx range"]["sender id"], rx_timestamp["id"]) not in self.passive_ranging_distances_adjusted.keys():
                     self.passive_ranging_distances_adjusted[message["rx range"]["sender id"], rx_timestamp["id"]] = []
-                self.passive_ranging_distances_adjusted[message["rx range"]["sender id"], rx_timestamp["id"]].append(lambda t_BC : (r_a2 - t_dB * estimated_clock_drift_ab - t_BC) / second * speed_of_light)
+                self.passive_ranging_distances_adjusted[message["rx range"]["sender id"], rx_timestamp["id"]].append((r_a2 - t_dB * estimated_clock_drift_ab) / second * speed_of_light)
 
                 if (message["rx range"]["sender id"], rx_timestamp["id"]) not in self.passive_ranging_distances_alternative.keys():
                     self.passive_ranging_distances_alternative[message["rx range"]["sender id"], rx_timestamp["id"]] = []

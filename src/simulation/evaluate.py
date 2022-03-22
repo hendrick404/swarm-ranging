@@ -40,19 +40,20 @@ def evaluate_static(nodes: List[Node], input_file: str):
                     try:
                         passive_measurements = node.passive_ranging_distances[B.node_id, C.node_id]
                         real_distance_difference = (node.get_distance(0,C) - node.get_distance(0,B))
+                        real_distance_difference_adj = node.get_distance(0,C) - node.get_distance(0,B) + B.get_distance(0,C)
                         
                         distance_BC = B.get_distance(0, C)
                         distance_BA = B.get_distance(0, node)
                         distance_CA = C.get_distance(0, node)
                         
-                        passive_error_dict[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: int(x ) - real_distance_difference, passive_measurements))
+                        passive_error_dict[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: x  - real_distance_difference, passive_measurements))
                         
-                        passive_error_dict_adjusted[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: int(x(distance_BC / speed_of_light * second)) - real_distance_difference, node.passive_ranging_distances_adjusted[B.node_id, C.node_id]))
+                        passive_error_dict_adjusted[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: x - B.get_distance(0,C) +real_distance_difference, node.passive_ranging_distances_adjusted[B.node_id, C.node_id]))
 
-                        passive_alternative_error_dict[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: int(x(distance_BA / speed_of_light * second)) - (distance_BC - distance_CA ), node.passive_ranging_distances_alternative[B.node_id, C.node_id]))
+                        # passive_alternative_error_dict[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: int(x(distance_BA / speed_of_light * second)) - (distance_BC - distance_CA ), node.passive_ranging_distances_alternative[B.node_id, C.node_id]))
 
                         with open("debug_file.txt","a") as out_file:
-                            out_file.write(f"({node.node_id},{B.node_id},{C.node_id}): " + str(list(map(lambda x: x(distance_BA / speed_of_light * second), node.passive_ranging_distances_alternative[B.node_id, C.node_id]))) + "\n")
+                            out_file.write(f"({node.node_id},{B.node_id},{C.node_id}): " + str(passive_error_dict_adjusted[(node.node_id, B.node_id, C.node_id)]) + "\n")
                                 # out_file.write("(1,3,2): " + str(passive_alternative_error_dict[(1,3,2)]) + "\n\n")
                                 # out_file.write("(2,1,3): " + str(passive_alternative_error_dict[(2,1,3)]) + "\n")
                                 # out_file.write("(2,3,1): " + str(passive_alternative_error_dict[(2,3,1)]) + "\n\n")
@@ -62,8 +63,8 @@ def evaluate_static(nodes: List[Node], input_file: str):
                         pass
 
 
-    # with open("err_file.txt","a") as out_file:
-    #     out_file.write(str(error_dict))
+    with open("err_file.txt","a") as out_file:
+        out_file.write(str(error_dict))
     # with open("err_diff_file.txt","a") as out_file:
     #     out_file.write(str(passive_error_dict))
     # with open("err_diff_alt_file.txt","a") as out_file:
@@ -87,8 +88,8 @@ def evaluate_static(nodes: List[Node], input_file: str):
     for (distance, err_list) in error_dict[1].items():
         x.append(distance)
         err = np.mean(err_list)
-        y.append(err)
-        yerr.append(stdev(err_list,err))
+        y.append(err * 1000)
+        yerr.append(stdev(err_list,err) * 1000)
         if abs(err) + abs(stdev(err_list,err)) > max_deviation:
             max_deviation = abs(err) + abs(stdev(err_list,err))
 
@@ -126,8 +127,8 @@ def evaluate_static(nodes: List[Node], input_file: str):
         if a == 1:
             x_passive_adj[b].append(c)
             err = np.mean(err_list)
-            y_passive_adj[b].append(err)
-            yerr_passive_adj[b].append(stdev(err_list,err))
+            y_passive_adj[b].append(err * 1000)
+            yerr_passive_adj[b].append(stdev(err_list,err) * 1000)
             if abs(err) + abs(stdev(err_list,err)) > max_deviation:
                 max_deviation = abs(err) + abs(stdev(err_list,err))
     for i in range(2,13):
