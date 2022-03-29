@@ -7,8 +7,6 @@
 #include "host_interface.h"
 #include "typedefs.h"
 
-LOG_MODULE_REGISTER(host_interface);
-
 static const struct device* uart_device = DEVICE_DT_GET(DT_CHOSEN(zephyr_console));
 
 void uart_out(char* msg) {
@@ -26,7 +24,6 @@ void process_out_message(tx_range_info_t* info, ranging_id_t id) {
 }
 
 void process_in_message(rx_range_info_t* info, ranging_id_t id) {
-    LOG_DBG("seq num %d", info->sequence_number);
     char buf[90];
     snprintf(buf, 90,
              "{\"id\":%u,\"rx range\":{\"sender id\":%d,\"seq num\":%d,", id,

@@ -7,7 +7,6 @@
 #include "deca_spi.h"
 #include "port.h"
  
-#include "configuration.h"
 #include "host_interface.h"
 #include "message_definition.h"
 #include "messages.h"
@@ -35,7 +34,6 @@ self_t self = {.id = 0, .sequence_number = 1};
  */
 ranging_id_t get_id() {
     uint32_t part_id = dwt_getpartid();
-    LOG_DBG("Part id %d", part_id);
     switch (part_id) {
         case 268447190:
             return 1;
@@ -55,14 +53,12 @@ ranging_id_t get_id() {
 }
 
 /**
- * @brief Transmits a message.
- *
- * @return int 0 on successful transmission.
+ * @brief Assembles and transmits a message.
  */
-int send_message() {
+void send_message() {
     LOG_DBG("Sending message");
     uint32_t tx_time = (read_systemtime() + (CONFIG_TX_PROCESSING_DELAY * UUS_TO_DWT_TIME)) >> 8;
-    timestamp_t tx_timestamp = (((uint64) (tx_time & 0xFFFFFFFEUL)) << 8) + TX_ANTENNA_DELAY;
+    timestamp_t tx_timestamp = (((uint64) (tx_time & 0xFFFFFFFEUL)) << 8) + CONFIG_TX_ANTENNA_DELAY;
     dwt_setdelayedtrxtime(tx_time);
 
     size_t message_buffer_len = TX_TIMESTAMP_IDX + TIMESTAMP_SIZE + CONFIG_NUM_PARTICIPANTS * RX_TIMESTAMP_SIZE + 12;
@@ -75,9 +71,11 @@ int send_message() {
     dwt_starttx(DWT_START_TX_DELAYED);
 
     while (!(dwt_read32bitreg(SYS_STATUS_ID) & SYS_STATUS_TXFRS)) {
+        // Busy wait untile transmission is finished
     };
     set_tx_timestamp(self.sequence_number, tx_timestamp);
 
+    // Report sending event to host module
     tx_range_info_t tx_info;
     tx_info.id = self.id;
     tx_info.sequence_number = self.sequence_number;
@@ -88,7 +86,6 @@ int send_message() {
     dwt_rxenable(DWT_START_RX_IMMEDIATE);
 
     LOG_HEXDUMP_DBG(message_buffer, message_size, "Sent data");
-    return 0;
 }
 
 /**
@@ -135,12 +132,12 @@ int main(void) {
     }
     port_set_dw1000_fastrate();
     dwt_configure(&config);
-    dwt_setrxantennadelay(RX_ANTENNA_DELAY);
-    dwt_settxantennadelay(TX_ANTENNA_DELAY);
+    dwt_setrxantennadelay(CONFIG_RX_ANTENNA_DELAY);
+    dwt_settxantennadelay(CONFIG_TX_ANTENNA_DELAY);
     dwt_setleds(1);
 
     self.id = get_id();
-    LOG_DBG("Ranging id %d", self.id);
+    LOG_DBG("Ranging id %d\n", self.id);
 
     for (int i = 0; i < CONFIG_NUM_PARTICIPANTS; i++) {
         received_messages[i].sender_id = i;

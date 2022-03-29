@@ -11,7 +11,7 @@ LOG_MODULE_REGISTER(messages);
 
 #include <stdlib.h>
 
-// Dummy definitions for the logs
+// Dummy definitions for the logs when compiling for POSIX
 #define LOG_ERR(a)
 #define LOG_WRN(a)
 #define LOG_INF(a)
@@ -78,9 +78,8 @@ size_t construct_message(uint8_t* message_buffer, size_t message_buffer_size, re
         }
     }
 
-    size_t message_size = TX_TIMESTAMP_IDX + TIMESTAMP_SIZE; // = 9 + sizeof(timestamp_t) +
-                          // num_timestamp * (sizeof(timestamp_t) + sizeof(ranging_id_t) + sizeof(sequence_number_t));
-    // uint8_t* message_buffer = (uint8_t*) k_malloc(message_size);
+    size_t message_size;
+    
     message_buffer[FRAME_CONTROL_IDX_1] = 0x88;
     message_buffer[FRAME_CONTROL_IDX_2] = 0x41;
     message_buffer[SEQUENCE_NUMBER_IDX_1] = self.sequence_number & 0xFF;

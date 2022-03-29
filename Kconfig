@@ -33,4 +33,12 @@ config PASSIVE_RANGING
     bool ""
     default y
 
+config RX_ANTENNA_DELAY
+    int ""
+    default 16436
+
+config TX_ANTENNA_DELAY
+    int ""
+    default 16436
+
 endmenu
