@@ -7,7 +7,7 @@ from scipy.constants import speed_of_light
 from serial import Serial
 
 evaluate: bool = True
-evaluate_number_of_messages = 100
+EVALUATE_NUMBER_OF_MESSAGES = 100
 
 
 class Node:
@@ -16,7 +16,9 @@ class Node:
         ranging_id: int,
         serial_connection: Optional[Serial] = None,
         distance_callback: Optional[Callable[[int, float], None]] = None,
-        distance_difference_callback: Optional[Callable[[int, int, float], None]] = None,
+        distance_difference_callback: Optional[
+            Callable[[int, int, float], None]
+        ] = None,
         distance_foreign_callback: Optional[Callable[[int, int, float], None]] = None,
     ):
         self.ranging_id: int = ranging_id
@@ -35,13 +37,17 @@ class Node:
         return self.serial_connection
 
     def range(self, message):
-        self.rx_timestamps[(message["sender id"], message["seq num"])] = message["rx time"]
-        self.other_tx_timestamps[(message["sender id"], message["seq num"])] = message["tx time"]
+        self.rx_timestamps[(message["sender id"], message["seq num"])] = message[
+            "rx time"
+        ]
+        self.other_tx_timestamps[(message["sender id"], message["seq num"])] = message[
+            "tx time"
+        ]
         for timestamp in message["timestamps"]:
             print("timestamp from " + str(timestamp["id"]))
             if timestamp["id"] == self.ranging_id:
                 i = message["seq num"] - 1
-                while (message["sender id"],i) not in self.rx_timestamps.keys():
+                while (message["sender id"], i) not in self.rx_timestamps.keys():
                     i -= 1
                     if i <= 0:
                         print("Missing timestamp")
@@ -49,8 +55,14 @@ class Node:
 
                 try:
                     r_a = message["rx time"] - self.tx_timestamps[timestamp["seq num"]]
-                    r_b = timestamp["rx time"] - self.other_tx_timestamps[(message["sender id"],i)] 
-                    d_a = self.tx_timestamps[timestamp["seq num"]] - self.rx_timestamps[(message["sender id"], i)]
+                    r_b = (
+                        timestamp["rx time"]
+                        - self.other_tx_timestamps[(message["sender id"], i)]
+                    )
+                    d_a = (
+                        self.tx_timestamps[timestamp["seq num"]]
+                        - self.rx_timestamps[(message["sender id"], i)]
+                    )
                     d_b = message["tx time"] - timestamp["rx time"]
 
                     tof_dtu = (r_a * r_b - d_a * d_b) / (d_a + d_b + r_a + r_b)
@@ -85,10 +97,9 @@ def main():
                 line = connection.readline()
                 try:
                     json_string = str(line)
-                    # if evaluate and node.get_ranging_id() == 1:
-                    #     eval_file.write(json_string + "\n")
-                    # TODO: Trim dynamically
-                    json_string = json_string[2 : len(json_string) - 3]
+                    json_string = json_string[
+                        2 : len(json_string) - 3
+                    ]  # TODO: Trim dynamically
                     decoded_json = json.JSONDecoder().decode(json_string)
                     if decoded_json:
                         if evaluate:
@@ -110,7 +121,7 @@ def connect() -> List[Node]:
     connections = [
         Node(1, Serial("/dev/tty.usbmodem0007601185891", 115200, timeout=1)),
         Node(2, Serial("/dev/tty.usbmodem0007601197931", 115200, timeout=1)),
-        # Node(3, Serial("/dev/tty.usbmodem0007601194831", 115200, timeout=1)),
+        Node(3, Serial("/dev/tty.usbmodem0007601194831", 115200, timeout=1)),
     ]
 
     # # Lab
