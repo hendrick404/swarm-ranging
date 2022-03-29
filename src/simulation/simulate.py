@@ -4,6 +4,7 @@ Simulates a scenario with a number of static nodes. Configure `ranging_interval`
 """
 
 import json
+import os
 from random import random, uniform
 from math import sqrt, sin, cos, pi
 from typing import Dict, Tuple, List
@@ -15,7 +16,9 @@ from evaluate import evaluate_static
 
 
 def simulate(nodes: List[Node], ranging_interval: int, exchanges: int, transmission_success_rate: float, output_file: str = "evaluation.txt"):
-    with open(output_file, "a") as eval_file:
+    if not os.path.exists("evaluation"):
+        os.mkdir("evaluation")
+    with open(os.path.join("evaluation",output_file), "a") as eval_file:
         exchange_counter = 1
         global_clock: int = 0
         while exchange_counter <= exchanges * len(nodes):
@@ -32,7 +35,7 @@ def simulate(nodes: List[Node], ranging_interval: int, exchanges: int, transmiss
                             receive_timestamps,
                         )
                         eval_file.write(json.JSONEncoder().encode(rx_message) + "\n")
-            exchange_counter += 1
+                exchange_counter += 1
 
 
 def main():
@@ -42,7 +45,7 @@ def main():
     nodes = []
     for i in range(1,circle_size+1):
         nodes.append(Node(i,(sin(i * (2 * pi / circle_size)),cos(i * (2 * pi / circle_size))), clock_offset=int(uniform(0,second)), clock_err=uniform(1-max_clock_error, 1+max_clock_error)))
-    simulate(nodes, 1 * second, 1000, 1, "evaluation_circle.txt")
+    simulate(nodes, 1 * second, 100, 1, "evaluation_circle.txt")
     evaluate_static(nodes, "evaluation_circle.txt")
 
     # # We want the mobile node to have a perfect clock to determine the position later on

@@ -1,4 +1,5 @@
 import json
+import os
 from statistics import stdev
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,12 +9,12 @@ from scipy.constants import speed_of_light
 from config import second
 from node import Node
 
-def evaluate_static(nodes: List[Node], input_file: str):
+def evaluate_static(nodes: List[Node], input_file: str, graph_name: str = "graphs"):
     error_dict: Dict[int, Dict[int, List[float]]] = {}
     passive_error_dict: Dict[Tuple[int, int, int], List[float]] = {}
     passive_error_dict_adjusted = {}
     passive_alternative_error_dict: Dict[Tuple[int, int, int], List[float]] = {}
-    with open(input_file, "r") as eval_file:
+    with open(os.path.join("evaluation", input_file), "r") as eval_file:
         for line in eval_file.readlines():
             message = json.JSONDecoder().decode(line)
             for node in nodes:
@@ -27,13 +28,13 @@ def evaluate_static(nodes: List[Node], input_file: str):
         for (peer_id, measurements) in node.active_ranging_distances.items():
             for peer in nodes:
                 if peer.node_id == peer_id:
-                    real_distance = int(node.get_distance(0, peer) )
+                    real_distance = node.get_distance(0, peer)
                     # if real_distance not in error_dict.keys():
                     #     error_dict[real_distance] = []
                     # error_dict[real_distance] += list(map(lambda x: int(x * 1000) - real_distance, measurements))
                     if node.node_id not in error_dict.keys():
                         error_dict[node.node_id] = {}
-                    error_dict[node.node_id][peer_id] = list(map(lambda x: int(x ) - real_distance, measurements))
+                    error_dict[node.node_id][peer_id] = list(map(lambda x: x - real_distance, measurements))
         for B in nodes:
             for C in nodes:
                 if B != C and B != node and C != node:
@@ -46,14 +47,14 @@ def evaluate_static(nodes: List[Node], input_file: str):
                         distance_BA = B.get_distance(0, node)
                         distance_CA = C.get_distance(0, node)
                         
-                        passive_error_dict[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: x  - real_distance_difference, passive_measurements))
+                        passive_error_dict[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: x - real_distance_difference, passive_measurements))
                         
-                        passive_error_dict_adjusted[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: x - B.get_distance(0,C) +real_distance_difference, node.passive_ranging_distances_adjusted[B.node_id, C.node_id]))
+                        passive_error_dict_adjusted[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: x - B.get_distance(0,C) + real_distance_difference, node.passive_ranging_distances_adjusted[B.node_id, C.node_id]))
 
                         # passive_alternative_error_dict[(node.node_id, B.node_id, C.node_id)] = list(map(lambda x: int(x(distance_BA / speed_of_light * second)) - (distance_BC - distance_CA ), node.passive_ranging_distances_alternative[B.node_id, C.node_id]))
 
-                        with open("debug_file.txt","a") as out_file:
-                            out_file.write(f"({node.node_id},{B.node_id},{C.node_id}): " + str(passive_error_dict_adjusted[(node.node_id, B.node_id, C.node_id)]) + "\n")
+                        # with open("debug_file.txt","a") as out_file:
+                        #     out_file.write(f"({node.node_id},{B.node_id},{C.node_id}): " + str(passive_error_dict_adjusted[(node.node_id, B.node_id, C.node_id)]) + "\n")
                                 # out_file.write("(1,3,2): " + str(passive_alternative_error_dict[(1,3,2)]) + "\n\n")
                                 # out_file.write("(2,1,3): " + str(passive_alternative_error_dict[(2,1,3)]) + "\n")
                                 # out_file.write("(2,3,1): " + str(passive_alternative_error_dict[(2,3,1)]) + "\n\n")
@@ -63,8 +64,8 @@ def evaluate_static(nodes: List[Node], input_file: str):
                         pass
 
 
-    with open("err_file.txt","a") as out_file:
-        out_file.write(str(error_dict))
+    # with open("err_file.txt","a") as out_file:
+    #     out_file.write(str(error_dict))
     # with open("err_diff_file.txt","a") as out_file:
     #     out_file.write(str(passive_error_dict))
     # with open("err_diff_alt_file.txt","a") as out_file:
@@ -75,6 +76,8 @@ def evaluate_static(nodes: List[Node], input_file: str):
     
 
     fig_active, ax_active = plt.subplots()
+    ax_active.set_xlabel("node id")
+    ax_active.set_ylabel("deviation from real distance in mm")
     max_deviation = 0.0
     # for err_list in error_dict.values():
     #     for err in err_list:
@@ -90,13 +93,14 @@ def evaluate_static(nodes: List[Node], input_file: str):
         err = np.mean(err_list)
         y.append(err * 1000)
         yerr.append(stdev(err_list,err) * 1000)
-        if abs(err) + abs(stdev(err_list,err)) > max_deviation:
-            max_deviation = abs(err) + abs(stdev(err_list,err))
 
     ax_active.errorbar(x,y, yerr, fmt="o", linewidth=2, capsize=6)
-    ax_active.set(xlim=(0,len(x) + 2), ylim=(-2, 2))
-
+    ax_active.set(xlim=(0,13))
+    plt.savefig(os.path.join("evaluation",f"graph_{graph_name}_active.pdf"), format="pdf", transparent=True)
+    
     fig_passive, ax_passive = plt.subplots()
+    ax_passive.set_xlabel("node id")
+    ax_passive.set_ylabel("deviation from real distance in km")
     x_passive = []
     y_passive = []
     yerr_passive = []
@@ -106,37 +110,41 @@ def evaluate_static(nodes: List[Node], input_file: str):
             err = np.mean(err_list)
             y_passive.append(err / 1000)
             yerr_passive.append(stdev(err_list,err) / 1000)
-            if abs(err) + abs(stdev(err_list,err)) > max_deviation:
-                max_deviation = abs(err) + abs(stdev(err_list,err))
 
     ax_passive.errorbar(x_passive, y_passive, yerr_passive, fmt="o", linewidth=2, capsize=6)
-    ax_passive.set(xlim=(0,len(x_passive) + 2), ylim=(-2, 2))
+    ax_passive.set(xlim=(0,13))
 
+    plt.savefig(os.path.join("evaluation",f"graph_{graph_name}_passive_not_adjusted.pdf"), format="pdf", transparent=True)
+    
     ax_passive_adj = {}
     x_passive_adj = {}
     y_passive_adj = {}
     yerr_passive_adj = {}
     for i in range(2,13):
+        if i == 4:
             _, ax_passive_adj[i] =  plt.subplots()
+            ax_passive_adj[i].set_xlabel("node id")
+            ax_passive_adj[i].set_ylabel("deviation from real distance in mm") 
             x_passive_adj[i] = []
             y_passive_adj[i] = []
             yerr_passive_adj[i] = []
 
     
     for ((a,b,c), err_list) in passive_error_dict_adjusted.items():
-        if a == 1:
+        if a == 1 and b == 4:
+            if len(err_list) < 10:
+                print("Small error list for nodes {a} and {b}: {err_list}")
             x_passive_adj[b].append(c)
             err = np.mean(err_list)
             y_passive_adj[b].append(err * 1000)
             yerr_passive_adj[b].append(stdev(err_list,err) * 1000)
-            if abs(err) + abs(stdev(err_list,err)) > max_deviation:
-                max_deviation = abs(err) + abs(stdev(err_list,err))
-    for i in range(2,13):
-            ax_passive_adj[i].errorbar(x_passive_adj[i], y_passive_adj[i], yerr_passive_adj[i], fmt="o", linewidth=2, capsize=6)
-            ax_passive_adj[i].set(xlim=(0,len(x_passive_adj) + 2), ylim=(-2, 2))
 
-    plt.style.use('_mpl-gallery')
-    plt.show()
+    for i in range(2,13):
+        if i == 4:
+            ax_passive_adj[i].errorbar(x_passive_adj[i], y_passive_adj[i], yerr_passive_adj[i], fmt="o", linewidth=2, capsize=6)
+            ax_passive_adj[i].set(xlim=(0,13))
+    
+            plt.savefig(os.path.join("evaluation",f"graph_{graph_name}_passive.pdf"), format="pdf", transparent=True)
     
 def main():
     nodes = [Node(1,(0,0)), Node(2,(0,15)), Node(3,(15,15))]

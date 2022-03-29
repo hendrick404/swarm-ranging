@@ -1,5 +1,4 @@
 from math import sqrt
-from turtle import speed
 from typing import Dict, Tuple, List, Callable
 from scipy.constants import speed_of_light
 
@@ -23,7 +22,6 @@ class Node:
         self.active_ranging_distances: Dict[int, List[float]] = {}
         self.passive_ranging_distances: Dict[Tuple[int,int], List[float]] = {}
         self.passive_ranging_distances_adjusted: Dict[Tuple[int,int], List[float]] = {}
-        self.passive_ranging_distances_alternative: Dict[Tuple[int,int],  List[Callable[[float],float]]] = {}
 
     def get_pos(self, global_time: int) -> Tuple[float, float]:
         return self.pos(global_time) if type(self.pos) == Callable else self.pos
@@ -49,7 +47,7 @@ class Node:
         self,
         global_time: int,
         message: Dict,
-        pos: Tuple[int, int],
+        pos: Tuple[float, float],
         message_receive_timestamps: Dict[int, Tuple[int, int]],
     ) -> Dict:
         own_pos = self.get_pos(global_time)
@@ -146,31 +144,22 @@ class Node:
                     i -= 1
                 try:
                     a_rx_b1 = self.rx_timestamps[(message["rx range"]["sender id"], i)]
-                except KeyError:
-                    print("Missing timestamp: rx_timestamps[(message[\"rx range\"][\"sender id\"], i)]")
-                    break
-                try:
+                
+               
                     a_rx_c1 = self.rx_timestamps[(rx_timestamp["id"], rx_timestamp["seq num"])]
-                except KeyError:
-                    print("Missing timestamp: rx_timestamps[(rx_timestamp[\"id\"], rx_timestamp[\"seq num\"])]")
-                    break
-                a_rx_b2 = message["rx range"]["rx time"]
-                try:
+                
+                    a_rx_b2 = message["rx range"]["rx time"]
+                
                     c_rx_b1 = self.other_rx_timestamps[(rx_timestamp["id"], message["rx range"]["sender id"], i)]
-                except KeyError:
-                    print("Missing timestamp: other_rx_timestamps[(rx_timestamp[\"id\"], message[\"rx range\"][\"sender id\"], i)]")
-                    break
-                try:
+                
+                
                     c_tx_1 = self.other_tx_timestamps[(rx_timestamp["id"], rx_timestamp["seq num"])]
-                except KeyError:
-                    print("Missing timestamp: other_tx_timestamps[(rx_timestamp[\"id\"], rx_timestamp[\"seq num\"])]")
-                    break
-                b_rx_c1 = rx_timestamp["rx time"]
-                b_tx_2 = message["rx range"]["tx time"]
-                try:
+                
+                    b_rx_c1 = rx_timestamp["rx time"]
+                    b_tx_2 = message["rx range"]["tx time"]
+            
                     b_tx_1 = self.other_tx_timestamps[(message["rx range"]["sender id"],i)]
                 except KeyError:
-                    print("Missing timestamp")
                     break
 
                 r_a1 = a_rx_c1 - a_rx_b1
@@ -184,18 +173,10 @@ class Node:
                 if (message["rx range"]["sender id"], rx_timestamp["id"]) not in self.passive_ranging_distances.keys():
                     self.passive_ranging_distances[message["rx range"]["sender id"], rx_timestamp["id"]] = []
                 self.passive_ranging_distances[message["rx range"]["sender id"], rx_timestamp["id"]].append((r_a1 - t_dC - r_a2 + t_dB) / 2 / second * speed_of_light)
-                # if (message["rx range"]["sender id"], rx_timestamp["id"]) not in self.passive_ranging_distances_alternative.keys():
-                #     self.passive_ranging_distances_alternative[message["rx range"]["sender id"], rx_timestamp["id"]] = []
-                # self.passive_ranging_distances_alternative[message["rx range"]["sender id"], rx_timestamp["id"]].append(lambda t_BC : 0 if r_a1 - r_a2 -  t_dB + t_dC == 0 else ((- r_a1 * r_a2 - (t_dB + t_BC) * (- t_dC - t_BC)) / (r_a1 - r_a2 - t_dB + t_dC)) * 2 / second * speed_of_light)
 
                 if (message["rx range"]["sender id"], rx_timestamp["id"]) not in self.passive_ranging_distances_adjusted.keys():
                     self.passive_ranging_distances_adjusted[message["rx range"]["sender id"], rx_timestamp["id"]] = []
                 self.passive_ranging_distances_adjusted[message["rx range"]["sender id"], rx_timestamp["id"]].append((r_a2 - t_dB * estimated_clock_drift_ab) / second * speed_of_light)
-
-                if (message["rx range"]["sender id"], rx_timestamp["id"]) not in self.passive_ranging_distances_alternative.keys():
-                    self.passive_ranging_distances_alternative[message["rx range"]["sender id"], rx_timestamp["id"]] = []
-                self.passive_ranging_distances_alternative[message["rx range"]["sender id"], rx_timestamp["id"]].append(lambda t_BA : (((r_a1 + t_BA) * (t_dB + t_BA) - t_rB * r_a2) / (t_BA + t_rB + t_dB)) / second * speed_of_light)
-
 
     def __eq__(self, other):
         return self.node_id == other.node_id
