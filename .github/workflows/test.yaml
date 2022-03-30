@@ -20,4 +20,4 @@ jobs:
     - name: "Run unity"
       working-directory: test/antenna
       run: |
-        make
+        make | grep "0 Failures" 
