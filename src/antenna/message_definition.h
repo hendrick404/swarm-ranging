@@ -54,8 +54,14 @@
  *
  */
 #define RX_TIMESTAMP_SIZE (TIMESTAMP_SIZE + sizeof(ranging_id_t) + sizeof(sequence_number_t))
+
+/** @brief The offset of the ranging id within a rx timestamp field. */
 #define RX_TIMESTAMP_RANGING_ID_OFFSET 0
+
+/** @brief The offset of the sequence number within a rx timestamp field. */
 #define RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET sizeof(ranging_id_t)
+
+/** @brief The offset of the timestamp within a rx timestamp field. */
 #define RX_TIMESTAMP_TIMESTAMP_OFFSET (sizeof(ranging_id_t) + sizeof(sequence_number_t))
 
 #endif
