@@ -137,20 +137,11 @@ class Node:
         # M_{B,2}: B -> A
         m_3_s = message["rx range"]["seq num"]
 
-        self.other_tx_ts[b_id, message["rx range"]["seq num"]] = message["rx range"][
-            "tx time"
-        ]
-        self.rx_ts[
-            (message["rx range"]["sender id"], message["rx range"]["seq num"])
-        ] = message["rx range"]["rx time"]
+        self.other_tx_ts[b_id, m_3_s] = message["rx range"]["tx time"]
+        self.rx_ts[b_id, m_3_s] = message["rx range"]["rx time"]
+        
         for rx_timestamp in message["rx range"]["timestamps"]:
-            self.other_rx_ts[
-                (
-                    message["rx range"]["sender id"],
-                    rx_timestamp["id"],
-                    rx_timestamp["seq num"],
-                )
-            ] = rx_timestamp["rx time"]
+            self.other_rx_ts[b_id, rx_timestamp["id"], m_3_s] = rx_timestamp["rx time"]
             if rx_timestamp["id"] == self.node_id:
                 # Active Ranging
 
@@ -198,24 +189,12 @@ class Node:
                     print("Missing timestamp")
                     break  # We don't have the right timestamp yet
 
-                i = message["rx range"]["seq num"] - 1
-                while (
-                    message["rx range"]["sender id"],
-                    i,
-                ) not in self.rx_ts.keys():
-                    if i <= 0:
-                        break
-                    i -= 1
                 try:
                     a_rx_b1 = self.rx_ts[b_id, m_1_s]
 
                     a_rx_c1 = self.rx_ts[c_id, m_2_s]
 
                     a_rx_b2 = message["rx range"]["rx time"]
-
-                    # c_rx_b1 = self.other_rx_ts[c_id, b_id, m_1_s]
-
-                    # c_tx_1 = self.other_tx_ts[c_id, m_2_s]
 
                     b_rx_c1 = rx_timestamp["rx time"]
                     b_tx_2 = message["rx range"]["tx time"]
@@ -225,35 +204,14 @@ class Node:
                     print("Missing timestamp")
                     break
 
-                r_a1 = a_rx_c1 - a_rx_b1
                 r_a2 = a_rx_b2 - a_rx_c1
-                # t_rB = b_rx_c1 - b_tx_1
                 t_dB = b_tx_2 - b_rx_c1
-                # t_dC = c_tx_1 - c_rx_b1
 
                 estimated_clock_drift_ab = (a_rx_b2 - a_rx_b1) / (b_tx_2 - b_tx_1)
 
-                # if (
-                #     message["rx range"]["sender id"],
-                #     rx_timestamp["id"],
-                # ) not in self.passive_ranging_distances.keys():
-                #     self.passive_ranging_distances[
-                #         message["rx range"]["sender id"], rx_timestamp["id"]
-                #     ] = []
-                # self.passive_ranging_distances[
-                #     message["rx range"]["sender id"], rx_timestamp["id"]
-                # ].append((r_a1 - t_dC - r_a2 + t_dB) / 2 / SECOND * speed_of_light)
-
-                if (
-                    message["rx range"]["sender id"],
-                    rx_timestamp["id"],
-                ) not in self.passive_ranging_distances_adjusted.keys():
-                    self.passive_ranging_distances_adjusted[
-                        message["rx range"]["sender id"], rx_timestamp["id"]
-                    ] = []
-                self.passive_ranging_distances_adjusted[
-                    message["rx range"]["sender id"], rx_timestamp["id"]
-                ].append(
+                if (b_id, c_id) not in self.passive_ranging_distances_adjusted.keys():
+                    self.passive_ranging_distances_adjusted[b_id, c_id ] = []
+                self.passive_ranging_distances_adjusted[b_id, c_id].append(
                     (r_a2 - t_dB * estimated_clock_drift_ab) / SECOND * speed_of_light
                 )
 
