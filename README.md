@@ -41,3 +41,7 @@ make
 The heart of the implementation is the `Node` class in `src/host/node.py`. The methods `evaluate_tx` and `evaluate_rx` take the information from the board or previously recorded file and process them. The method `evaluate_rx` iterates over the timestamps of a received message and performs the ranging.
 
 The `Node` class has two extensions. `SimulationNode` is used in the simulation to generate an evaluation file. The `RealNode` uses a serial connection to receive data from the DWM1001 boards.
+
+## Miscellaneous
+
+Check out the branch `platformio` to see how this project can be build with PlatformIO.
