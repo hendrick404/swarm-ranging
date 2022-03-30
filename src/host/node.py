@@ -3,13 +3,14 @@ from typing import Dict, Optional, Tuple, List, Callable
 from scipy.constants import speed_of_light
 from serial import Serial
 
-from config import SECOND
+# from config import self.second
 
 
 class Node:
     def __init__(self, node_id: int):
         self.node_id = node_id
         # self.sequence_number = 1
+        self.second = 1_000_000_000_000
 
         self.tx_ts: Dict[int, int] = {}
         self.rx_ts: Dict[Tuple[int, int], int] = {}
@@ -18,6 +19,12 @@ class Node:
 
         self.active_ranging_distances: Dict[int, List[float]] = {}
         self.passive_ranging_distances_adjusted: Dict[Tuple[int, int], List[float]] = {}
+
+    def set_timeunit(self, second: int):
+        self.second = second
+
+    def get_timeunit(self) -> int:
+        return self.second
 
     def get_stored_rx_timestamp(
         self, sender_id: int, receiver_id: int, seq_num: int
@@ -109,7 +116,7 @@ class Node:
                 # Alternative DS-TWR (Neirynck et al. 2016)
                 tof = (r_a * r_b - d_a * d_b) / (r_a + r_b + d_a + d_b)
                 self.active_ranging_distances[message["rx range"]["sender id"]].append(
-                    (tof / SECOND) * speed_of_light
+                    (tof / self.second) * speed_of_light
                 )
             else:
                 # Passive Ranging
@@ -151,7 +158,7 @@ class Node:
                 if (b_id, c_id) not in self.passive_ranging_distances_adjusted.keys():
                     self.passive_ranging_distances_adjusted[b_id, c_id ] = []
                 self.passive_ranging_distances_adjusted[b_id, c_id].append(
-                    (r_a2 - t_dB * estimated_clock_drift_ab) / SECOND * speed_of_light
+                    (r_a2 - t_dB * estimated_clock_drift_ab) / self.second * speed_of_light
                 )
 
     def __eq__(self, other):
@@ -208,7 +215,7 @@ class SimulationNode(Node):
             global_time
             + (
                 sqrt((own_pos[0] - pos[0]) ** 2 + (own_pos[1] - pos[1]) ** 2)
-                / (speed_of_light / SECOND)
+                / (speed_of_light / self.second)
             )
         ) * self.clock_err + self.clock_offset
         self.receive_timestamps[message["id"]] = (

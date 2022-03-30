@@ -1,4 +1,4 @@
-from src.simulation.node import Node
+from src.host.node import Node
 
 
 def test_active_ranging_no_clock_drift():
