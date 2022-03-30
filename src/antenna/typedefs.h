@@ -44,16 +44,6 @@ typedef struct {
 } self_t;
 
 /**
- * @brief Timestamp field in `rx_range`
- * 
- */
-typedef struct rx_range_timestamp {
-    ranging_id_t node_id;
-    sequence_number_t sequence_number;
-    timestamp_t rx_time;
-} rx_range_timestamp_t;
-
-/**
  * @brief Information about a reception event.
  * 
  */
@@ -63,7 +53,11 @@ typedef struct rx_range {
     timestamp_t tx_time;
     timestamp_t rx_time;
     size_t timestamps_len;
-    rx_range_timestamp_t* timestamps;
+    struct rx_range_timestamp {
+        ranging_id_t node_id;
+        sequence_number_t sequence_number;
+        timestamp_t rx_time;
+}* timestamps;
 } rx_range_info_t;
 
 /**
