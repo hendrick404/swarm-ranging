@@ -2,7 +2,7 @@ from src.simulation.node import Node
 
 
 def test_active_ranging_no_clock_drift():
-    node_a: Node = Node(1, None, 1, 0)
+    node_a: Node = Node(1)
 
     message_1 = {
         "id": 1,
@@ -34,7 +34,7 @@ def test_active_ranging_no_clock_drift():
     assert abs(node_a.active_ranging_distances[2][0] - 0.2998) < 0.01
 
 def test_passive_ranging_no_clock_drift():
-    node_a: Node = Node(1, None, 1, 0)
+    node_a: Node = Node(1)
 
     message_1 = {
         "id": 1,
