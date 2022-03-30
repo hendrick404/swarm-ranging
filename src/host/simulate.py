@@ -9,9 +9,9 @@ from random import random, uniform
 from math import sin, cos, pi
 from typing import List
 
-from src.simulation.config import SECOND
-from src.simulation.node import Node
-from src.simulation.evaluate import evaluate_static
+from config import SECOND
+from node import Node
+from evaluate import evaluate_static
 
 
 def simulate(
@@ -65,14 +65,6 @@ def main():
         )
     simulate(nodes, 1 * SECOND, 100, 1, "evaluation_circle.txt")
     evaluate_static(nodes, "evaluation_circle.txt")
-
-    # # We want the mobile node to have a perfect clock to determine the position later on
-    # mobile_node = Node(circle_size + 1, pos = lambda t: (t * SECOND / 10 - 1 ,0))
-    # nodes_mobile = []
-    # for i in range(1,circle_size+1):
-    #     nodes_mobile.append(Node(i,(sin(i * (2 * pi / circle_size)),cos(i * (2 * pi / circle_size))), clock_offset=int(uniform(0,SECOND)), clock_err=uniform(1-max_clock_error, 1+max_clock_error)))
-    # nodes_mobile.append(mobile_node)
-    # simulate(nodes_mobile, 1 * SECOND, 100, 0.95, "evaluation_mobile.txt")
 
 
 if __name__ == "__main__":

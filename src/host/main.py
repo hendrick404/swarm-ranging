@@ -1,88 +1,14 @@
 """Main module"""
 
 import json
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import List
 
-from scipy.constants import speed_of_light
 from serial import Serial
 
 from node import RealNode
 
 evaluate: bool = True
 EVALUATE_NUMBER_OF_MESSAGES = 100
-
-
-# class Node:
-#     def __init__(
-#         self,
-#         ranging_id: int,
-#         serial_connection: Optional[Serial] = None,
-#         distance_callback: Optional[Callable[[int, float], None]] = None,
-#         distance_difference_callback: Optional[
-#             Callable[[int, int, float], None]
-#         ] = None,
-#         distance_foreign_callback: Optional[Callable[[int, int, float], None]] = None,
-#     ):
-#         self.ranging_id: int = ranging_id
-#         self.serial_connection: Optional[Serial] = serial_connection
-#         self.distance_callback = distance_callback
-#         self.distance_difference_callback = distance_difference_callback
-#         self.distance_foreign_callback = distance_foreign_callback
-#         self.tx_timestamps: Dict[int, int] = {}
-#         self.rx_timestamps: Dict[Tuple[int, int], int] = {}
-#         self.other_tx_timestamps: Dict[Tuple[int, int], int] = {}
-
-#     def get_ranging_id(self) -> int:
-#         return self.ranging_id
-
-#     def get_serial_connection(self) -> Optional[Serial]:
-#         return self.serial_connection
-
-#     def range(self, message):
-#         self.rx_timestamps[(message["sender id"], message["seq num"])] = message[
-#             "rx time"
-#         ]
-#         self.other_tx_timestamps[(message["sender id"], message["seq num"])] = message[
-#             "tx time"
-#         ]
-#         for timestamp in message["timestamps"]:
-#             print("timestamp from " + str(timestamp["id"]))
-#             if timestamp["id"] == self.ranging_id:
-#                 i = message["seq num"] - 1
-#                 while (message["sender id"], i) not in self.rx_timestamps.keys():
-#                     i -= 1
-#                     if i <= 0:
-#                         print("Missing timestamp")
-#                         return
-
-#                 try:
-#                     r_a = message["rx time"] - self.tx_timestamps[timestamp["seq num"]]
-#                     r_b = (
-#                         timestamp["rx time"]
-#                         - self.other_tx_timestamps[(message["sender id"], i)]
-#                     )
-#                     d_a = (
-#                         self.tx_timestamps[timestamp["seq num"]]
-#                         - self.rx_timestamps[(message["sender id"], i)]
-#                     )
-#                     d_b = message["tx time"] - timestamp["rx time"]
-
-#                     tof_dtu = (r_a * r_b - d_a * d_b) / (d_a + d_b + r_a + r_b)
-#                     tof = tof_dtu * (1.0 / 499.2e6 / 128.0)
-#                     distance = tof * speed_of_light
-#                     sender_id = message["sender id"]
-#                     if self.distance_callback:
-#                         self.distance_callback(sender_id, distance)
-#                     print(
-#                         f"Distance from {self.ranging_id} to {sender_id} is {distance} m"
-#                     )
-#                 except KeyError:
-#                     print("Missing timestamp")
-#             else:
-#                 pass  # Passive ranging
-
-#     def tx_event(self, message):
-#         self.tx_timestamps[message["seq num"]] = message["tx time"]
 
 
 def main():

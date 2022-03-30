@@ -5,14 +5,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Dict, List, Tuple
 
-from src.simulation.node import Node
+from node import SimulationNode
 
 
-def evaluate_static(nodes: List[Node], input_file: str, graph_name: str = "graphs"):
+def evaluate_static(nodes: List[SimulationNode], input_file: str, graph_name: str = "graphs"):
     error_dict: Dict[int, Dict[int, List[float]]] = {}
     passive_error_dict: Dict[Tuple[int, int, int], List[float]] = {}
     passive_error_dict_adjusted = {}
-    passive_alternative_error_dict: Dict[Tuple[int, int, int], List[float]] = {}
     with open(os.path.join("evaluation", input_file), "r") as eval_file:
         for line in eval_file.readlines():
             message = json.JSONDecoder().decode(line)
@@ -36,29 +35,11 @@ def evaluate_static(nodes: List[Node], input_file: str, graph_name: str = "graph
         for B in nodes:
             for C in nodes:
                 if B != C and B != node and C != node:
-                    try:
-                        passive_measurements = node.passive_ranging_distances[
-                            B.node_id, C.node_id
-                        ]
+                    try:        
                         real_distance_difference = node.get_distance(
                             0, C
                         ) - node.get_distance(0, B)
-                        real_distance_difference_adj = (
-                            node.get_distance(0, C)
-                            - node.get_distance(0, B)
-                            + B.get_distance(0, C)
-                        )
 
-                        distance_BC = B.get_distance(0, C)
-                        distance_BA = B.get_distance(0, node)
-                        distance_CA = C.get_distance(0, node)
-
-                        passive_error_dict[(node.node_id, B.node_id, C.node_id)] = list(
-                            map(
-                                lambda x: x - real_distance_difference,
-                                passive_measurements,
-                            )
-                        )
 
                         passive_error_dict_adjusted[
                             (node.node_id, B.node_id, C.node_id)

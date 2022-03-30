@@ -3,13 +3,10 @@ from typing import Dict, Optional, Tuple, List, Callable
 from scipy.constants import speed_of_light
 from serial import Serial
 
-# from config import self.second
-
 
 class Node:
     def __init__(self, node_id: int):
         self.node_id = node_id
-        # self.sequence_number = 1
         self.second = 1_000_000_000_000
 
         self.tx_ts: Dict[int, int] = {}
@@ -109,7 +106,6 @@ class Node:
 
                 d_a = self.tx_ts[m_2_s] - self.rx_ts[b_id, m_1_s]
                 d_b = self.other_tx_ts[b_id, m_3_s] - self.other_rx_ts[b_id, a_id, m_2_s]
-                
 
                 if b_id not in self.active_ranging_distances:
                     self.active_ranging_distances[b_id] = []
@@ -156,7 +152,7 @@ class Node:
                 estimated_clock_drift_ab = (a_rx_b2 - a_rx_b1) / (b_tx_2 - b_tx_1)
 
                 if (b_id, c_id) not in self.passive_ranging_distances_adjusted.keys():
-                    self.passive_ranging_distances_adjusted[b_id, c_id ] = []
+                    self.passive_ranging_distances_adjusted[b_id, c_id] = []
                 self.passive_ranging_distances_adjusted[b_id, c_id].append(
                     (r_a2 - t_dB * estimated_clock_drift_ab) / self.second * speed_of_light
                 )
@@ -167,21 +163,13 @@ class Node:
 
 class SimulationNode(Node):
     def __init__(self, node_id: int, pos, clock_err: float = 1, clock_offset: int = 0):
-        self.node_id = node_id
+        super().__init__(node_id)
+
         self.pos = pos
         self.clock_err = clock_err
         self.clock_offset = clock_offset
         self.sequence_number = 1
         self.receive_timestamps: Dict[int, Tuple[int, int]] = {}
-
-        self.tx_ts: Dict[int, int] = {}
-        self.rx_ts: Dict[Tuple[int, int], int] = {}
-        self.other_tx_ts: Dict[Tuple[int, int], int] = {}
-        self.other_rx_ts: Dict[Tuple[int, int, int], int] = {}
-
-        self.active_ranging_distances: Dict[int, List[float]] = {}
-        self.passive_ranging_distances: Dict[Tuple[int, int], List[float]] = {}
-        self.passive_ranging_distances_adjusted: Dict[Tuple[int, int], List[float]] = {}
 
     def get_pos(self, global_time: int) -> Tuple[float, float]:
         return self.pos(global_time) if type(self.pos) == Callable else self.pos
@@ -242,18 +230,9 @@ class SimulationNode(Node):
 
 class RealNode(Node):
     def __init__(self, node_id: int, serial_connection: Serial):
-        self.node_id = node_id
-
+        super().__init__(node_id)
+        
         self.serial_connection = serial_connection
-
-        self.tx_ts: Dict[int, int] = {}
-        self.rx_ts: Dict[Tuple[int, int], int] = {}
-        self.other_tx_ts: Dict[Tuple[int, int], int] = {}
-        self.other_rx_ts: Dict[Tuple[int, int, int], int] = {}
-
-        self.active_ranging_distances: Dict[int, List[float]] = {}
-        self.passive_ranging_distances: Dict[Tuple[int, int], List[float]] = {}
-        self.passive_ranging_distances_adjusted: Dict[Tuple[int, int], List[float]] = {}
 
     def get_serial_connection(self) -> Serial:
         return self.serial_connection
