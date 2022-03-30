@@ -15,10 +15,11 @@ class Node:
         self.receive_timestamps: Dict[int, Tuple[int, int]] = {}
 
         # Evaluation
-        self.tx_timestamps: Dict[int, int] = {}
-        self.rx_timestamps: Dict[Tuple[int, int], int] = {}
-        self.other_tx_timestamps: Dict[Tuple[int, int], int] = {}
-        self.other_rx_timestamps: Dict[Tuple[int, int, int], int] = {}
+        self.tx_ts: Dict[int, int] = {}
+        self.rx_ts: Dict[Tuple[int, int], int] = {}
+        self.other_tx_ts: Dict[Tuple[int, int], int] = {}
+        self.other_rx_ts: Dict[Tuple[int, int, int], int] = {}
+
         self.active_ranging_distances: Dict[int, List[float]] = {}
         self.passive_ranging_distances: Dict[Tuple[int, int], List[float]] = {}
         self.passive_ranging_distances_adjusted: Dict[Tuple[int, int], List[float]] = {}
@@ -84,45 +85,43 @@ class Node:
             message["id"] == self.node_id
         ), "We only want to process information created at our own end"
 
-        self.tx_timestamps[message["tx range"]["seq num"]] = message["tx range"][
-            "tx time"
-        ]
+        self.tx_ts[message["tx range"]["seq num"]] = message["tx range"]["tx time"]
 
     def get_stored_rx_timestamp(
         self, sender_id: int, receiver_id: int, seq_num: int
     ) -> Optional[Tuple[int, int]]:
         i = seq_num - 1
         if receiver_id == self.node_id:
-            while (sender_id, i) not in self.rx_timestamps.keys():
+            while (sender_id, i) not in self.rx_ts.keys():
                 i -= 1
                 if i < 0:
                     return None
 
-            return (i, self.rx_timestamps[sender_id, i])
+            return (i, self.rx_ts[sender_id, i])
         else:
-            while (sender_id, receiver_id, i) not in self.other_rx_timestamps.keys():
+            while (sender_id, receiver_id, i) not in self.other_rx_ts.keys():
                 i -= 1
                 if i < 0:
                     return None
-            return (i, self.other_rx_timestamps[(sender_id, receiver_id, i)])
+            return (i, self.other_rx_ts[(sender_id, receiver_id, i)])
 
     def get_stored_tx_timestamp(
         self, sender_id: int, seq_num: int
     ) -> Optional[Tuple[int, int]]:
         i = seq_num - 1
         if sender_id == self.node_id:
-            while i not in self.tx_timestamps.keys():
+            while i not in self.tx_ts.keys():
                 i -= 1
                 if i < 0:
                     return None
 
-            return (i, self.rx_timestamps[(i, sender_id)])
+            return (i, self.rx_ts[(i, sender_id)])
         else:
-            while (sender_id, i) not in self.other_tx_timestamps.keys():
+            while (sender_id, i) not in self.other_tx_ts.keys():
                 i -= 1
                 if i < 0:
                     return None
-            return (i, self.other_tx_timestamps[(sender_id, i)])
+            return (i, self.other_tx_ts[(sender_id, i)])
 
     def evaluate_rx(self, message: Dict):
         assert (
@@ -138,14 +137,14 @@ class Node:
         # M_{B,2}: B -> A
         m_3_s = message["rx range"]["seq num"]
 
-        self.other_tx_timestamps[b_id, message["rx range"]["seq num"]] = message[
-            "rx range"
-        ]["tx time"]
-        self.rx_timestamps[
+        self.other_tx_ts[b_id, message["rx range"]["seq num"]] = message["rx range"][
+            "tx time"
+        ]
+        self.rx_ts[
             (message["rx range"]["sender id"], message["rx range"]["seq num"])
         ] = message["rx range"]["rx time"]
         for rx_timestamp in message["rx range"]["timestamps"]:
-            self.other_rx_timestamps[
+            self.other_rx_ts[
                 (
                     message["rx range"]["sender id"],
                     rx_timestamp["id"],
@@ -168,42 +167,13 @@ class Node:
                     print("Missing timestamp")
                     break  # We don't have the right timestamp yet
 
-                r_a = self.rx_timestamps[b_id, m_3_s] - self.tx_timestamps[m_2_s]
-                r_b = (
-                    self.other_rx_timestamps[b_id, a_id, m_2_s]
-                    - self.other_tx_timestamps[b_id, m_1_s]
-                )
-                d_a = self.tx_timestamps[m_2_s] - self.rx_timestamps[b_id, m_1_s]
-                d_b = (
-                    self.other_tx_timestamps[b_id, m_3_s]
-                    - self.other_rx_timestamps[b_id, a_id, m_2_s]
-                )
+                r_a = self.rx_ts[b_id, m_3_s] - self.tx_ts[m_2_s]
+                r_b = self.other_rx_ts[b_id, a_id, m_2_s] - self.other_tx_ts[b_id, m_1_s]
 
-                # i = message["rx range"]["seq num"] - 1
-                # while (
-                #     message["rx range"]["sender id"],
-                #     i,
-                # ) not in self.rx_timestamps.keys():
-                #     if i <= 0:
-                #         break
-                #     i -= 1
+                d_a = self.tx_ts[m_2_s] - self.rx_ts[b_id, m_1_s]
+                d_b = self.other_tx_ts[b_id, m_3_s] - self.other_rx_ts[b_id, a_id, m_2_s]
+                
 
-                # try:
-                #     tx_b1 = self.other_tx_timestamps[
-                #         (message["rx range"]["sender id"], i)
-                #     ]
-                #     rx_a1 = self.rx_timestamps[(message["rx range"]["sender id"], i)]
-                #     tx_a = self.tx_timestamps[rx_timestamp["seq num"]]
-                #     rx_b = rx_timestamp["rx time"]
-                #     tx_b2 = message["rx range"]["tx time"]
-                #     rx_a2 = message["rx range"]["rx time"]
-                # except KeyError:
-                #     break
-
-                # r_a = rx_a2 - tx_a
-                # r_b = rx_b - tx_b1
-                # d_a = tx_a - rx_a1
-                # d_b = tx_b2 - rx_b
                 if b_id not in self.active_ranging_distances:
                     self.active_ranging_distances[b_id] = []
                 # Alternative DS-TWR (Neirynck et al. 2016)
@@ -213,63 +183,66 @@ class Node:
                 )
             else:
                 # Passive Ranging
-                # Passively ranging nodes: B: message["rx range"]["sender id"]
-                #                     and: C: rx_timestamp["id"]
-                # Message sequence numbers: M_B1: i
-                #                           M_C1: timestamp["seq num"]
-                #                           M_B2: message["rx range"]["seq num"]
+                c_id = rx_timestamp["id"]
+
+                # Sequence numbers
+                # M_{C,1}: C -> A,B
+                m_2_s = rx_timestamp["seq num"]
+                # M_{B,2}: B -> A,C
+                m_3_s = message["rx range"]["seq num"]
+                # M_{B,1}: B -> A,C
+                m_1 = self.get_stored_rx_timestamp(b_id, a_id, m_3_s)
+                if m_1:
+                    (m_1_s, _) = m_1
+                else:
+                    print("Missing timestamp")
+                    break  # We don't have the right timestamp yet
+
                 i = message["rx range"]["seq num"] - 1
                 while (
                     message["rx range"]["sender id"],
                     i,
-                ) not in self.rx_timestamps.keys():
+                ) not in self.rx_ts.keys():
                     if i <= 0:
                         break
                     i -= 1
                 try:
-                    a_rx_b1 = self.rx_timestamps[(message["rx range"]["sender id"], i)]
+                    a_rx_b1 = self.rx_ts[b_id, m_1_s]
 
-                    a_rx_c1 = self.rx_timestamps[
-                        (rx_timestamp["id"], rx_timestamp["seq num"])
-                    ]
+                    a_rx_c1 = self.rx_ts[c_id, m_2_s]
 
                     a_rx_b2 = message["rx range"]["rx time"]
 
-                    c_rx_b1 = self.other_rx_timestamps[
-                        (rx_timestamp["id"], message["rx range"]["sender id"], i)
-                    ]
+                    # c_rx_b1 = self.other_rx_ts[c_id, b_id, m_1_s]
 
-                    c_tx_1 = self.other_tx_timestamps[
-                        (rx_timestamp["id"], rx_timestamp["seq num"])
-                    ]
+                    # c_tx_1 = self.other_tx_ts[c_id, m_2_s]
 
                     b_rx_c1 = rx_timestamp["rx time"]
                     b_tx_2 = message["rx range"]["tx time"]
 
-                    b_tx_1 = self.other_tx_timestamps[
-                        (message["rx range"]["sender id"], i)
-                    ]
+                    b_tx_1 = self.other_tx_ts[b_id, m_1_s]
                 except KeyError:
+                    print("Missing timestamp")
                     break
 
                 r_a1 = a_rx_c1 - a_rx_b1
                 r_a2 = a_rx_b2 - a_rx_c1
-                t_rB = b_rx_c1 - b_tx_1
+                # t_rB = b_rx_c1 - b_tx_1
                 t_dB = b_tx_2 - b_rx_c1
-                t_dC = c_tx_1 - c_rx_b1
+                # t_dC = c_tx_1 - c_rx_b1
 
                 estimated_clock_drift_ab = (a_rx_b2 - a_rx_b1) / (b_tx_2 - b_tx_1)
 
-                if (
-                    message["rx range"]["sender id"],
-                    rx_timestamp["id"],
-                ) not in self.passive_ranging_distances.keys():
-                    self.passive_ranging_distances[
-                        message["rx range"]["sender id"], rx_timestamp["id"]
-                    ] = []
-                self.passive_ranging_distances[
-                    message["rx range"]["sender id"], rx_timestamp["id"]
-                ].append((r_a1 - t_dC - r_a2 + t_dB) / 2 / SECOND * speed_of_light)
+                # if (
+                #     message["rx range"]["sender id"],
+                #     rx_timestamp["id"],
+                # ) not in self.passive_ranging_distances.keys():
+                #     self.passive_ranging_distances[
+                #         message["rx range"]["sender id"], rx_timestamp["id"]
+                #     ] = []
+                # self.passive_ranging_distances[
+                #     message["rx range"]["sender id"], rx_timestamp["id"]
+                # ].append((r_a1 - t_dC - r_a2 + t_dB) / 2 / SECOND * speed_of_light)
 
                 if (
                     message["rx range"]["sender id"],
