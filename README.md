@@ -20,4 +20,11 @@ python3 src/host/main.py
 
 ## Run Tests
 
-The project contains unit test for the Python and C source code.
+The project contains unit test for the Python and C source code. To run the python tests make sure the dependencies from `requirements.txt` are installed and run:
+```
+pytest test/host
+```
+to run the C tests change the directory to `test/antenna` and run:
+```
+make
+```
