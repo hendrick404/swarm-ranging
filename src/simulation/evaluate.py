@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Dict, List, Tuple
 
-from node import Node
+from src.simulation.node import Node
 
 
 def evaluate_static(nodes: List[Node], input_file: str, graph_name: str = "graphs"):

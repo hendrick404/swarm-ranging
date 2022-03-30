@@ -88,14 +88,16 @@ class Node:
             "tx time"
         ]
 
-    def get_stored_rx_timestamp(self, sender_id: int, receiver_id: int, seq_num: int) -> Optional[Tuple[int, int]]:
+    def get_stored_rx_timestamp(
+        self, sender_id: int, receiver_id: int, seq_num: int
+    ) -> Optional[Tuple[int, int]]:
         i = seq_num - 1
         if receiver_id == self.node_id:
             while (sender_id, i) not in self.rx_timestamps.keys():
                 i -= 1
                 if i < 0:
                     return None
-            
+
             return (i, self.rx_timestamps[sender_id, i])
         else:
             while (sender_id, receiver_id, i) not in self.other_rx_timestamps.keys():
@@ -103,15 +105,17 @@ class Node:
                 if i < 0:
                     return None
             return (i, self.other_rx_timestamps[(sender_id, receiver_id, i)])
-            
-    def get_stored_tx_timestamp(self, sender_id: int, seq_num: int) -> Optional[Tuple[int, int]]:
+
+    def get_stored_tx_timestamp(
+        self, sender_id: int, seq_num: int
+    ) -> Optional[Tuple[int, int]]:
         i = seq_num - 1
         if sender_id == self.node_id:
             while i not in self.tx_timestamps.keys():
                 i -= 1
                 if i < 0:
                     return None
-            
+
             return (i, self.rx_timestamps[(i, sender_id)])
         else:
             while (sender_id, i) not in self.other_tx_timestamps.keys():
@@ -124,9 +128,19 @@ class Node:
         assert (
             message["id"] == self.node_id
         ), "We only want to process information created at our own end"
-        self.other_tx_timestamps[
-            (message["rx range"]["sender id"], message["rx range"]["seq num"])
-        ] = message["rx range"]["tx time"]
+
+        # Node ids
+        # A: (This node)
+        a_id = self.node_id
+        # B:
+        b_id = message["rx range"]["sender id"]
+
+        # M_{B,2}: B -> A
+        m_3_s = message["rx range"]["seq num"]
+
+        self.other_tx_timestamps[b_id, message["rx range"]["seq num"]] = message[
+            "rx range"
+        ]["tx time"]
         self.rx_timestamps[
             (message["rx range"]["sender id"], message["rx range"]["seq num"])
         ] = message["rx range"]["rx time"]
@@ -141,12 +155,6 @@ class Node:
             if rx_timestamp["id"] == self.node_id:
                 # Active Ranging
 
-                # Node ids
-                # A: (This node)
-                a_id = self.node_id
-                # B: 
-                b_id = message["rx range"]["sender id"]
-                
                 # Sequence numbers
                 # M_{A,1}: A -> B
                 m_2_s = rx_timestamp["seq num"]
@@ -158,12 +166,18 @@ class Node:
                     (m_1_s, _) = m_1
                 else:
                     print("Missing timestamp")
-                    break # We don't have the right timestamp yet
-                
+                    break  # We don't have the right timestamp yet
+
                 r_a = self.rx_timestamps[b_id, m_3_s] - self.tx_timestamps[m_2_s]
-                r_b = self.other_rx_timestamps[b_id, a_id, m_2_s] - self.other_tx_timestamps[b_id, m_1_s] 
+                r_b = (
+                    self.other_rx_timestamps[b_id, a_id, m_2_s]
+                    - self.other_tx_timestamps[b_id, m_1_s]
+                )
                 d_a = self.tx_timestamps[m_2_s] - self.rx_timestamps[b_id, m_1_s]
-                d_b = self.other_tx_timestamps[b_id, m_3_s] - self.other_rx_timestamps[b_id, a_id, m_2_s] 
+                d_b = (
+                    self.other_tx_timestamps[b_id, m_3_s]
+                    - self.other_rx_timestamps[b_id, a_id, m_2_s]
+                )
 
                 # i = message["rx range"]["seq num"] - 1
                 # while (

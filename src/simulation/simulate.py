@@ -9,9 +9,9 @@ from random import random, uniform
 from math import sin, cos, pi
 from typing import List
 
-from config import SECOND
-from node import Node
-from evaluate import evaluate_static
+from src.simulation.config import SECOND
+from src.simulation.node import Node
+from src.simulation.evaluate import evaluate_static
 
 
 def simulate(

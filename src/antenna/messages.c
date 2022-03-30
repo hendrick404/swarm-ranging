@@ -57,7 +57,7 @@ rx_range_info_t analyse_message(uint8_t* message_buffer, size_t message_buffer_l
         rx_info.timestamps = NULL;
     }
     
-    for (int i = 0; i < rx_info.timestamps_len; i++) {
+    for (size_t i = 0; i < rx_info.timestamps_len; i++) {
         int timestamp_index = RX_TIMESTAMP_OFFSET + i * RX_TIMESTAMP_SIZE;
         rx_info.timestamps[i].node_id = message_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET] |
                                         (message_buffer[timestamp_index + RX_TIMESTAMP_RANGING_ID_OFFSET + 1] << 8);
@@ -72,13 +72,13 @@ rx_range_info_t analyse_message(uint8_t* message_buffer, size_t message_buffer_l
 
 size_t construct_message(uint8_t* message_buffer, size_t message_buffer_size, received_message_t* received_messages, size_t received_messages_len, self_t self, timestamp_t tx_timestamp) {
     int num_timestamp = 0;
-    for (int i = 0; i < received_messages_len; i++) {
+    for (size_t i = 0; i < received_messages_len; i++) {
         if (received_messages[i].sequence_number != 0) {
             num_timestamp++;
         }
     }
 
-    size_t message_size;
+    size_t message_size = TX_TIMESTAMP_IDX + TIMESTAMP_SIZE;
     
     message_buffer[FRAME_CONTROL_IDX_1] = 0x88;
     message_buffer[FRAME_CONTROL_IDX_2] = 0x41;
@@ -93,7 +93,7 @@ size_t construct_message(uint8_t* message_buffer, size_t message_buffer_size, re
 
     // We use j as an index for the message buffer and i as an index for the `received_messages` list.
     int j = 0;
-    for (int i = 0; i < received_messages_len; i++) {
+    for (size_t i = 0; i < received_messages_len; i++) {
         if (received_messages[i].sequence_number != 0) {
             int index = RX_TIMESTAMP_OFFSET + (RX_TIMESTAMP_SIZE * j);
             if(index + RX_TIMESTAMP_SEQUENCE_NUMBER_OFFSET + 1 >= message_buffer_size) {
