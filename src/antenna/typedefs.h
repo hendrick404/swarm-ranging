@@ -44,6 +44,16 @@ typedef struct {
 } self_t;
 
 /**
+ * @brief Timestamp field in `rx_range`
+ * 
+ */
+typedef struct rx_range_timestamp {
+    ranging_id_t node_id;
+    sequence_number_t sequence_number;
+    timestamp_t rx_time;
+} rx_range_timestamp_t;
+
+/**
  * @brief Information about a reception event.
  * 
  */
