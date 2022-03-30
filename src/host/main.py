@@ -16,7 +16,7 @@ def main():
 
     connections = connect()
 
-    eval_file = open("evaluation.txt", "a") if evaluate else None
+    eval_file = open("evaluation.txt", "a", encoding="UTF-8") if evaluate else None
 
     while True:
         for node in connections:

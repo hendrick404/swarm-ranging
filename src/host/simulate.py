@@ -23,7 +23,7 @@ def simulate(
 ):
     if not os.path.exists("evaluation"):
         os.mkdir("evaluation")
-    with open(os.path.join("evaluation", output_file), "a") as eval_file:
+    with open(os.path.join("evaluation", output_file), "a", encoding="UTF-8") as eval_file:
         exchange_counter = 1
         global_clock: int = 0
         while exchange_counter <= exchanges * len(nodes):

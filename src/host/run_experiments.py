@@ -11,11 +11,11 @@ from evaluate import evaluate_static
 def experiment(
     interval: int,
     num_messages: int,
-    transmission_success_rate: float,
+    success_rate: float,
     circle_size: int,
     max_clock_drift: float,
 ) -> None:
-    name: str = f"{int(interval / SECOND * 1000):04d}_{int(transmission_success_rate * 100):03d}"
+    name: str = f"{int(interval / SECOND * 1000):04d}_{int(success_rate * 100):03d}"
     nodes = []
     for i in range(1, circle_size + 1):
         nodes.append(
@@ -30,7 +30,7 @@ def experiment(
         nodes,
         interval,
         num_messages,
-        transmission_success_rate,
+        success_rate,
         f"evaluation_{name}.txt",
     )
     evaluate_static(nodes, f"evaluation_{name}.txt", name)

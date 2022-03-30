@@ -84,7 +84,9 @@ class Node:
         self.rx_ts[b_id, m_3_s] = message["rx range"]["rx time"]
 
         for rx_timestamp in message["rx range"]["timestamps"]:
-            self.other_rx_ts[b_id, rx_timestamp["id"], rx_timestamp["seq num"]] = rx_timestamp["rx time"]
+            self.other_rx_ts[
+                b_id, rx_timestamp["id"], rx_timestamp["seq num"]
+            ] = rx_timestamp["rx time"]
             if rx_timestamp["id"] == self.node_id:
                 # Active Ranging
 
@@ -102,10 +104,14 @@ class Node:
                     break  # We don't have the right timestamp yet
 
                 r_a = self.rx_ts[b_id, m_3_s] - self.tx_ts[m_2_s]
-                r_b = self.other_rx_ts[b_id, a_id, m_2_s] - self.other_tx_ts[b_id, m_1_s]
+                r_b = (
+                    self.other_rx_ts[b_id, a_id, m_2_s] - self.other_tx_ts[b_id, m_1_s]
+                )
 
                 d_a = self.tx_ts[m_2_s] - self.rx_ts[b_id, m_1_s]
-                d_b = self.other_tx_ts[b_id, m_3_s] - self.other_rx_ts[b_id, a_id, m_2_s]
+                d_b = (
+                    self.other_tx_ts[b_id, m_3_s] - self.other_rx_ts[b_id, a_id, m_2_s]
+                )
 
                 if b_id not in self.active_ranging_distances:
                     self.active_ranging_distances[b_id] = []
@@ -154,7 +160,9 @@ class Node:
                 if (b_id, c_id) not in self.passive_ranging_distances_adjusted.keys():
                     self.passive_ranging_distances_adjusted[b_id, c_id] = []
                 self.passive_ranging_distances_adjusted[b_id, c_id].append(
-                    (r_a2 - t_dB * estimated_clock_drift_ab) / self.second * speed_of_light
+                    (r_a2 - t_dB * estimated_clock_drift_ab)
+                    / self.second
+                    * speed_of_light
                 )
 
     def __eq__(self, other):
@@ -231,7 +239,7 @@ class SimulationNode(Node):
 class RealNode(Node):
     def __init__(self, node_id: int, serial_connection: Serial):
         super().__init__(node_id)
-        
+
         self.serial_connection = serial_connection
 
     def get_serial_connection(self) -> Serial:
