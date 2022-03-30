@@ -1,10 +1,10 @@
-pyserial
-scipy
 breathe
-sphinx
 flake8
-mypy
-pylint
-pytest
-numpy
 matplotlib
+mypy
+numpy
+pylint
+pyserial
+pytest
+scipy
+sphinx
