@@ -1,8 +1,8 @@
 from math import sqrt
-from typing import Dict, Tuple, List, Callable
+from typing import Dict, Optional, Tuple, List, Callable
 from scipy.constants import speed_of_light
 
-from config import SECOND
+from src.simulation.config import SECOND
 
 
 class Node:
@@ -88,6 +88,38 @@ class Node:
             "tx time"
         ]
 
+    def get_stored_rx_timestamp(self, sender_id: int, receiver_id: int, seq_num: int) -> Optional[Tuple[int, int]]:
+        i = seq_num - 1
+        if receiver_id == self.node_id:
+            while (sender_id, i) not in self.rx_timestamps.keys():
+                i -= 1
+                if i < 0:
+                    return None
+            
+            return (i, self.rx_timestamps[sender_id, i])
+        else:
+            while (sender_id, receiver_id, i) not in self.other_rx_timestamps.keys():
+                i -= 1
+                if i < 0:
+                    return None
+            return (i, self.other_rx_timestamps[(sender_id, receiver_id, i)])
+            
+    def get_stored_tx_timestamp(self, sender_id: int, seq_num: int) -> Optional[Tuple[int, int]]:
+        i = seq_num - 1
+        if sender_id == self.node_id:
+            while i not in self.tx_timestamps.keys():
+                i -= 1
+                if i < 0:
+                    return None
+            
+            return (i, self.rx_timestamps[(i, sender_id)])
+        else:
+            while (sender_id, i) not in self.other_tx_timestamps.keys():
+                i -= 1
+                if i < 0:
+                    return None
+            return (i, self.other_tx_timestamps[(sender_id, i)])
+
     def evaluate_rx(self, message: Dict):
         assert (
             message["id"] == self.node_id
@@ -107,42 +139,66 @@ class Node:
                 )
             ] = rx_timestamp["rx time"]
             if rx_timestamp["id"] == self.node_id:
+                # Active Ranging
 
-                i = message["rx range"]["seq num"] - 1
-                while (
-                    message["rx range"]["sender id"],
-                    i,
-                ) not in self.rx_timestamps.keys():
-                    if i <= 0:
-                        break
-                    i -= 1
+                # Node ids
+                # A: (This node)
+                a_id = self.node_id
+                # B: 
+                b_id = message["rx range"]["sender id"]
+                
+                # Sequence numbers
+                # M_{A,1}: A -> B
+                m_2_s = rx_timestamp["seq num"]
+                # M_{B,2}: B -> A
+                m_3_s = message["rx range"]["seq num"]
+                # M_{B,1}: B -> A
+                m_1 = self.get_stored_rx_timestamp(b_id, a_id, m_3_s)
+                if m_1:
+                    (m_1_s, _) = m_1
+                else:
+                    print("Missing timestamp")
+                    break # We don't have the right timestamp yet
+                
+                r_a = self.rx_timestamps[b_id, m_3_s] - self.tx_timestamps[m_2_s]
+                r_b = self.other_rx_timestamps[b_id, a_id, m_2_s] - self.other_tx_timestamps[b_id, m_1_s] 
+                d_a = self.tx_timestamps[m_2_s] - self.rx_timestamps[b_id, m_1_s]
+                d_b = self.other_tx_timestamps[b_id, m_3_s] - self.other_rx_timestamps[b_id, a_id, m_2_s] 
 
-                try:
-                    tx_b1 = self.other_tx_timestamps[
-                        (message["rx range"]["sender id"], i)
-                    ]
-                    rx_a1 = self.rx_timestamps[(message["rx range"]["sender id"], i)]
-                    tx_a = self.tx_timestamps[rx_timestamp["seq num"]]
-                    rx_b = rx_timestamp["rx time"]
-                    tx_b2 = message["rx range"]["tx time"]
-                    rx_a2 = message["rx range"]["rx time"]
-                except KeyError:
-                    break
+                # i = message["rx range"]["seq num"] - 1
+                # while (
+                #     message["rx range"]["sender id"],
+                #     i,
+                # ) not in self.rx_timestamps.keys():
+                #     if i <= 0:
+                #         break
+                #     i -= 1
 
-                r_a = rx_a2 - tx_a
-                r_b = rx_b - tx_b1
-                d_a = tx_a - rx_a1
-                d_b = tx_b2 - rx_b
-                if (
-                    message["rx range"]["sender id"]
-                    not in self.active_ranging_distances
-                ):
-                    self.active_ranging_distances[message["rx range"]["sender id"]] = []
+                # try:
+                #     tx_b1 = self.other_tx_timestamps[
+                #         (message["rx range"]["sender id"], i)
+                #     ]
+                #     rx_a1 = self.rx_timestamps[(message["rx range"]["sender id"], i)]
+                #     tx_a = self.tx_timestamps[rx_timestamp["seq num"]]
+                #     rx_b = rx_timestamp["rx time"]
+                #     tx_b2 = message["rx range"]["tx time"]
+                #     rx_a2 = message["rx range"]["rx time"]
+                # except KeyError:
+                #     break
+
+                # r_a = rx_a2 - tx_a
+                # r_b = rx_b - tx_b1
+                # d_a = tx_a - rx_a1
+                # d_b = tx_b2 - rx_b
+                if b_id not in self.active_ranging_distances:
+                    self.active_ranging_distances[b_id] = []
+                # Alternative DS-TWR (Neirynck et al. 2016)
                 tof = (r_a * r_b - d_a * d_b) / (r_a + r_b + d_a + d_b)
                 self.active_ranging_distances[message["rx range"]["sender id"]].append(
                     (tof / SECOND) * speed_of_light
                 )
             else:
+                # Passive Ranging
                 # Passively ranging nodes: B: message["rx range"]["sender id"]
                 #                     and: C: rx_timestamp["id"]
                 # Message sequence numbers: M_B1: i
