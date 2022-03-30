@@ -25,14 +25,14 @@ void process_out_message(tx_range_info_t* info, ranging_id_t id) {
 
 void process_in_message(rx_range_info_t* info, ranging_id_t id) {
     char buf[90];
-    snprintf(buf, 90,
-             "{\"id\":%u,\"rx range\":{\"sender id\":%d,\"seq num\":%d,", id,
-             info->sender_id, info->sequence_number);
+    snprintf(buf, 90, "{\"id\":%u,\"rx range\":{\"sender id\":%d,\"seq num\":%d,", id, info->sender_id,
+             info->sequence_number);
     uart_out(buf);
     snprintf(buf, 90, "\"rx time\":%llu,\"tx time\":%llu,\"timestamps\":[", info->rx_time, info->tx_time);
     uart_out(buf);
     for (int i = 0; i < info->timestamps_len; i++) {
-        snprintf(buf, 90, "{\"id\":%d,\"seq num\":%d,\"rx time\":%llu}", info->timestamps[i].node_id, info->timestamps[i].sequence_number, info->timestamps[i].rx_time);
+        snprintf(buf, 90, "{\"id\":%d,\"seq num\":%d,\"rx time\":%llu}", info->timestamps[i].node_id,
+                 info->timestamps[i].sequence_number, info->timestamps[i].rx_time);
         uart_out(buf);
         if (i != info->timestamps_len - 1) {
             uart_out(",");

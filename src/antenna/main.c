@@ -17,7 +17,7 @@
 
 LOG_MODULE_REGISTER(main);
 
-K_TIMER_DEFINE(send_timer, NULL, NULL);
+K_TIMER_DEFINE(transmission_timer, NULL, NULL);
 
 static dwt_config_t config = {5, DWT_PRF_64M, DWT_PLEN_128, DWT_PAC8, 9, 9, 1, DWT_BR_6M8, DWT_PHRMODE_STD, (129)};
 
@@ -98,15 +98,19 @@ void check_received_messages() {
         LOG_DBG("Received frame");
         uint32_t frame_length = dwt_read32bitreg(RX_FINFO_ID) & RX_FINFO_RXFL_MASK_1023;
         LOG_DBG("Frame length: %d", frame_length);
+
+        // Write message to buffer
         uint8_t* rx_buffer = (uint8_t*) k_malloc(frame_length);
         dwt_readrxdata(rx_buffer, frame_length, 0);
 
+        // Read reception timestamp
         timestamp_t rx_timestamp = read_rx_timestamp();
 
+        // Send messag info to host
         rx_range_info_t rx_info = analyse_message(rx_buffer, frame_length, rx_timestamp);
-
         process_in_message(&rx_info, self.id);
 
+        // Store timestamps for future transmissions
         received_messages[rx_info.sender_id].sequence_number = rx_info.sequence_number;
         received_messages[rx_info.sender_id].rx_timestamp = rx_info.rx_time;
 
@@ -114,8 +118,11 @@ void check_received_messages() {
 
         k_free(rx_info.timestamps);
         k_free(rx_buffer);
+
+        // Processing is done, reset status register
         dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_RXFCG);
     } else if (status & SYS_STATUS_ALL_RX_ERR) {
+        // Bad frame, reset status register
         LOG_WRN("Reception error");
         dwt_write32bitreg(SYS_STATUS_ID, SYS_STATUS_ALL_RX_ERR);
     }
@@ -144,17 +151,17 @@ int main(void) {
         received_messages[i].sequence_number = 0;
     }
 
-    k_timer_start(&send_timer, K_MSEC(CONFIG_RANGING_INTERVAL), K_NO_WAIT);
+    k_timer_start(&transmission_timer, K_MSEC(CONFIG_RANGING_INTERVAL), K_NO_WAIT);
 
     while (1) {
         check_received_messages();
-        if (k_timer_status_get(&send_timer) > 0) {
+        if (k_timer_status_get(&transmission_timer) > 0) {
             send_message();
             self.sequence_number++;
             // TODO: Use random number
             // int deviation = sys_rand32_get() % CONFIG_RANGING_INTERVAL_MAX_DEVIATION;
             int deviation = dwt_getpartid() % CONFIG_RANGING_INTERVAL_MAX_DEVIATION;
-            k_timer_start(&send_timer, K_MSEC(CONFIG_RANGING_INTERVAL + deviation), K_NO_WAIT);
+            k_timer_start(&transmission_timer, K_MSEC(CONFIG_RANGING_INTERVAL + deviation), K_NO_WAIT);
         }
     }
     return 0;
