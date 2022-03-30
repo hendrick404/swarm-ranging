@@ -63,11 +63,7 @@ typedef struct rx_range {
     timestamp_t tx_time;
     timestamp_t rx_time;
     size_t timestamps_len;
-    struct rx_range_timestamp {
-        ranging_id_t node_id;
-        sequence_number_t sequence_number;
-        timestamp_t rx_time;
-}* timestamps;
+    rx_range_timestamp_t* timestamps;
 } rx_range_info_t;
 
 /**
