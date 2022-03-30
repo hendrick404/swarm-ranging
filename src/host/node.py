@@ -1,14 +1,15 @@
 from math import sqrt
 from typing import Dict, Optional, Tuple, List, Callable
 from scipy.constants import speed_of_light
+from serial import Serial
 
-from src.simulation.config import SECOND
+from config import SECOND
 
 
 class Node:
     def __init__(self, node_id: int):
         self.node_id = node_id
-        self.sequence_number = 1
+        # self.sequence_number = 1
 
         self.tx_ts: Dict[int, int] = {}
         self.rx_ts: Dict[Tuple[int, int], int] = {}
@@ -16,17 +17,7 @@ class Node:
         self.other_rx_ts: Dict[Tuple[int, int, int], int] = {}
 
         self.active_ranging_distances: Dict[int, List[float]] = {}
-        self.passive_ranging_distances: Dict[Tuple[int, int], List[float]] = {}
         self.passive_ranging_distances_adjusted: Dict[Tuple[int, int], List[float]] = {}
-
-
-
-    def evaluate_tx(self, message: Dict):
-        assert (
-            message["id"] == self.node_id
-        ), "We only want to process information created at our own end"
-
-        self.tx_ts[message["tx range"]["seq num"]] = message["tx range"]["tx time"]
 
     def get_stored_rx_timestamp(
         self, sender_id: int, receiver_id: int, seq_num: int
@@ -63,6 +54,13 @@ class Node:
                 if i < 0:
                     return None
             return (i, self.other_tx_ts[(sender_id, i)])
+
+    def evaluate_tx(self, message: Dict):
+        assert (
+            message["id"] == self.node_id
+        ), "We only want to process information created at our own end"
+
+        self.tx_ts[message["tx range"]["seq num"]] = message["tx range"]["tx time"]
 
     def evaluate_rx(self, message: Dict):
         assert (
@@ -159,6 +157,7 @@ class Node:
     def __eq__(self, other):
         return self.node_id == other.node_id
 
+
 class SimulationNode(Node):
     def __init__(self, node_id: int, pos, clock_err: float = 1, clock_offset: int = 0):
         self.node_id = node_id
@@ -168,7 +167,6 @@ class SimulationNode(Node):
         self.sequence_number = 1
         self.receive_timestamps: Dict[int, Tuple[int, int]] = {}
 
-        # Evaluation
         self.tx_ts: Dict[int, int] = {}
         self.rx_ts: Dict[Tuple[int, int], int] = {}
         self.other_tx_ts: Dict[Tuple[int, int], int] = {}
@@ -233,3 +231,22 @@ class SimulationNode(Node):
             },
         }
         return json_obj
+
+
+class RealNode(Node):
+    def __init__(self, node_id: int, serial_connection: Serial):
+        self.node_id = node_id
+
+        self.serial_connection = serial_connection
+
+        self.tx_ts: Dict[int, int] = {}
+        self.rx_ts: Dict[Tuple[int, int], int] = {}
+        self.other_tx_ts: Dict[Tuple[int, int], int] = {}
+        self.other_rx_ts: Dict[Tuple[int, int, int], int] = {}
+
+        self.active_ranging_distances: Dict[int, List[float]] = {}
+        self.passive_ranging_distances: Dict[Tuple[int, int], List[float]] = {}
+        self.passive_ranging_distances_adjusted: Dict[Tuple[int, int], List[float]] = {}
+
+    def get_serial_connection(self) -> Serial:
+        return self.serial_connection
